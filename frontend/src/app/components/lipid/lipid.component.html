@@ -1,0 +1,223 @@
+<div *ngIf="lipid$ | async as lipid; else waitingForDataOrError">
+  <div class="container px-4 py-5">
+    <div class="mb-5">
+      <h1>{{ lipid.nomenclature.name }}</h1>
+    </div>
+
+    <div class="grid" style="--bs-columns: 12">
+      <aside class="lipid-nav g-col-lg-3 g-col-md-4 g-col-12">
+        <nav class="nav nav-pills gap-1 flex-column" aria-orientation="vertical">
+          <a class="nav-link" routerLink="." fragment="lipid_overview" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_overview')">Overview</a>
+          <a class="nav-link" routerLink="." fragment="lipid_adducts" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_adducts')">Adducts</a>
+          <a class="nav-link" routerLink="." fragment="lipid_fragments" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_fragments')">Fragments</a>
+          <a class="nav-link" routerLink="." fragment="lipid_database_identifiers" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_database_identifiers')">Database Identifiers</a>
+          <a class="nav-link" routerLink="." fragment="lipid_structure_identifiers" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_structure_identifiers')">Structure Identifiers</a>
+          <a class="nav-link" routerLink="." fragment="lipid_synonyms" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_synonyms')">Synonyms</a>
+          <a class="nav-link" routerLink="." fragment="lipid_ontology" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_ontology')">Ontology</a>
+          <a class="nav-link" routerLink="." fragment="lipid_reactions" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_reactions')">Reactions</a>
+          <a class="nav-link" routerLink="." fragment="lipid_download" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_download')">Download</a>
+        </nav>
+      </aside>
+
+      <div class="lipid-content g-col-lg-9 g-col-md-8 g-col-12" scrollSpy [spiedTags]="['DIV']" [offset]="82" [debounceTime]="250" [defaultSection]="'lipid_overview'" (sectionChange)="onSectionChange($event)">
+        <div id="lipid_overview">
+          <div class="card mb-3">
+            <div class="card-header"><h4>Overview</h4></div>
+            <div class="card-body" id="lipid_overview_body">
+              <div class="grid" style="--bs-columns: 2;">
+                <div class="g-col-2 g-col-xl-1" *ngIf="getStructureForRender(lipid)">
+                  <img [src]="getBackendPreviewURL(lipid)" style="max-width:100%;max-height:100%;height:auto;">
+                  <div *ngIf="getDefinitionForRender(lipid)">
+                    <p>{{ getDefinitionForRender(lipid) }}</p>
+                    <audio controls><source [src]="getBackendSpeakURL(lipid)" type="audio/mpeg" /></audio>
+                  </div>
+                </div>
+                <div class="g-col-1 g-col-xl-1">
+                  <p>Name: {{ lipid.nomenclature.name }}</p>
+                  <p>Level: {{ lipid.nomenclature.level }}</p>
+                  <p>Class: {{ lipid.nomenclature.lipid_class }} ({{ lipid.nomenclature.lipid_class_abbreviation }})</p>
+                  <p>Category: {{ lipid.nomenclature.lipid_category }}</p>
+                  <p>Mass:</p>
+                  <ul>
+                    <li *ngFor="let mass of lipid.masses">{{ mass.mass_type }}: {{ mass.value }}</li>
+                  </ul>
+                  <p>Sources:</p>
+                  <ul>
+                    <li *ngFor="let source of lipid.sources">{{ source.source }} ({{ source.lipid_level }}: {{ source.lipid_name }})</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="lipid_adducts" ngbScrollSpyFragment="lipid_adducts">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h4>Adducts</h4>
+            </div>
+            <div class="card-body">
+              <app-adduct-table [lipid$]="lipid$"></app-adduct-table>
+            </div>
+          </div>
+        </div>
+
+        <div id="lipid_fragments" ngbScrollSpyFragment="lipid_fragments">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h4>Fragments</h4>
+            </div>
+            <div class="card-body">
+              <app-fragment-table [lipid$]="lipid$"></app-fragment-table>
+            </div>
+          </div>
+        </div>
+
+        <div id="lipid_database_identifiers" ngbScrollSpyFragment="lipid_database_identifiers">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h4>Database Identifiers</h4>
+            </div>
+            <div class="card-body">
+              <app-database-identifier-table [lipid$]="lipid$"></app-database-identifier-table>
+            </div>
+          </div>
+        </div>
+
+        <div id="lipid_structure_identifiers" ngbScrollSpyFragment="lipid_structure_identifiers">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h4>Structure Identifiers</h4>
+            </div>
+            <div class="card-body">
+              <app-structure-identifier-table [lipid$]="lipid$"></app-structure-identifier-table>
+            </div>
+          </div>
+        </div>
+
+        <div id="lipid_synonyms" ngbScrollSpyFragment="lipid_synonyms">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h4>Synonyms</h4>
+            </div>
+            <div class="card-body">
+              <app-synonym-table [lipid$]="lipid$"></app-synonym-table>
+            </div>
+          </div>
+        </div>
+
+        <div id="lipid_ontology" ngbScrollSpyFragment="lipid_ontology">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h4>Ontology</h4>
+            </div>
+            <div class="card-body">
+              <app-ontology [lipid$]="lipid$"></app-ontology>
+            </div>
+          </div>
+        </div>
+
+        <div id="lipid_reactions" ngbScrollSpyFragment="lipid_reactions">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h4>Reactions</h4>
+            </div>
+            <div class="card-body">
+              <div ngbAccordion [closeOthers]="true">
+                <div ngbAccordionItem *ngFor="let reaction of lipid.reactions">
+                  <h2 ngbAccordionHeader>
+                    <button ngbAccordionButton>{{ reaction.description }}</button>
+                  </h2>
+                  <div ngbAccordionCollapse>
+                    <div ngbAccordionBody>
+                      <ng-template>
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th scope="col" databaseIdentifierSortableAttribute="database">Database</th>
+                              <th scope="col" databaseIdentifierSortableAttribute="identifier">Identifier</th>
+                              <th scope="col">Link</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let database_identifier of reaction.database_identifiers">
+                              <td>{{ database_identifier.database }}</td>
+                              <td>{{ database_identifier.identifier }}</td>
+                              <td><a [href]="database_identifier.url" target="_blank" rel="noreferrer noopener">Go There</a></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="lipid_download" ngbScrollSpyFragment="lipid_download">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h4>Download</h4>
+            </div>
+            <div class="card-body">
+              <div class="grid px-4" style="--bs-columns: 3">
+                <a class="btn btn-lg btn-outline-primary g-col-1" [href]="generateDownloadUrl(lipid)" download="{{ lipid.nomenclature.name }}.json">Download JSON</a>
+                <button *ngIf="!isDevelopmentDeployment()" class="btn btn-lg btn-outline-secondary g-col-1" ngbTooltip="This is a production deployment. PDF Creation is currently only available on development deployments.">Download PDF</button>
+                <button *ngIf="isDevelopmentDeployment()" class="btn btn-lg btn-outline-primary g-col-1" (click)="generatePDF(lipid)">Download PDF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #waitingForDataOrError>
+  <div *ngIf="errorObject; else waitingForData">
+    <div *ngIf="errorObject.status == 404; else backendError">
+      <div class="container px-4 py-5">
+        <div class="mb-5">
+          <h1>404 Lipid Not Found</h1>
+        </div>
+        <div class="d-grid gap-2">
+          <p>
+            <i class="bi bi-exclamation-triangle"></i>
+            <span> &nbsp; Lipid not found. It may have been deleted after not being accessed for a month. You are welcome to execute the query again.</span>
+          </p>
+          <button type="button" class="btn btn-primary btn-sm" routerLink="/">Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #backendError>
+    <div class="container px-4 py-5">
+      <div class="mb-5">
+        <h1>Connection Error</h1>
+      </div>
+      <div class="d-grid gap-2">
+        <p>
+          <i class="bi bi-exclamation-triangle"></i>
+          <span> &nbsp; Connection to our backend server could not be established. Please try again later.</span>
+        </p>
+        <button type="button" class="btn btn-primary btn-sm" routerLink="/">Home</button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #waitingForData>
+    <div class="container px-4 py-5">
+      <div class="mb-5">
+        <h1>Loading Lipid...</h1>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>

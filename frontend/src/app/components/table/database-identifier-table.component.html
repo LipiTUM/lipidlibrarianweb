@@ -1,0 +1,41 @@
+<form>
+  <div class="mb-3 row">
+    <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
+    <div class="col-xs-3 col-sm-auto">
+      <input
+        id="table-complete-search"
+        type="text"
+        class="form-control"
+        name="searchTerm"
+        [(ngModel)]="service.searchTerm"
+      />
+    </div>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col" databaseIdentifierSortableAttribute="database" (sort)="onSort($event)">Database</th>
+        <th scope="col" databaseIdentifierSortableAttribute="identifier" (sort)="onSort($event)">Identifier</th>
+        <th scope="col">Link</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let databaseIdentifier of databaseIdentifiers$ | async">
+        <td><ngb-highlight [result]="databaseIdentifier.database" [term]="service.searchTerm"></ngb-highlight></td>
+        <td><ngb-highlight [result]="databaseIdentifier.identifier" [term]="service.searchTerm"></ngb-highlight></td>
+        <td><a [href]="databaseIdentifier.url" target="_blank" rel="noreferrer noopener">Go There</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-between p-2">
+    <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page" [pageSize]="service.pageSize"></ngb-pagination>
+
+    <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="service.pageSize">
+      <option [ngValue]="5">5 items per page</option>
+      <option [ngValue]="10">10 items per page</option>
+      <option [ngValue]="50">50 items per page</option>
+    </select>
+  </div>
+</form>

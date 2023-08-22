@@ -1,0 +1,24 @@
+<div class="container">
+  <h4 *ngIf="checkBoxTitle.length!=0">{{ checkBoxTitle }}</h4>
+  <hr *ngIf="checkBoxTitle.length!=0" class="my-1">
+
+  <div *ngIf="checkBoxTitle.length!=0">
+    <div class="d-grid gap-2 d-md-flex">
+      <button type="button" class="w-100 btn btn-lg btn-primary mt-3" (click)="selectAll()"><strong> Select All</strong></button>
+      <button type="button" class="w-100 btn btn-lg btn-primary mt-3" (click)="unselectAll()"><strong> Unselect All</strong></button>
+    </div>
+  </div>
+  <div *ngIf="checkBoxTitle.length==0">
+    <div class="d-grid gap-2 d-md-flex">
+      <button type="button" class="w-100 btn btn-lg btn-primary" (click)="selectAll()"><strong> Select All</strong></button>
+      <button type="button" class="w-100 btn btn-lg btn-primary" (click)="unselectAll()"><strong> Unselect All</strong></button>
+    </div>
+  </div>
+  <br>
+  <ul class="list-group">
+    <li class="list-group-item" *ngFor="let item of checkBoxValues" >
+      <input type="checkbox" [(ngModel)]="item.isSelected" (change)="keepTrack()"/>
+      {{ item.value }}
+    </li>
+  </ul>
+</div>

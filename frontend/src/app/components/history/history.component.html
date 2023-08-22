@@ -1,0 +1,108 @@
+<div class="wrapper">
+  <div class="offcanvas-header">
+    <h4 class="offcanvas-title" id="history-offcanvas-title">History</h4>
+    <div>
+      <button type="button" class="btn btn-outline-secondary me-2" ngbTooltip="Update" placement="bottom" [openDelay]="500" aria-label="Update" (click)="reloadEvents$.emit()">
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+      <button type="button" class="btn btn-outline-secondary" ngbTooltip="Close" placement="bottom" [openDelay]="500" aria-label="Close" (click)="activeOffcanvas.dismiss('Cross click')">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="offcanvas-body">
+    <div class="page-body">
+      <div *ngIf="queries$ | async as queries; else waitingForDataOrError">
+        <div *ngIf="queries.length == 0">
+          <div class="d-flex justify-content-center">
+            <div class="d-grid gap-2">
+              <div class="d-flex justify-content-center">
+                <i class="bi bi-info-circle"></i>
+                <span> &nbsp; Your History is empty. Search for a lipid in the quick search bar at the top, or with the advanced query form on the homepage to fill it.</span>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" routerLink="/" fragment="queryForm" (click)="activeOffcanvas.dismiss('Navigation')">Go To Advanced Query Form</button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="queries.length > 0" class="grid gap-2 mb-3" style="--bs-columns: 1;">
+          <div *ngFor="let query of queries" class="g-col">
+            <button
+              class="btn btn-outline-secondary mb-1"
+              [attr.aria-expanded]="!historyService.getCollapsed(query.id)"
+              (click)="historyService.updateCollapsed(query.id)"
+            >
+              <div class="grid" style="--bs-columns: 12;">
+                <div class="g-col-10 text-start">
+                  <strong>Query: {{ query.query_string }}</strong>
+                </div>
+                <div class="g-col-1">
+                  <i class="bi bi-trash-fill" (click)="deleteQuery(query.id)"></i>
+                </div>
+                <div class="g-col-1">
+                  <i *ngIf="!historyService.getCollapsed(query.id)" class="bi bi-caret-up-fill"></i>
+                  <i *ngIf="historyService.getCollapsed(query.id)" class="bi bi-caret-down-fill"></i>
+                </div>
+              </div>
+            </button>
+            <div class="collapse" [ngbCollapse]="historyService.getCollapsed(query.id)">
+              <div class="card">
+                <div class="card-body">
+                  <ul class="btn-toggle-nav list-group fw-normal pb-1 small">
+                    <a *ngFor="let result of query.results"
+                      [routerLink]="['/lipid', result.id]"
+                      class="list-group-item list-group-item-action"
+                      [class.active]="historyService.getActive(query.id, result.id)"
+                      aria-current="true"
+                      (click)="historyService.setActive(query.id, result.id); activeOffcanvas.dismiss('Navigation');"
+                    >
+                      {{ result.name }}
+                    </a>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="my-3" *ngIf="loading">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="offcanvas-footer">
+    <app-token [reloadEvents$]="reloadEvents$" [activeOffcanvas]="activeOffcanvas"></app-token>
+  </div>
+</div>
+
+
+<ng-template #waitingForDataOrError>
+  <div *ngIf="errorObject; else waitingForData">
+    <div class="d-flex justify-content-center">
+      <div class="d-grid gap-2">
+        <p>
+          <i class="bi bi-exclamation-triangle"></i>
+          <span> &nbsp; Connection Error.</span>
+        </p>
+        <button type="button" class="btn btn-primary btn-sm" (click)="reloadEvents$.emit()">Retry</button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #waitingForData>
+    <div class="my-3">
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>

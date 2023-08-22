@@ -1,0 +1,24 @@
+server {
+  listen 80;
+  listen [::]:80;
+
+  client_max_body_size 1G;
+
+  location /api {
+    proxy_pass http://${BACKEND_HOSTNAME}:${BACKEND_PORT}/api;
+  }
+
+  location /static {
+    alias /usr/share/nginx/static/;
+  }
+
+  location /media {
+    alias /usr/share/nginx/media/;
+  }
+
+  location / {
+    root /usr/share/nginx/html;
+    index index.html index.htm;
+    try_files $uri$args $uri$args/ $uri $uri/ /index.html =404;
+  }
+}

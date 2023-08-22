@@ -1,0 +1,80 @@
+<div class="container px-4 py-5 text-center">
+  <div class="grid py-5" style="--bs-columns: 1; --bs-gap: 1rem">
+    <div class="g-col">
+      <img alt="" class="d-block mx-auto" height="57" src="assets/logo_horizontal.png">
+    </div>
+    <div class="g-col-1">
+      <h1 class="display-5 fw-bold">Lipid Librarian</h1>
+    </div>
+    <div class="g-col-1">
+      <p class="fs-4">
+        LipidLibrarian is a cross linked lipid database, gathering information on demand
+        from the three major lipidomics databases <a href="http://alex123.info/">ALEX<sup>123</sup></a>,
+        <a href="https://www.lipidmaps.org/databases/lmsd/overview">LipidMaps</a>,
+        and <a href="http://www.swisslipids.org/">SwissLipids</a>, as well as enriching the results
+        with data from the <a href="http://lipidontology.com/">LipidOntology</a> and
+        <a href="https://exbio.wzw.tum.de/linex/">LINEX</a> projects.
+      </p>
+    </div>
+    <div class="g-col-1">
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <button [routerLink]="['/documentation']" class="btn btn-primary btn-lg px-4 gap-3" type="button">
+          Documentation
+        </button>
+        <button class="btn btn-outline-secondary btn-lg px-4" href="https://gitlab.lrz.de/lipitum/lipid-librarian">
+          GitLab Repository
+        </button>
+        <button class="btn btn-outline-secondary btn-lg px-4" href="https://pypi.org/project/lipid-librarian">PyPi
+          Package
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="b-horizontal-divider"></div>
+
+<div class="container px-4 py-5 gy-5">
+  <div class="grid" style="--bs-columns: 1;">
+    <div class="g-col-1 text-center">
+      <h1 class="display-5 fw-bold"><i class="bi bi-search"></i></h1>
+      <h1 class="display-5 fw-bold">Query Lipid Librarian</h1>
+    </div>
+    <div class="g-col-1 text-center fs-4">
+      Perform a search using a search term, either the <strong>shorthand notation</strong>, <strong>lipid name</strong>, or <strong>database identifier</strong>, or search for lipids in an <strong>m/z value</strong> range:
+    </div>
+    <div class="g-col-1">
+      <div class="grid">
+        <div class="g-col-lg-3 g-col-md-2"></div>
+        <div class="g-col-lg-6 g-col-md-8 g-col-12"><app-query-form></app-query-form></div>
+        <div class="g-col-lg-3 g-col-md-2"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="b-horizontal-divider"></div>
+
+<div class="container px-4 py-5 gy-5">
+  <div class="grid" style="--bs-columns: 1;">
+    <div class="g-col-1 text-center">
+      <h1 class="display-5 fw-bold">For Developers</h1>
+    </div>
+    <div class="g-col-1 text-center fs-4">
+      LipidLibrarian has API access and is available as a Python package to be included in high throughput pipelines.
+    </div>
+    <div class="g-col-1">
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <button [routerLink]="['/documentation']" class="btn btn-primary btn-lg px-4 gap-3" type="button">
+          Documentation
+        </button>
+        <button class="btn btn-outline-secondary btn-lg px-4" href="https://gitlab.lrz.de/lipitum/lipid-librarian">
+          GitLab Repository
+        </button>
+        <button class="btn btn-outline-secondary btn-lg px-4" href="https://pypi.org/project/lipid-librarian">PyPi
+          Package
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

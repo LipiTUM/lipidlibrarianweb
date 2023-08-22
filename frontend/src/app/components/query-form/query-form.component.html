@@ -1,0 +1,278 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="queryForm" class="p-4 p-md-4 border rounded-3 bg-body-tertiary">
+  <div [closeOthers]="true" ngbAccordion>
+    <!--Basic search-->
+    <div (shown)="form['advanced'].setValue(false); form['lipid_name'].reset();" [collapsed]="false"
+         [destroyOnHide]="false" id="basicSearch"
+         ngbAccordionItem title="Basic Search">
+      <h2 ngbAccordionHeader>
+        <button ngbAccordionButton>Basic Search</button>
+      </h2>
+      <div ngbAccordionCollapse>
+        <div ngbAccordionBody>
+          <ng-template>
+            <!--Search Term Field-->
+            <div class="form-floating mb-3">
+              <input class="form-control" formControlName="lipid_name" id="floatingLipidName" type="text">
+              <label for="floatingLipidName">Search Term</label>
+              <!-- Validation Lipid Name -->
+              <div *ngIf="lipid_name.invalid && (lipid_name.dirty || lipid_name.touched)" class="alert alert-danger">
+                <div *ngIf="lipid_name.errors?.['required']">
+                  Lipid name is required.
+                </div>
+                <div *ngIf="lipid_name.errors?.['pattern']">
+                  Lipid name must be composed of following symbols:
+                  <ul>
+                    <li>[A-Z] and [a-z]</li>
+                    <li>space</li>
+                    <li>0-9</li>
+                    <li>Special Symbols: /, _ , ( , ) , . , ; , : , + , - and ,</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="d-inline-block" ngbDropdown>
+              <button class="btn btn-primary" id="dropdownBasic1" ngbDropdownToggle type="button">
+                Examples
+              </button>
+              <div aria-labelledby="dropdownBasic1" ngbDropdownMenu>
+                <button (click)="updateBasicSearchExamples('PC 34:0')" ngbDropdownItem type="button">PC 34:0</button>
+                <button (click)="updateBasicSearchExamples('PC 16:0-18:0')" ngbDropdownItem type="button">PC 16:0-18:0
+                </button>
+                <button (click)="updateBasicSearchExamples('PC(18:1/20:0)')" ngbDropdownItem type="button">PC(18:1/20:0)
+                </button>
+                <button (click)="updateBasicSearchExamples('LDMPE 14:2')" ngbDropdownItem type="button">LDMPE 14:2
+                </button>
+                <button (click)="updateBasicSearchExamples('LMGP01030008')" ngbDropdownItem type="button">LMGP01030008
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!--Advanced search-->
+    <div (shown)="form['advanced'].setValue(true); form['lipid_name'].reset();" [collapsed]="false"
+         [destroyOnHide]="false" id="advancedSearch"
+         ngbAccordionItem title="Advanced Search">
+      <h2 ngbAccordionHeader>
+        <button ngbAccordionButton>
+          <span>Advanced Search</span>
+        </button>
+      </h2>
+      <div ngbAccordionCollapse>
+        <div ngbAccordionBody>
+          <ng-template>
+            <strong>
+              Choose a search:
+            </strong>
+            <hr>
+            <!--m/z search-->
+            <div #mzAccordion="ngbAccordion"
+                 (shown)="form['mz_search'].setValue('mz_search'); searchTermAccordion.collapse('search_term_field');"
+                 class="mb-1 mt-4" ngbAccordion>
+              <div [collapsed]="true" [destroyOnHide]="false" ngbAccordionItem="mz_search_field" title="M/Z Search">
+                <h6 ngbAccordionHeader>
+                  <button ngbAccordionButton>M/Z Search</button>
+                </h6>
+                <div ngbAccordionCollapse>
+                  <div ngbAccordionBody>
+                    <ng-template>
+                      <!-- m/z value field -->
+                      <div class="form-floating mb-1">
+                        <input class="form-control" formControlName="mz_value" id="mzValueInput" type="number">
+                        <label for="mzValueInput">m/z value</label>
+                        <!-- validation -->
+                        <div *ngIf="mz_value.invalid && (mz_value.dirty || mz_value.touched)"
+                             class="alert alert-danger">
+                          <div *ngIf="mz_value.errors?.['required']">
+                            m/z value is required.
+                          </div>
+                        </div>
+                      </div>
+                      <!--Tolerance Field-->
+                      <div class="form-floating mb-1">
+                        <input class="form-control" formControlName="tolerance" id="toleranceInput" max="1" min="0"
+                               step="0.01" type="number">
+                        <label for="toleranceInput">m/z tolerance</label>
+                        <!-- Validation Tolerance Field -->
+                        <div *ngIf="tolerance.invalid && (tolerance.dirty || tolerance.touched)"
+                             class="alert alert-danger">
+                          <div *ngIf="tolerance.errors?.['required']">
+                            Tolerance value is required.
+                          </div>
+
+                          <div *ngIf="tolerance.errors?.['min']">
+                            Tolerance must be greater than 0.
+                          </div>
+
+                          <div *ngIf="tolerance.errors?.['max']">
+                            Tolerance must be less than 1.
+                          </div>
+
+                        </div>
+                      </div>
+                      <!--Adduct-->
+                      <div class="form-floating mb-1" ngbAccordion>
+                        <div [destroyOnHide]="false" ngbAccordionItem>
+                          <h2 ngbAccordionHeader>
+                            <button ngbAccordionButton>Adducts</button>
+                          </h2>
+                          <div ngbAccordionCollapse>
+                            <div ngbAccordionBody>
+                              <ng-template>
+                                <checkbox (checkBoxFormEvent)="updateArray($event, 'positive')"
+                                          [checkBoxTitle]="'Positive Adducts'"
+                                          [checkBoxValues]="positiveAdducts"></checkbox>
+                              </ng-template>
+                            </div>
+
+                            <div ngbAccordionBody>
+                              <ng-template>
+                                <checkbox (checkBoxFormEvent)="updateArray($event, 'negative')"
+                                          [checkBoxTitle]="'Negative Adducts'"
+                                          [checkBoxValues]="negativeAdducts"></checkbox>
+                              </ng-template>
+                            </div>
+                            <!-- Validation -->
+                            <div
+                              *ngIf="positive_adducts.errors?.['noBoxesChecked'] && negative_adducts.errors?.['noBoxesChecked']"
+                              class="alert alert-danger">
+                              Please select at least one adduct.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!--or field-->
+            <div class="fs-5 text-center">
+              <strong> or</strong>
+            </div>
+            <!--search term-->
+            <div #searchTermAccordion="ngbAccordion"
+                 (shown)="form['mz_search'].setValue('search_term'); mzAccordion.collapse('mz_search_field');"
+                 class="mt-1 mb-4" ngbAccordion>
+              <div [collapsed]="true" [destroyOnHide]="false" ngbAccordionItem="search_term_field" title="Search Term">
+                <h6 ngbAccordionHeader>
+                  <button ngbAccordionButton>Search Term</button>
+                </h6>
+                <div ngbAccordionCollapse>
+                  <div ngbAccordionBody>
+                    <ng-template>
+                      <!--Lipid Name Field-->
+                      <div class="form-floating mb-3">
+                        <input class="form-control" formControlName="lipid_name" id="floatingLipidName2" type="text">
+                        <label for="floatingLipidName">Search Term</label>
+                        <!-- Validation Lipid Name -->
+                        <div *ngIf="lipid_name.invalid && (lipid_name.dirty || lipid_name.touched)"
+                             class="alert alert-danger">
+                          <div *ngIf="lipid_name.errors?.['required']">
+                            Lipid name is required.
+                          </div>
+                          <div *ngIf="lipid_name.errors?.['pattern']">
+                            Lipid name must be composed of following symbols:
+                            <ul>
+                              <li>[A-Z] and [a-z]</li>
+                              <li>space</li>
+                              <li>0-9</li>
+                              <li>Special Symbols: /, _ , ( , ) , . , ; , : , + , - and ,</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--databases-->
+            <strong>
+              Choose databases:
+            </strong>
+            <hr>
+            <div class="mb-1" ngbAccordionBody>
+              <ng-template>
+                <checkbox (checkBoxFormEvent)="updateArray($event, 'databases')"
+                          [checkBoxTitle]="''" [checkBoxValues]="querySources"></checkbox>
+              </ng-template>
+            </div>
+            <!-- Validation -->
+            <div *ngIf="query_sources.errors?.['noBoxesChecked']" class="alert alert-danger">
+              Please select at least one database.
+            </div>
+            <!--Examples-->
+            <div class="d-inline-block" ngbDropdown>
+              <button class="btn btn-primary" id="dropdownBasic3" ngbDropdownToggle type="button">
+                Examples
+              </button>
+              <div aria-labelledby="dropdownBasic2" ngbDropdownMenu>
+                <button (click)="updateAdvancedSearchExamples('mz_search',
+                 '',
+                 410.243,
+                 0.1,
+                 ['+H+', '+2H+', '+Na+', '+NH4+', '+[39]K+', '+[7]Li+', '+[6]Li+', '+H+ -H2O', '+CD3'],
+                 ['-H+', '-2H+', '-3H+', '+CH3COO-', '+HCOO-',  '+[35]Cl-', '+[37]Cl-', '+CH3OCOO-', '-H+CH3COOH', '-H+CH3COONa', '-H+HCOOH', '-H+HCOONa', '-H+SO3-',  '+F-'],
+                 ['ALEX123', 'LipidMaps', 'LipidOntology', 'LINEX', 'SwissLipids']);
+                mzAccordion.expand('mz_search_field');
+                searchTermAccordion.collapse('search_term_field');"
+                        ngbDropdownItem type="button">
+                  <strong>m/z:</strong> 410.243, <strong>tol:</strong> 0.1, <strong> adducts:</strong> all, <strong>
+                  databases:</strong> all
+                </button>
+                <button (click)="updateAdvancedSearchExamples('search_term',
+                 'PE(12:0/18:0)',
+                 -1,
+                 -1,
+                 [],
+                 [],
+                 ['SwissLipids']);
+                 mzAccordion.collapse('mz_search_field');
+                 searchTermAccordion.expand('search_term_field');"
+                        ngbDropdownItem
+                        type="button"><strong>search-term:</strong> PE(12:0/18:0), <strong> databases:</strong>
+                  SwissLipids
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--Submit Button-->
+  <div *ngIf="(is_basic_search_valid||is_advanced_search_valid)">
+    <button class="w-100 btn btn-lg btn-primary mt-3" type="submit"><i class="bi bi-search"></i> Search</button>
+  </div>
+  <!--Disabled Button-->
+  <div *ngIf="!(is_basic_search_valid||is_advanced_search_valid)" id="disabledButton">
+    <button class="w-100 btn btn-lg btn-secondary mt-3" disabled type="button"><i class="bi bi-search"></i> Search
+    </button>
+  </div>
+  <hr class="my-4">
+  <!-- Documentation -->
+  <div class="form-floating">
+    <button [fragment]="'query'" [routerLink]="['/documentation']" class="accordion-button" type="button">
+      <div class="text-muted"><i class="bi bi-info-circle"></i> &nbsp;How does a Query work?</div>
+    </button>
+  </div>
+</form>
+<div *ngIf="verboseForm">
+  <h5>Debug Form</h5>
+  <div class="text-muted"><i class="bi bi-info-circle"></i> &nbsp;
+    This section is only shown when the application was built using the development configuration.
+  </div>
+  <p>QueryForm Basic Search Status: {{ is_basic_search_valid }}</p>
+  <p>QueryForm Advanced Search Status: {{ is_advanced_search_valid }}</p>
+  <p>QueryForm Value: <code>{{ queryForm.value | json }}</code></p>
+
+</div>
+
+

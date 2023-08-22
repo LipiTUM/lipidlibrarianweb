@@ -1,0 +1,199 @@
+<header class="fixed-top">
+  <nav class="navbar navbar-expand-xl bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" routerLink="/">
+        <img src="assets/logo_horizontal.png" alt="Logo" height="24" class="d-inline-block align-text-middle me-2">
+        <span>LipidLibrarian</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" (click)="openOffcanvas(mobileMenu, { position: 'end' })">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="documentation" routerLinkActive="active">Documentation</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="documentation" [fragment]="'api'" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions">API</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="about" routerLinkActive="active">About</a>
+          </li>
+        </ul>
+        <form class="d-flex me-2" [formGroup]="quickSearchForm" (ngSubmit)="onSubmit()" role="search">
+          <input class="form-control me-2" formControlName="query" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <div ngbDropdown class="d-inline-block me-2">
+          <button ngbDropdownToggle class="btn btn-outline-primary d-flex align-items-center"
+                  id="bd-theme"
+                  type="button"
+                  aria-expanded="false"
+                  data-bs-toggle="dropdown"
+                  data-bs-display="static">
+              <i *ngIf="currentStoredTheme === 'light'" class="bi bi-sun-fill"></i>
+              <i *ngIf="currentStoredTheme === 'dark'" class="bi bi-moon-stars-fill"></i>
+              <i *ngIf="currentStoredTheme === 'auto'" class="bi bi-circle-half"></i>
+            <span class="ms-2" id="bd-theme-text">Toggle theme</span>
+          </button>
+          <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="bd-theme" style="--bs-dropdown-min-width: 8rem;">
+            <button ngbDropdownItem class="d-flex" [class.active]="currentStoredTheme === 'light'" data-bs-theme-value="light" (click)="setPreferredTheme('light')">
+              <i class="bi bi-sun-fill px-2"></i>
+              <div class="px-2">Light</div>
+              <i *ngIf="currentStoredTheme === 'light'" class="bi bi-check ms-auto px-2"></i>
+            </button>
+            <button ngbDropdownItem class="d-flex" [class.active]="currentStoredTheme === 'dark'" data-bs-theme-value="dark" (click)="setPreferredTheme('dark')">
+              <i class="bi bi-moon-stars-fill px-2"></i>
+              <div class="px-2">Dark</div>
+              <i *ngIf="currentStoredTheme === 'dark'" class="bi bi-check ms-auto px-2"></i>
+            </button>
+            <button ngbDropdownItem class="d-flex" [class.active]="currentStoredTheme === 'auto'" data-bs-theme-value="auto" (click)="setPreferredTheme('auto')">
+              <i class="bi bi-circle-half px-2"></i>
+              <div class="px-2">Auto</div>
+              <i *ngIf="currentStoredTheme === 'auto'" class="bi bi-check ms-auto px-2"></i>
+            </button>
+          </div>
+        </div>
+        <button *ngIf="this.sessionService.getCookieConsentStatus() === true" class="btn btn-outline-primary" (click)="openHistoryOffcanvas()">
+          <i class="bi bi-clock-history"></i>
+          <span class="docs-navbar-hide-small"> &nbsp; History</span>
+        </button>
+        <button
+          *ngIf="this.sessionService.getCookieConsentStatus() === false"
+          class="btn btn-outline-secondary"
+          (click)="showCookiesDisabledNotification(cookieNotificationTpl)"
+        >
+          <i class="bi bi-clock-history"></i>
+          <span class="docs-navbar-hide-small"> &nbsp; History</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="mt-nav">
+  <router-outlet></router-outlet>
+  <div class="b-horizontal-divider"></div>
+</main>
+
+<footer class="container px-4 py-5">
+  <div class="grid" style="--bs-columns: 2;">
+    <div class="g-col-1">
+      <div class="grid gap-1" style="--bs-columns: 1;">
+        <div class="g-col-1">
+          <img class="me-1" src="assets/icon.png" width="24" height="24">
+          <span>Developed by LipiTUM <small class="text-muted">&copy; 2023</small></span>
+        </div>
+        <div class="g-col-1">
+          <ul class="list-unstyled text-small mt-2">
+            <li><a class="link-secondary" (click)="openCookieConsentModal()">Manage Cookie Consent</a></li>
+            <li><a class="link-secondary" href="https://lipitum.de/Contact-us/">Data Protection Notice</a></li>
+            <li><a class="link-secondary" href="https://lipitum.de/Contact-us/">Impressum</a></li>
+            <li><a class="link-secondary" href="https://www.gnu.org/licenses/agpl-3.0">License</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-col-1">
+      <div class="grid gap-1" style="--bs-columns: 1;">
+        <div class="g-col-1">
+          <h5>About</h5>
+        </div>
+        <div class="g-col-1">
+          <ul class="list-unstyled text-small">
+            <li><a class="link-secondary" href="https://lipitum.de/Our-group/">Team</a></li>
+            <li><a class="link-secondary" href="https://lipitum.de/Our-Projects/">Projects</a></li>
+            <li><a class="link-secondary" href="https://lipitum.de/teaching/">Teaching</a></li>
+            <li><a class="link-secondary" href="https://lipitum.de/Contact-us/">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<app-notification-manager
+  [style.margin-top.em]="offcanvasService.hasOpenOffcanvas() && getScreenWidth && getScreenWidth > 768 ? 0 : 3.5"
+  [style.margin-right.em]="offcanvasService.hasOpenOffcanvas() && getScreenWidth && getScreenWidth > 768 ? 25 : 0"
+  aria-live="polite"
+  aria-atomic="true">
+</app-notification-manager>
+
+<ng-template #cookieNotificationTpl>
+	Cookies Disabled. To use the History, please enable Session Cookies. If you do not want to enable cookies, you'll have to copy and paste the url after submitting a query yourself.
+  <div class="mt-2 pt-2 border-top">
+    <button type="button" class="btn btn-primary btn-sm" (click)="openCookieConsentModal()">Manage Cookie Consent</button>
+  </div>
+</ng-template>
+
+<ng-template #mobileMenu let-offcanvas>
+  <div class="offcanvas-header">
+    <a class="navbar-brand" routerLink="/">
+      <img src="assets/logo_horizontal.png" alt="Logo" height="24" class="d-inline-block align-text-middle me-2">
+      <span>LipidLibrarian</span>
+    </a>
+    <button class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="d-grid gap-2">
+      <button class="btn btn-outline-primary" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="offcanvas.dismiss('Navigation')">Home</button>
+      <button class="btn btn-outline-primary" routerLink="documentation" routerLinkActive="active" (click)="offcanvas.dismiss('Navigation')">Documentation</button>
+      <button class="btn btn-outline-primary" routerLink="documentation" [fragment]="'api'" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="offcanvas.dismiss('Navigation')">API</button>
+      <button class="btn btn-outline-primary" routerLink="about" routerLinkActive="active" (click)="offcanvas.dismiss('Navigation')">About</button>
+    </div>
+    <hr>
+    <div class="d-grid gap-2">
+      <form class="d-flex me-2" [formGroup]="quickSearchForm" (ngSubmit)="onSubmit()" role="search">
+        <input class="form-control me-2" formControlName="query" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit" (click)="offcanvas.dismiss('Search submit')">Search</button>
+      </form>
+    </div>
+    <hr>
+    <div class="grid gap-2" style="--bs-columns: 2;">
+      <div ngbDropdown class="d-col-1">
+        <button ngbDropdownToggle class="btn btn-outline-primary d-flex align-items-center ps-4 pe-3"
+                id="bd-theme"
+                aria-expanded="false"
+                data-bs-toggle="dropdown">
+            <i *ngIf="currentStoredTheme === 'light'" class="bi bi-sun-fill"></i>
+            <i *ngIf="currentStoredTheme === 'dark'" class="bi bi-moon-stars-fill"></i>
+            <i *ngIf="currentStoredTheme === 'auto'" class="bi bi-circle-half"></i>
+          <span class="mx-2" id="bd-theme-text">Toggle theme</span>
+        </button>
+        <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="bd-theme" style="--bs-dropdown-min-width: 8rem;">
+          <button ngbDropdownItem class="d-flex" [class.active]="currentStoredTheme === 'light'" data-bs-theme-value="light" (click)="setPreferredTheme('light')">
+            <i class="bi bi-sun-fill px-2"></i>
+            <div class="px-2">Light</div>
+            <i *ngIf="currentStoredTheme === 'light'" class="bi bi-check ms-auto px-2"></i>
+          </button>
+          <button ngbDropdownItem class="d-flex" [class.active]="currentStoredTheme === 'dark'" data-bs-theme-value="dark" (click)="setPreferredTheme('dark')">
+            <i class="bi bi-moon-stars-fill px-2"></i>
+            <div class="px-2">Dark</div>
+            <i *ngIf="currentStoredTheme === 'dark'" class="bi bi-check ms-auto px-2"></i>
+          </button>
+          <button ngbDropdownItem class="d-flex" [class.active]="currentStoredTheme === 'auto'" data-bs-theme-value="auto" (click)="setPreferredTheme('auto')">
+            <i class="bi bi-circle-half px-2"></i>
+            <div class="px-2">Auto</div>
+            <i *ngIf="currentStoredTheme === 'auto'" class="bi bi-check ms-auto px-2"></i>
+          </button>
+        </div>
+      </div>
+      <button *ngIf="this.sessionService.getCookieConsentStatus() === true" class="btn btn-outline-primary d-col-1" (click)="openHistoryOffcanvas(); offcanvas.dismiss('History click')">
+        <i class="bi bi-clock-history"></i>
+        <span class="docs-navbar-hide-small"> &nbsp; History</span>
+      </button>
+      <button
+        *ngIf="this.sessionService.getCookieConsentStatus() === false"
+        class="btn btn-outline-secondary d-col-1"
+        (click)="showCookiesDisabledNotification(cookieNotificationTpl)"
+      >
+        <i class="bi bi-clock-history"></i>
+        <span class="docs-navbar-hide-small"> &nbsp; History</span>
+      </button>
+    </div>
+  </div>
+</ng-template>

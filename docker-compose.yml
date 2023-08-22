@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: "./frontend"
+      dockerfile: "Dockerfile"
+      args:
+        - ANGULAR_BUILD_CONFIGURATION=${ANGULAR_BUILD_CONFIGURATION}
+        - APP_URL_DEST=${APP_URL_DEST}
+    environment:
+      - BACKEND_HOSTNAME=${BACKEND_HOSTNAME}
+      - BACKEND_PORT=${BACKEND_PORT}
+    ports:
+      - "8080:80"
+    volumes:
+      - media_files:/usr/share/nginx/media
+      - static_files:/usr/share/nginx/static
+    networks:
+      - network
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: "./backend"
+      dockerfile: "Dockerfile"
+      args:
+        - LIPID_LIBRARIAN_GITHUB_COMMIT_SHA=${LIPID_LIBRARIAN_GITHUB_COMMIT_SHA}
+    environment:
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL}
+      - DJANGO_DB_HOST=${DB_HOST}
+      - DJANGO_DB_PORT=${DB_PORT}
+      - DJANGO_DB_NAME=${DB_NAME}
+      - DJANGO_DB_USER=${DB_USER}
+      - DJANGO_DB_PASSWORD=${DB_PASSWORD}
+      - APP_URL_DEST=${APP_URL_DEST}
+    volumes:
+      - media_files:/app/media
+      - static_files:/app/static
+    networks:
+      - network
+    depends_on:
+      - db
+  db:
+    image: postgres:alpine
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    networks:
+      - network
+
+networks:
+  network:
+
+volumes:
+  db_data:
+  static_files:
+  media_files:

@@ -1,0 +1,543 @@
+openapi: 3.0.0
+info:
+  description: "LipidLibrarianWeb API."
+  version: 0.2.0
+  title: LipidLibrarianWeb
+  termsOfService: http://lipitum.de/
+  contact:
+    email: lipidlibrarian@lipitum.de
+  license:
+    name: GNU AGPL 3
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+tags:
+  - name: query
+    description: Access to Queries
+  - name: lipid
+    description: Access to Lipids
+  - name: utils
+    description: Access to Utility Endpoints
+servers:
+  - url: https://exbio.wzw.tum.de/lipid-librarian/api
+components:
+  schemas:
+    Adduct:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        swisslipids_name:
+          type: string
+          nullable: true
+        swisslipids_abbrev:
+          type: string
+          nullable: true
+        lipidmaps_name:
+          type: string
+          nullable: true
+        adduct_mass:
+          type: number
+          nullable: true
+        charge:
+          type: number
+          nullable: true
+        masses:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Mass"
+        fragments:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Fragment"
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Source"
+    DatabaseIdentifier:
+      type: object
+      properties:
+        database:
+          type: string
+          nullable: true
+        identifier:
+          type: string
+          nullable: true
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Source"
+        url:
+          type: string
+          nullable: true
+    Fragment:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        masses:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Mass"
+        sum_formula:
+          type: string
+          nullable: true
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Source"
+    Level:
+      type: string
+      enum:
+        - level_unknown
+        - lipid_category
+        - lipid_class
+        - sum_lipid_species
+        - structural_lipid_species
+        - molecular_lipid_species
+        - isomeric_lipid_species
+    Lipid:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: false
+        nomenclature:
+          type: object
+          items:
+            $ref: "#/components/schemas/Nomenclature"
+          nullable: false
+        database_identifiers:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/DatabaseIdentifier"
+        masses:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Mass"
+        ontology_terms:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/OntologyTerm"
+        reactions:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Reaction"
+        adducts:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Adduct"
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Source"
+    Mass:
+      type: object
+      properties:
+        mass_type:
+          type: string
+          nullable: true
+        value:
+          type: number
+          nullable: true
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Source"
+    Nomenclature:
+      type: object
+      properties:
+        lipid_category:
+          type: string
+          nullable: true
+        lipid_class:
+          type: string
+          nullable: true
+        sum_formula:
+          type: string
+          nullable: true
+        synonyms:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Synonym"
+        structure_identifiers:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/StructureIdentifier"
+        level:
+          type: object
+          items:
+            $ref: "#/components/schemas/Level"
+          nullable: false
+        lipid_class_abbreviation:
+          type: string
+          nullable: true
+        residues:
+          type: array
+          items:
+            type: string
+        name:
+          type: string
+          nullable: true
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Source"
+    OntologyTerm:
+      type: object
+      properties:
+        ontology_term:
+          type: string
+          nullable: true
+        ontology_subgraph:
+          type: array
+          items:
+            type: array
+            minItems: 2
+            maxItems: 2
+            items:
+              type: string
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Source"
+    Query:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: false
+        token:
+          type: string
+          nullable: false
+        query_string:
+          type: string
+          nullable: false
+        query_filters:
+          type: string
+          nullable: false
+        timestamp:
+          type: string
+          format: date-time
+          nullable: false
+        status:
+          type: object
+          items:
+            $ref: "#/components/schemas/Status"
+          nullable: false
+        results:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/QueryResult"
+    QueryResult:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: false
+        file:
+          type: string
+          nullable: false
+        name:
+          type: string
+          nullable: false
+        level:
+          type: object
+          items:
+            $ref: "#/components/schemas/Level"
+          nullable: false
+        timestamp:
+          type: string
+          format: date-time
+          nullable: false
+    Reaction:
+      type: object
+      properties:
+        direction:
+          type: string
+          nullable: true
+        substrates:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        products:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        gene_names:
+          type: array
+          uniqueItems: true
+          items:
+            type: array
+            uniqueItems: true
+            items:
+              type: string
+        linex_reaction_type:
+          type: string
+          nullable: true
+        linex_nl_participants:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        description:
+          type: string
+          nullable: true
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Source"
+    Source:
+      type: object
+      properties:
+        lipid_name:
+          type: string
+          nullable: false
+        lipid_level:
+          type: object
+          items:
+            $ref: "#/components/schemas/Level"
+          nullable: false
+        source:
+          type: string
+          nullable: false
+    Status:
+      type: string
+      enum:
+        - created
+        - running
+        - done
+        - error
+    StructureIdentifier:
+      properties:
+        value:
+          type: string
+          nullable: true
+        structure_type:
+          type: string
+          nullable: true
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Source"
+    Synonym:
+      properties:
+        value:
+          type: string
+          nullable: true
+        synonym_type:
+          type: string
+          nullable: true
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Source"
+paths:
+  /query:
+    get:
+      tags:
+        - query
+      summary: Get all Query objects for a token
+      description: "Get all Query objects for a token."
+      operationId: getQuerybyToken
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Query'
+    post:
+      tags:
+        - query
+      summary: Execute a new Query
+      description: "Execute a new Query"
+      operationId: executeQuery
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                query_string:
+                  type: string
+                query_filters:
+                  type: string
+                token:
+                  type: string
+              required:
+                - query_string
+                - token
+      responses:
+        '201':
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Query'
+        '400':
+          description: BAD_REQUEST
+  /query/{query_id}:
+    get:
+      tags:
+        - query
+      summary: Get information on a Query
+      description: "Get information on a Query."
+      operationId: getQueryById
+      parameters:
+        - name: query_id
+          in: path
+          description: ID of the Query to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Query'
+        '404':
+          description: NOT_FOUND
+    delete:
+      tags:
+        - query
+      summary: Delete a Query
+      description: "Delete a Query."
+      operationId: deleteQueryById
+      parameters:
+        - name: query_id
+          in: path
+          description: ID of the Query to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /lipid/{lipid_id}:
+    get:
+      tags:
+        - lipid
+      summary: Get information on a Lipid
+      description: "Get information on a Lipid."
+      operationId: getLipidById
+      parameters:
+        - name: lipid_id
+          in: path
+          description: ID of the Lipid to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lipid'
+        '404':
+          description: NOT_FOUND
+  /preview/{smiles}:
+    get:
+      tags:
+        - utils
+      summary: Generate a preview image for a SMILES string
+      description: "Generate a preview image for a SMILES string."
+      operationId: previewSmiles
+      parameters:
+        - name: smiles
+          in: path
+          description: SMILES string to render
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            image/png:
+              schema:
+               type: string
+               format: binary
+  /speak/{text}:
+    get:
+      tags:
+        - utils
+      summary: Generate an audio file from text
+      description: "Generate an audio file from text."
+      operationId: speakText
+      parameters:
+        - name: text
+          in: path
+          description: Text to speak
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            audio/mp3:
+              schema:
+               type: string
+               format: binary
+  /debug/lipid:
+    get:
+      tags:
+        - lipid
+      summary: Get all Lipid objects from the database
+      description: "Get all Lipid objects from the database."
+      operationId: debugLipid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lipid'
+  /debug/query:
+    get:
+      tags:
+        - query
+      summary: Get all Query objects from the database
+      description: "Get all Query objects from the database."
+      operationId: debugQuery
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Query'

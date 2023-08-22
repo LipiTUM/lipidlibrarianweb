@@ -1,0 +1,56 @@
+<div ngbAccordion #accordion="ngbAccordion">
+	<div ngbAccordionItem="first">
+    <div ngbAccordionHeader>
+      <button ngbAccordionButton>Change Token</button>
+    </div>
+		<div ngbAccordionCollapse>
+			<div ngbAccordionBody>
+				<form [formGroup]="tokenForm" (ngSubmit)="onSubmit()" class="p-4 p-md-3">
+          <div class="form-floating mb-3">
+            <input
+              id="tokenInput"
+              type="text"
+              formControlName="token"
+              class="form-control"
+              placeholder="11112222-3333-4444-5555-666677778888"
+              [ngClass]="{ 'is-invalid': submitted && f['token'].errors }"
+            >
+            <label for="tokenInput">Token</label>
+            <div *ngIf="submitted && f['token'].errors" class="invalid-feedback">
+              <div *ngIf="f['token'].errors?.['required']">Token is required.</div>
+              <div *ngIf="f['token'].errors?.['notValidUUID']">Token is not a valid UUID.</div>
+            </div>
+          </div>
+          <div class="form-floating mb-2">
+            <button name="random_token" type="button" class="btn btn-outline-secondary w-100" (click)="randomToken()">Random Token</button>
+          </div>
+          <div class="form-floating mb-2">
+            <button type="submit" class="btn btn-primary w-100" (click)="reloadEvents$?.emit()">Apply</button>
+          </div>
+        </form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="grid px-4 pb-4 pt-2 gap-1" style="--bs-columns: 1;">
+  <div class="g-col-1">
+    <div class="grid" style="--bs-columns: 2;">
+      <div class="g-col-1">
+        <small class="text-muted">Current Token:</small>
+      </div>
+      <div class="g-col-1 text-end">
+        <a [routerLink]="['/documentation']" [fragment]="'token'" (click)="activeOffcanvas?.dismiss('Navigation')">
+          <small class="text-muted">
+            <i class="bi bi-info-circle"></i>
+            <span>&nbsp;</span>
+            <span>What is a Token?</span>
+          </small>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="g-col-1">
+    <small class="text-muted">{{ current_token }}</small>
+  </div>
+</div>
