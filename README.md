@@ -1,4 +1,4 @@
-# LipidLibarian Web
+# LipidLibarianWeb
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -13,7 +13,7 @@
 
 ## Deployment
 
-LipidLibrarian Web is intended to be deployed in a containerized fashion. We support deployments with docker compose and podman pods. Kubernetes pods are very similar to podman pods, therefore the container build script an pod creation script may be useful.
+LipidLibrarianWeb is intended to be deployed in a containerized fashion. We support deployments with docker compose and podman pods. Kubernetes pods are very similar to podman pods, therefore the container build script an pod creation script may be useful.
 
 Podman and its container build utility buildah may be used by any user via rootless containers, docker compose requires more privileges, which you can supply on UNIX for example by adding the user to the 'docker' group. Furthermore podman supports pods and containers as systemd services, as well as native IPv6 connectivity. The podman deployment has been tested with SELinux.
 
@@ -47,7 +47,7 @@ or generate and start a pod with podman:
 
 ```bash
 ./podman-create-pod.sh
-podman pod start lipid_librarian_web
+podman pod start lipidlibrarianweb
 ```
 
 Podman has the unique ability to generate systemd units to manage startup/restart/shutdown for users and systems:
@@ -63,22 +63,22 @@ podman generate systemd \
 For system wide installation:
 
 ```bash
-mv pod-lipid_librarian_web.service container-lipid_librarian_web-db.service container-lipid_librarian_web-frontend.service container-lipid_librarian_web-backend.service /etc/systemd/system
-systemctl enable --now pod-lipid_librarian_web.service
+mv pod-lipidlibrarianweb.service container-lipidlibrarianweb-db.service container-lipidlibrarianweb-frontend.service container-lipidlibrarianweb-backend.service /etc/systemd/system
+systemctl enable --now pod-lipidlibrarianweb.service
 ```
 
 For the installation as a user if XDG_CONFIG_HOME is set (you can check with `echo $XDG_CONFIG_HOME`):
 
 ```bash
-mv pod-lipid_librarian_web.service container-lipid_librarian_web-db.service container-lipid_librarian_web-frontend.service container-lipid_librarian_web-backend.service $XDG_CONFIG_HOME/systemd/user
-systemctl --user enable --now pod-lipid_librarian_web.service
+mv pod-lipidlibrarianweb.service container-lipidlibrarianweb-db.service container-lipidlibrarianweb-frontend.service container-lipidlibrarianweb-backend.service $XDG_CONFIG_HOME/systemd/user
+systemctl --user enable --now pod-lipidlibrarianweb.service
 ```
 
 else:
 
 ```bash
-mv pod-lipid_librarian_web.service container-lipid_librarian_web-db.service container-lipid_librarian_web-frontend.service container-lipid_librarian_web-backend.service $HOME/.config/systemd/user
-systemctl --user enable --now pod-lipid_librarian_web.service
+mv pod-lipidlibrarianweb.service container-lipidlibrarianweb-db.service container-lipidlibrarianweb-frontend.service container-lipidlibrarianweb-backend.service $HOME/.config/systemd/user
+systemctl --user enable --now pod-lipidlibrarianweb.service
 ```
 
 ### Debug
@@ -92,7 +92,7 @@ docker compose logs -f
 or with podman:
 
 ```bash
-podman pod logs -f lipid_librarian_web
+podman pod logs -f lipidlibrarianweb
 ```
 
 ### Stop
@@ -106,11 +106,11 @@ docker compose down -v
 or with podman:
 
 ```bash
-podman pod stop lipid_librarian_web
-podman pod rm lipid_librarian_web
-podman volume rm lipid_librarian_web-db_data
-podman volume rm lipid_librarian_web-static_files
-podman volume rm lipid_librarian_web-media_files
+podman pod stop lipidlibrarianweb
+podman pod rm lipidlibrarianweb
+podman volume rm lipidlibrarianweb-db_data
+podman volume rm lipidlibrarianweb-static_files
+podman volume rm lipidlibrarianweb-media_files
 ```
 
 ### Deployment on Custom Prefix

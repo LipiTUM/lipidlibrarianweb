@@ -11,4 +11,4 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py collectstatic --no-input --clear
 
-gunicorn lipid_librarian_web.wsgi:application --bind 0.0.0.0:8000 --timeout 480 --workers 12
+gunicorn lipidlibrarianweb.wsgi:application --bind 0.0.0.0:8000 --timeout 480 --workers 12

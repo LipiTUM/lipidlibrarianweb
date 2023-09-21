@@ -25,7 +25,7 @@ services:
       context: "./backend"
       dockerfile: "Dockerfile"
       args:
-        - LIPID_LIBRARIAN_GITHUB_COMMIT_SHA=${LIPID_LIBRARIAN_GITHUB_COMMIT_SHA}
+        - LIPIDLIBRARIAN_GITHUB_COMMIT_REF=${LIPIDLIBRARIAN_GITHUB_COMMIT_REF}
     environment:
       - DJANGO_DEBUG=${DJANGO_DEBUG}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}

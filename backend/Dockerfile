@@ -1,7 +1,7 @@
 FROM python:3.10
 
 # set environment variables
-ARG LIPID_LIBRARIAN_GITHUB_COMMIT_SHA
+ARG LIPIDLIBRARIAN_GITHUB_COMMIT_REF
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -15,13 +15,13 @@ RUN apt-get update && apt-get install -y \
  git
 
 # Clone and Checkout LipidLibrarian
-RUN git clone https://github.com/LipiTUM/lipidlibrarian.git /app/lipid-librarian
-WORKDIR /app/lipid-librarian
-RUN git checkout ${LIPID_LIBRARIAN_GITHUB_COMMIT_SHA}
+RUN git clone https://github.com/LipiTUM/lipidlibrarian.git /app/lipidlibrarian
+WORKDIR /app/lipidlibrarian
+RUN git checkout ${LIPIDLIBRARIAN_GITHUB_COMMIT_REF}
 
 # Install virtual environment to /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN ln -sf /app/lipid-librarian/venv /opt/venv
+RUN ln -sf /app/lipidlibrarian/venv /opt/venv
 
 # Install LipidLibrarian
 RUN make install
@@ -33,8 +33,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
  pip install --no-cache-dir -r requirements.txt
 
 # Bundle app source
-COPY ./lipid_librarian_web ./lipid_librarian_web
-COPY ./lipid_librarian_web_api ./lipid_librarian_web_api
+COPY ./lipidlibrarianweb ./lipidlibrarianweb
+COPY ./lipidlibrarianweb_api ./lipidlibrarianweb_api
 COPY ./manage.py ./
 COPY ./container-entrypoint.sh ./
 

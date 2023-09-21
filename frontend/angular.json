@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "lipid-librarian-web": {
+    "lipidlibrarianweb": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -24,7 +24,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/lipid-librarian-web",
+            "outputPath": "dist/lipidlibrarianweb",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -90,10 +90,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "lipid-librarian-web:build:production"
+              "browserTarget": "lipidlibrarianweb:build:production"
             },
             "development": {
-              "browserTarget": "lipid-librarian-web:build:development"
+              "browserTarget": "lipidlibrarianweb:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -101,7 +101,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "lipid-librarian-web:build"
+            "browserTarget": "lipidlibrarianweb:build"
           }
         },
         "test": {
