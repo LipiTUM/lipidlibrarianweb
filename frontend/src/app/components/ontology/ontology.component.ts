@@ -44,34 +44,32 @@ export class OntologyComponent implements OnChanges {
       label: 'Ontology Root'
     });
 
-    for (let ontology_term of lipid.ontology_terms) {
-      if (ontology_term.ontology_term) {
+    for (let ontology_term of lipid.ontology.ontology_terms) {
+      nodes.push({
+        id: ontology_term,
+        label: ontology_term
+      });
+      edges.push({
+        id: 'root-' + ontology_term,
+        source: 'root',
+        target: ontology_term,
+      });
+    }
+    if (lipid.ontology.ontology_subgraph) {
+      for (let ontology_edge of lipid.ontology.ontology_subgraph) {
         nodes.push({
-          id: ontology_term.ontology_term,
-          label: ontology_term.ontology_term
+          id: ontology_edge[0],
+          label: ontology_edge[0]
+        });
+        nodes.push({
+          id: ontology_edge[1],
+          label: ontology_edge[1]
         });
         edges.push({
-          id: 'root-' + ontology_term.ontology_term,
-          source: 'root',
-          target: ontology_term.ontology_term,
+          id: '' + ontology_edge[0] + ontology_edge[1],
+          source: ontology_edge[0],
+          target: ontology_edge[1],
         });
-      }
-      if (ontology_term.ontology_subgraph) {
-        for (let ontology_edge of ontology_term.ontology_subgraph) {
-          nodes.push({
-            id: ontology_edge[0],
-            label: ontology_edge[0]
-          });
-          nodes.push({
-            id: ontology_edge[1],
-            label: ontology_edge[1]
-          });
-          edges.push({
-            id: '' + ontology_edge[0] + ontology_edge[1],
-            source: ontology_edge[0],
-            target: ontology_edge[1],
-          });
-        }
       }
     }
 

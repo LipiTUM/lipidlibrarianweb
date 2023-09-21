@@ -1,17 +1,39 @@
-<div class="container px-4 py-5">
-  <div class="mb-5">
-    <h1>About</h1>
+<div class="container px-4 py-5 text-center">
+  <div class="grid py-5" style="--bs-columns: 1; --bs-gap: 1rem">
+    <div class="g-col-1">
+      <h1 class="display-5 fw-bold">About LipidLibrarian</h1>
+    </div>
+    <div class="g-col-1">
+      <p class="fs-4">
+        Please check the documentation to get a tutorial on how to use the LipidLibrarian Python package and a walkthrough of the Web interface.
+        If you have further questions about the tool, missing or requiring clarification on a section of documentation, have a feature request, or you have discovered an issue, please feel free to reach out to us via email.
+      </p>
+    </div>
+    <div class="g-col-1">
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <button [routerLink]="['/documentation']" class="btn btn-primary btn-lg px-4 gap-3" type="button"> Documentation</button>
+        <a href="mailto:felix.niedermaier@tum.de?subject=LipidLibrarian: " class="btn btn-primary btn-lg px-4">Send an Email to felix.niedermaier@tum.de</a>
+      </div>
+    </div>
   </div>
+</div>
 
-  <div class="grid" style="--bs-columns: 1">
-    <div class="g-col">
-      <h2>Developed by LipiTUM</h2>
+<div class="b-horizontal-divider"></div>
+
+<div class="container px-4 py-5 text-center">
+  <div class="grid py-5" style="--bs-columns: 1; --bs-gap: 1rem">
+    <div class="g-col-1">
+      <h1 class="display-5 fw-bold">About LipiTUM</h1>
     </div>
-    <div class="g-col">
-      <p class="fs-5">Check out our website to learn about what we do.</p>
+    <div class="g-col-1">
+      <p class="fs-4">
+        LipidLibrarian is developed by the LipiTUM group at the Chair of Experimental Bioinformatics, TUM School of Life Sciences, Technical University of Munich in Freising, Germany. Check out our website to learn more about who we are and what we do.
+      </p>
     </div>
-    <div class="g-col">
-      <a href="https://lipitum.de/" class="btn btn-primary btn-lg px-4">LipiTUM Homepage</a>
+    <div class="g-col-1">
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <a href="https://lipitum.de/" class="btn btn-primary btn-lg px-4">LipiTUM Homepage</a>
+      </div>
     </div>
   </div>
 </div>

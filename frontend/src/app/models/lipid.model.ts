@@ -1,7 +1,7 @@
 import { Nomenclature } from "./nomenclature.model";
 import { DatabaseIdentifier } from "./database-identifier.model";
 import { Mass } from "./mass.model";
-import { OntologyTerm } from "./ontology-term.model";
+import { Ontology } from "./ontology.model";
 import { Reaction } from "./reaction.model";
 import { Adduct } from "./adduct.model";
 import { Source } from "./source.model";
@@ -10,9 +10,9 @@ import { Source } from "./source.model";
 export class Lipid {
   id!: string;
   nomenclature: Nomenclature = new Nomenclature();
+  ontology: Ontology = new Ontology();
   database_identifiers: Array<DatabaseIdentifier> = [];
   masses: Array<Mass> = [];
-  ontology_terms: Array<OntologyTerm> = [];
   reactions: Array<Reaction> = [];
   adducts: Array<Adduct> = [];
   sources: Array<Source> = [];
@@ -21,6 +21,7 @@ export class Lipid {
     if (data) {
       this.id = data.id;
       this.nomenclature = new Nomenclature(data.nomenclature);
+      this.ontology = new Ontology(data.ontology);
 
       if (data.database_identifiers) {
         for (let database_identifier_data of data.database_identifiers) {
@@ -31,12 +32,6 @@ export class Lipid {
       if (data.masses) {
         for (let mass_data of data.masses) {
           this.masses.push(new Mass(mass_data));
-        }
-      }
-
-      if (data.ontology_terms) {
-        for (let ontology_term_data of data.ontology_terms) {
-          this.ontology_terms.push(new OntologyTerm(ontology_term_data));
         }
       }
 
