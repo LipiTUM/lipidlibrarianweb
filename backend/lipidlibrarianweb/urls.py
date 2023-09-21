@@ -1,5 +1,5 @@
 """
-URL configuration for lipid_librarian_web project.
+URL configuration for lipidlibrarianweb project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -20,5 +20,5 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('lipid_librarian_web_api.urls')),
+    path('api/', include('lipidlibrarianweb_api.urls')),
 ]

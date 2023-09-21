@@ -26,7 +26,7 @@ RUN echo "\n" | ng build --configuration=${ANGULAR_BUILD_CONFIGURATION} --base-h
 FROM nginx:mainline-alpine
 
 # copy compiled angular app from build-step
-COPY --from=build-step /app/dist/lipid-librarian-web /usr/share/nginx/html
+COPY --from=build-step /app/dist/lipidlibrarianweb /usr/share/nginx/html
 
 # prepare nginx configuration
 COPY ./nginx/default.conf.template /etc/nginx/templates/

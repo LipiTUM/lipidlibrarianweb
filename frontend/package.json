@@ -1,5 +1,5 @@
 {
-  "name": "lipid-librarian-web",
+  "name": "lipidlibrarianweb",
   "version": "0.2.0",
   "scripts": {
     "ng": "ng",

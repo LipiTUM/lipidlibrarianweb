@@ -1,5 +1,5 @@
 from django.core.files.base import ContentFile
-from lipid_librarian.LipidQuery import LipidQuery
+from lipidlibrarian.LipidQuery import LipidQuery
 
 from .models import QUERY_STATUS_RUNNING
 from .models import QUERY_STATUS_DONE
@@ -25,7 +25,7 @@ def duplicate_query(query, existing_query):
 
 def execute_query(query):
     """
-    TODO: ADD try catch to prevent from crashing when lipid_librarian raises an Exception
+    TODO: ADD try catch to prevent from crashing when lipidlibrarian raises an Exception
     """
     query.status = QUERY_STATUS_RUNNING
     query.save()
@@ -42,7 +42,7 @@ def execute_query(query):
         if temp[0] == "requeries":
             requeries = temp[1]
 
-    # Query lipid_librarian
+    # Query lipidlibrarian
     query_results = LipidQuery(input_string = query.query_string, selected_APIs = sources, cutoff=cutoff, requeries=requeries).query()
 
     for result in query_results:
