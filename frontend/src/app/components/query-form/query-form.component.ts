@@ -60,7 +60,7 @@ export class QueryFormComponent implements OnInit {
   querySources: Array<Checkbox> = [
     {id: 1, value: 'ALEX123', isSelected: true},
     {id: 2, value: 'LipidMaps', isSelected: true},
-    {id: 3, value: 'LipidOntology', isSelected: true},
+    {id: 3, value: 'LION', isSelected: true},
     {id: 4, value: 'LINEX', isSelected: true},
     {id: 5, value: 'SwissLipids', isSelected: true},
   ];
@@ -206,7 +206,7 @@ export class QueryFormComponent implements OnInit {
     if (this.is_basic_search_valid) {
       console.log("[query-form.component::onSubmit] Basic Search");
       query_string = queryFormValues.lipid_name;
-      query_filters = "source=ALEX123;source=LipidMaps;source=LipidOntology;source=LINEX;source=SwissLipids;cutoff=5;requeries=1";
+      query_filters = "source=ALEX123;source=LipidMaps;source=LION;source=LINEX;source=SwissLipids;cutoff=5;requeries=1";
     } else if (this.is_advanced_search_valid) {
       console.log("[query-form.component::onSubmit] Advanced Search");
       const getSelectedValues = (array: Array<Checkbox>): Array<string> => {

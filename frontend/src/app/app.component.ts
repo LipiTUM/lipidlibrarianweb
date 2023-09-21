@@ -107,7 +107,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     let query_string = this.f['query'].value
     //query filters consists of source; cutoff; requeries
-    let query_filters = "source=ALEX123;source=LipidMaps;source=LipidOntology;source=LINEX;source=SwissLipids;cutoff=5;requeries=1";
+    let query_filters = "source=ALEX123;source=LipidMaps;source=LION;source=LINEX;source=SwissLipids;cutoff=5;requeries=1";
     console.log("[app.component::onSubmit] Processed Submit Request: query_string: " + query_string + "; query filters: "+ query_filters+"; Executing Query;")
     this.queryService.executeQuery(query_string, query_filters).subscribe({
       next: (data: any) => {

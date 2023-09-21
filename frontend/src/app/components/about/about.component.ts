@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { HistoryService } from 'src/app/services/history.service';
 
@@ -6,6 +7,9 @@ import { HistoryService } from 'src/app/services/history.service';
 @Component({
     selector: 'app-about',
     standalone: true,
+    imports: [
+      RouterLink
+    ],
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.sass'],
 })
