@@ -21,7 +21,7 @@ import { FragmentTableComponent } from '../table/fragment-table.component';
 import { SynonymTableComponent } from '../table/synonym-table.component';
 import { DatabaseIdentifierTableComponent } from '../table/database-identifier-table.component';
 import { StructureIdentifierTableComponent } from '../table/structure-identifier-table.component';
-import { OntologyComponent } from '../ontology/ontology.component';
+import { OntologyGraphComponent } from '../ontology/ontology-graph.component';
 import { ScrollSpyDirective } from 'src/app/directives/scrollspy.directive';
 
 
@@ -43,7 +43,7 @@ import { ScrollSpyDirective } from 'src/app/directives/scrollspy.directive';
     SynonymTableComponent,
     DatabaseIdentifierTableComponent,
     StructureIdentifierTableComponent,
-    OntologyComponent,
+    OntologyGraphComponent,
     ScrollSpyDirective
   ],
   templateUrl: './lipid.component.html',
