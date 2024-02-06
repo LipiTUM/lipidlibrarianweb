@@ -90,10 +90,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "lipidlibrarianweb:build:production"
+              "buildTarget": "lipidlibrarianweb:build:production"
             },
             "development": {
-              "browserTarget": "lipidlibrarianweb:build:development"
+              "buildTarget": "lipidlibrarianweb:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -101,7 +101,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "lipidlibrarianweb:build"
+            "buildTarget": "lipidlibrarianweb:build"
           }
         },
         "test": {
