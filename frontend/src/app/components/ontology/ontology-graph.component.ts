@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { Observable } from 'rxjs';
 
@@ -26,7 +26,7 @@ import { OntologyGraphEdgeComponent } from './ontology-graph-edge.component';
   templateUrl: './ontology-graph.component.html',
   styleUrls: ['./ontology-graph.component.sass']
 })
-export class OntologyGraphComponent implements OnChanges {
+export class OntologyGraphComponent implements AfterViewInit, OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;
   graph?: OntologyGraph;
   edges?: Array<OntologyGraphEdge>;
@@ -43,6 +43,21 @@ export class OntologyGraphComponent implements OnChanges {
     };
   }
 
+  ngAfterViewInit(): void {
+    this.lipid$!.subscribe(lipid => {
+      if (lipid && lipid.ontology && lipid.ontology.nodes) {
+        this.edges = lipid.ontology.edges;
+        this.nodes = lipid.ontology.nodes;
+      } else {
+        this.edges = [];
+        this.nodes = [];
+      }
+      this.graph = this.ontologyGraphService.getOntologyGraph(this.nodes, this.edges, this.options);
+      console.log("Ontology Graph: " + JSON.stringify(this.graph))
+      this.graph.initSimulation(this.options);
+    });
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     this.lipid$!.subscribe(lipid => {
       if (lipid && lipid.ontology && lipid.ontology.nodes) {
@@ -53,6 +68,7 @@ export class OntologyGraphComponent implements OnChanges {
         this.nodes = [];
       }
       this.graph = this.ontologyGraphService.getOntologyGraph(this.nodes, this.edges, this.options);
+      console.log("Ontology Graph: " + JSON.stringify(this.graph))
       this.graph.initSimulation(this.options);
     });
   }
