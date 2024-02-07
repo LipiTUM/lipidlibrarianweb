@@ -14,46 +14,39 @@ export class OntologyGraphService {
   constructor() {}
 
   applyDraggableBehaviour(element: ElementRef, node: OntologyGraphNode, graph: OntologyGraph) {
-    const d3element = d3.select(element);
+    const d3element = d3.select(element.nativeElement);
 
-    function started() {
+    d3element.call(d3.drag().on("start", (event, d) => {
       /** Preventing propagation of dragstart to parent elements */
-      d3.event.sourceEvent.stopPropagation();
+      event.sourceEvent.stopPropagation();
 
-      if (!d3.event.active) {
+      if (!event.active) {
         graph.simulation.alphaTarget(0.3).restart();
       }
 
-      d3.event.on("drag", dragged).on("end", ended);
+      event.on("drag", () => {
+          node.fx = event.x;
+          node.fy = event.y;
+        }).on("end", () => {
+          if (!event.active) {
+            graph.simulation.alphaTarget(0);
+          }
 
-      function dragged() {
-        node.fx = d3.event.x;
-        node.fy = d3.event.y;
-      }
-
-      function ended() {
-        if (!d3.event.active) {
-          graph.simulation.alphaTarget(0);
-        }
-
-        node.fx = null;
-        node.fy = null;
-      }
-    }
-
-    d3element.call(d3.drag().on("start", started));
+          node.fx = null;
+          node.fy = null;
+        });
+    }));
   }
 
   applyZoomableBehaviour(svgElement: ElementRef, containerElement: ElementRef) {
-    let svg = d3.select(svgElement);
-    let container = d3.select(containerElement);
+    let svg = d3.select(svgElement.nativeElement);
+    let container = d3.select(containerElement.nativeElement);
 
-    let zoomed = () => {
-      const transform = d3.event.transform;
+    let zoom = d3.zoom().on("zoom", (event) => {
+      const transform = event.transform;
       container.attr("transform", "translate(" + transform.x + "," + transform.y + ") scale(" + transform.k + ")");
-    }
+    });
 
-    let zoom = d3.zoom().on("zoom", zoomed);
     svg.call(zoom);
   }
 
