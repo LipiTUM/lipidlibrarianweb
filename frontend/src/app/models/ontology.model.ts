@@ -4,6 +4,7 @@ import { Source } from "./source.model";
 
 
 export class Ontology {
+  ontology_terms: Array<string> = [];
   nodes: Map<string, OntologyGraphNode> = new Map<string, OntologyGraphNode>();
   edges: Array<OntologyGraphEdge> = [];
   sources: Array<Source> = [];
@@ -28,11 +29,11 @@ export class Ontology {
       }
 
       // TODO: Implement different colour for ontology_terms
-      //if (data.ontology_terms) {
-      //  for (let ontology_terms_data of data.ontology_terms) {
-      //    this.ontology_terms.push(ontology_terms_data);
-      //  }
-      //}
+      if (data.ontology_terms) {
+        for (let ontology_terms_data of data.ontology_terms) {
+          this.ontology_terms.push(ontology_terms_data);
+        }
+      }
 
       // fill edges
       if (data.ontology_subgraph) {
