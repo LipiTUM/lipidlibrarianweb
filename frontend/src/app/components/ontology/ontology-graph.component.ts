@@ -47,7 +47,7 @@ export class OntologyGraphComponent implements OnChanges {
     this.lipid$!.subscribe(lipid => {
       if (lipid && lipid.ontology && lipid.ontology.nodes.values()) {
         this.edges = lipid.ontology.edges;
-        this.nodes = [ ...lipid.ontology.nodes.values() ];
+        this.nodes = lipid.ontology.nodes;
       } else {
         this.edges = [];
         this.nodes = [];
