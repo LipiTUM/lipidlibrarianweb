@@ -5,26 +5,30 @@ import { Source } from "./source.model";
 
 export class Ontology {
   ontology_terms: Array<string> = [];
-  nodes: Map<string, OntologyGraphNode> = new Map<string, OntologyGraphNode>();
+  nodes: Array<OntologyGraphNode> = [];
   edges: Array<OntologyGraphEdge> = [];
   sources: Array<Source> = [];
 
   constructor(data?: any) {
     if (data) {
+      let node_map: Map<string, OntologyGraphNode> = new Map<string, OntologyGraphNode>();
+
       // fill nodes
       if (data.ontology_subgraph_node_data) {
         for (let [ontology_node_id, ontology_node_data] of (Object.entries(data.ontology_subgraph_node_data as [string, any]))) {
           ontology_node_data.id = ontology_node_id
-          this.nodes.set(ontology_node_id, new OntologyGraphNode(ontology_node_data));
+          node_map.set(ontology_node_id, new OntologyGraphNode(ontology_node_data));
         }
       }
 
-      for (let ontology_subgraph_data of data.ontology_subgraph) {
-        if (!this.nodes.has(ontology_subgraph_data[0])) {
-          this.nodes.set(ontology_subgraph_data[0], new OntologyGraphNode({ "id": ontology_subgraph_data[0] }));
-        }
-        if (!this.nodes.has(ontology_subgraph_data[1])) {
-          this.nodes.set(ontology_subgraph_data[1], new OntologyGraphNode({ "id": ontology_subgraph_data[1] }));
+      if (data.ontology_subgraph) {
+        for (let ontology_subgraph_data of data.ontology_subgraph) {
+          if (!node_map.has(ontology_subgraph_data[0])) {
+            node_map.set(ontology_subgraph_data[0], new OntologyGraphNode({ "id": ontology_subgraph_data[0] }));
+          }
+          if (!node_map.has(ontology_subgraph_data[1])) {
+            node_map.set(ontology_subgraph_data[1], new OntologyGraphNode({ "id": ontology_subgraph_data[1] }));
+          }
         }
       }
 
@@ -38,14 +42,16 @@ export class Ontology {
       // fill edges
       if (data.ontology_subgraph) {
         for (let ontology_subgraph_data of data.ontology_subgraph) {
-          if (ontology_subgraph_data[0] && ontology_subgraph_data[1] && this.nodes.has(ontology_subgraph_data[0]) && this.nodes.has(ontology_subgraph_data[1])) {
+          if (ontology_subgraph_data[0] && ontology_subgraph_data[1] && node_map.has(ontology_subgraph_data[0]) && node_map.has(ontology_subgraph_data[1])) {
             this.edges.push(
               new OntologyGraphEdge(
-                { "source": this.nodes.get(ontology_subgraph_data[0]), "target": this.nodes.get(ontology_subgraph_data[1])}
+                { "source": node_map.get(ontology_subgraph_data[0]), "target": node_map.get(ontology_subgraph_data[1])}
             ));
           }
         }
       }
+
+      this.nodes = [...node_map.values()]
 
       // fill sources
       if (data.sources) {
