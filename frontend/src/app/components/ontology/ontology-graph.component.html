@@ -1,6 +1,6 @@
 <svg #svg [attr.width]="_options.width" [attr.height]="_options.height">
-  <g [zoomableOf]="svg">
-    <g [edge]="edge" *ngFor="let edge of edges"></g>
-    <g [node]="node" *ngFor="let node of nodes" [draggableNode]="node" [draggableInGraph]="graph"></g>
+  <g zoomable>
+    <app-ontology-graph-edge [edge]="edge" *ngFor="let edge of edges"></app-ontology-graph-edge>
+    <app-ontology-graph-node [node]="node" *ngFor="let node of nodes" [draggableNode]="node" [draggableInGraph]="graph!"></app-ontology-graph-node>
   </g>
 </svg>

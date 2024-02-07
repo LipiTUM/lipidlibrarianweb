@@ -7,6 +7,10 @@ import { OntologyGraph } from 'src/app/models/ontology-graph.model';
 import { OntologyGraphEdge } from 'src/app/models/ontology-graph-edge.model';
 import { OntologyGraphNode } from 'src/app/models/ontology-graph-node.model';
 import { OntologyGraphService } from 'src/app/services/ontology-graph.service';
+import { OntologyGraphDraggableBehaviourDirective } from 'src/app/directives/ontology-graph-draggable-behaviour.directive';
+import { OntologyGraphZoomableBehaviourDirective } from 'src/app/directives/ontology-graph-zoomable-behaviour.directive';
+import { OntologyGraphNodeComponent } from './ontology-graph-node.component';
+import { OntologyGraphEdgeComponent } from './ontology-graph-edge.component';
 
 
 @Component({
@@ -14,6 +18,10 @@ import { OntologyGraphService } from 'src/app/services/ontology-graph.service';
   standalone: true,
   imports: [
     NgFor,
+    OntologyGraphNodeComponent,
+    OntologyGraphEdgeComponent,
+    OntologyGraphDraggableBehaviourDirective,
+    OntologyGraphZoomableBehaviourDirective,
   ],
   templateUrl: './ontology-graph.component.html',
   styleUrls: ['./ontology-graph.component.sass']
@@ -24,7 +32,7 @@ export class OntologyGraphComponent implements OnChanges {
   edges?: Array<OntologyGraphEdge>;
   nodes?: Array<OntologyGraphNode>;
 
-  private _options: { width: number, height: number } = { width: 800, height: 600 };
+  _options: { width: number, height: number } = { width: 800, height: 600 };
 
   constructor(private ontologyGraphService: OntologyGraphService) { }
 
