@@ -6,7 +6,7 @@ podman pod rm lipidlibrarianweb
 source .env
 
 podman pod create \
-  --publish '8080:80/tcp' \
+  --publish '8080:${FRONTEND_PORT}/tcp' \
   --name lipidlibrarianweb
 
 podman create \

@@ -1,6 +1,6 @@
 server {
-  listen 80;
-  listen [::]:80;
+  listen ${FRONTEND_PORT};
+  listen [::]:${FRONTEND_PORT};
 
   client_max_body_size 1G;
 
