@@ -30,3 +30,4 @@ COPY --from=build-step /app/dist/lipidlibrarianweb /usr/share/nginx/html
 
 # prepare nginx configuration
 COPY ./nginx/default.conf.template /etc/nginx/templates/
+COPY ./nginx/rootless.conf /etc/nginx/conf.d/
