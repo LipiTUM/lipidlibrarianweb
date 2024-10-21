@@ -4,15 +4,16 @@ services:
   frontend:
     build:
       context: "./frontend"
-      dockerfile: "Dockerfile"
+      dockerfile: "Containerfile"
       args:
         - ANGULAR_BUILD_CONFIGURATION=${ANGULAR_BUILD_CONFIGURATION}
         - APP_URL_DEST=${APP_URL_DEST}
     environment:
+      - FRONTEND_PORT=${FRONTEND_PORT}
       - BACKEND_HOSTNAME=${BACKEND_HOSTNAME}
       - BACKEND_PORT=${BACKEND_PORT}
     ports:
-      - "8080:80"
+      - "8080:${FRONTEND_PORT}"
     volumes:
       - media_files:/usr/share/nginx/media
       - static_files:/usr/share/nginx/static
@@ -23,7 +24,7 @@ services:
   backend:
     build:
       context: "./backend"
-      dockerfile: "Dockerfile"
+      dockerfile: "Containerfile"
       args:
         - LIPIDLIBRARIAN_GITHUB_COMMIT_REF=${LIPIDLIBRARIAN_GITHUB_COMMIT_REF}
     environment:
