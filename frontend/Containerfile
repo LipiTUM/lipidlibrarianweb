@@ -29,5 +29,6 @@ FROM nginx:mainline-alpine
 COPY --from=build-step /app/dist/lipidlibrarianweb /usr/share/nginx/html
 
 # prepare nginx configuration
-COPY ./nginx/default.conf.template /etc/nginx/templates/
+COPY ./nginx/lipidlibrarianweb.conf.template /etc/nginx/templates/
+COPY ./nginx/default.conf /etc/nginx/conf.d/
 COPY ./nginx/rootless.conf /etc/nginx/conf.d/
