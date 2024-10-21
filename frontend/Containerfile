@@ -32,3 +32,4 @@ COPY --from=build-step /app/dist/lipidlibrarianweb /usr/share/nginx/html
 COPY ./nginx/lipidlibrarianweb.conf.template /etc/nginx/templates/
 COPY ./nginx/default.conf /etc/nginx/conf.d/
 COPY ./nginx/nginx.conf /etc/nginx/
+RUN chmod 755 /etc/nginx/conf.d
