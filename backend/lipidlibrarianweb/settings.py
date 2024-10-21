@@ -27,7 +27,7 @@ if APP_URL_DEST != "":
 
 DEBUG = int(os.environ.get("DJANGO_DEBUG", default=0))
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="backend localhost").split(" ")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="backend localhost localhost.localdomain 127.0.0.1").split(" ")
 
 
 # Application definition
