@@ -1,6 +1,7 @@
 FROM python:3.10
 
 # set environment variables
+ARG BACKEND_PORT
 ARG LIPIDLIBRARIAN_GITHUB_COMMIT_REF
 
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -15,13 +16,14 @@ RUN apt-get update && apt-get install -y \
  git
 
 # Clone and Checkout LipidLibrarian
-RUN git clone https://github.com/LipiTUM/lipidlibrarian.git /app/lipidlibrarian
+RUN git clone https://github.com/LipiTUM/lipidlibrarian.git /app/lipidlibrarian && \
+    cd /app/lipidlibrarian && \
+    git checkout ${LIPIDLIBRARIAN_GITHUB_COMMIT_REF}
 WORKDIR /app/lipidlibrarian
-RUN git checkout ${LIPIDLIBRARIAN_GITHUB_COMMIT_REF}
 
-# Install virtual environment to /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-RUN ln -sf /app/lipidlibrarian/venv /opt/venv
+# Install virtual environment to /app/venv
+ENV PATH="/app/venv/bin:$PATH"
+RUN ln -sf /app/lipidlibrarian/venv /app/venv
 
 # Install LipidLibrarian
 RUN make install
@@ -39,6 +41,6 @@ COPY ./manage.py ./
 COPY ./container-entrypoint.sh ./
 
 # Prepare the start command
-EXPOSE 8000
+EXPOSE ${BACKEND_PORT}
 RUN chmod +x container-entrypoint.sh
 ENTRYPOINT ["/app/container-entrypoint.sh"]

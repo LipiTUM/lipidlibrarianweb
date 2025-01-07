@@ -1,4 +1,4 @@
-FROM node:18-alpine AS build-step
+FROM node:22-alpine AS build-step
 
 ARG ANGULAR_BUILD_CONFIGURATION
 ARG APP_URL_DEST
@@ -20,10 +20,17 @@ COPY ./tsconfig.json ./
 COPY ./tsconfig.spec.json ./
 
 # Build Angular app
-RUN echo "\n" | ng build --configuration=${ANGULAR_BUILD_CONFIGURATION} --base-href=/${APP_URL_DEST}/
+RUN if [[ "${APP_URL_DEST}" == "" ]] ; \
+  then \
+    echo "\n" | ng build --configuration=${ANGULAR_BUILD_CONFIGURATION} --base-href=/ ; \
+  else \
+    echo "\n" | ng build --configuration=${ANGULAR_BUILD_CONFIGURATION} --base-href=/${APP_URL_DEST}/ ; \
+  fi
 
 
-FROM nginxinc/nginx-unprivileged:stable-alpine
+FROM nginxinc/nginx-unprivileged:alpine
+
+ARG FRONTEND_PORT
 
 # copy compiled angular app from build-step
 COPY --from=build-step /app/dist/lipidlibrarianweb /usr/share/nginx/html
@@ -34,6 +41,4 @@ RUN rm -rf /etc/nginx/conf.d
 COPY ./nginx/lipidlibrarianweb.conf.template /etc/nginx/templates/
 COPY ./nginx/nginx.conf /etc/nginx/
 
-# Setup lipidlibrarian app directory
-COPY ./nginx/90-setup-lipidlibrarian.sh /docker-entrypoint.d/
-#RUN chmod a+x /docker-entrypoint.d/90-setup-lipidlibrarian.sh
+EXPOSE ${FRONTEND_PORT}
