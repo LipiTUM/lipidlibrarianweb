@@ -13,7 +13,7 @@ services:
       - BACKEND_HOSTNAME=${BACKEND_HOSTNAME}
       - BACKEND_PORT=${BACKEND_PORT}
     ports:
-      - "8080:${FRONTEND_PORT}"
+      - "${APP_PORT}:${FRONTEND_PORT}"
     volumes:
       - media_files:/usr/share/nginx/media
       - static_files:/usr/share/nginx/static
