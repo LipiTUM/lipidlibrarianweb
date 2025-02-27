@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.11
 
 # set environment variables
 ARG BACKEND_PORT
@@ -12,6 +12,7 @@ WORKDIR /app
 
 # Install pipeline and container-entrypoint.sh dependencies
 RUN apt-get update && apt-get install -y \
+ python3-venv \
  netcat-openbsd \
  git
 
