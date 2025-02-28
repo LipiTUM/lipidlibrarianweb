@@ -28,17 +28,13 @@ RUN if [[ "${APP_URL_DEST}" == "" ]] ; \
   fi
 
 
-FROM docker.io/nginxinc/nginx-unprivileged:alpine
-
-ARG FRONTEND_PORT
+FROM nginx:alpine
 
 # copy compiled angular app from build-step
 COPY --from=build-step /app/dist/lipidlibrarianweb /usr/share/nginx/html
 
 # prepare nginx configuration
-ENV NGINX_ENVSUBST_OUTPUT_DIR=/tmp
+ENV NGINX_ENVSUBST_OUTPUT_DIR /tmp
 RUN rm -rf /etc/nginx/conf.d
 COPY ./nginx/lipidlibrarianweb.conf.template /etc/nginx/templates/
 COPY ./nginx/nginx.conf /etc/nginx/
-
-EXPOSE ${FRONTEND_PORT}

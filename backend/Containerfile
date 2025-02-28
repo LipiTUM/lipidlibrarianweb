@@ -1,7 +1,6 @@
 FROM python:3.11
 
 # set environment variables
-ARG BACKEND_PORT
 ARG LIPIDLIBRARIAN_GITHUB_COMMIT_REF
 
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -42,6 +41,5 @@ COPY ./manage.py ./
 COPY ./container-entrypoint.sh ./
 
 # Prepare the start command
-EXPOSE ${BACKEND_PORT}
 RUN chmod +x container-entrypoint.sh
 ENTRYPOINT ["/app/container-entrypoint.sh"]

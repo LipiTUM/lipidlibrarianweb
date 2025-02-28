@@ -38,6 +38,7 @@ services:
       - DJANGO_DB_USER=${DB_USER}
       - DJANGO_DB_PASSWORD=${DB_PASSWORD}
       - APP_URL_DEST=${APP_URL_DEST}
+      - BACKEND_PORT=${BACKEND_PORT}
     volumes:
       - media_files:/app/media
       - static_files:/app/static
