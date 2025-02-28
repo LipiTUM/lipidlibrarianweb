@@ -45,7 +45,6 @@ podman create \
   --requires lipidlibrarianweb-backend \
   --tz ${APP_TIMEZONE} \
   --env FRONTEND_PORT=${FRONTEND_PORT} \
-  --env APP_PORT=${APP_PORT} \
   --env BACKEND_HOSTNAME=${BACKEND_HOSTNAME} \
   --env BACKEND_PORT=${BACKEND_PORT} \
   --volume 'lipidlibrarianweb-media_files:/usr/share/nginx/media:ro,z' \

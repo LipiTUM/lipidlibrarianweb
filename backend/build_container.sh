@@ -3,7 +3,6 @@
 echo "Building lipidlibrarianweb_backend OCI container..."
 
 buildah build --layers -f Containerfile \
-    --build-arg BACKEND_PORT=${BACKEND_PORT} \
     --build-arg LIPIDLIBRARIAN_GITHUB_COMMIT_REF=${LIPIDLIBRARIAN_GITHUB_COMMIT_REF} \
     -t lipidlibrarianweb_backend .
 
