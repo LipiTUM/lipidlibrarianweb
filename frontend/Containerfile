@@ -30,6 +30,11 @@ RUN if [[ "${APP_URL_DEST}" == "" ]] ; \
 
 FROM nginx:alpine
 
+# set env variable defaults
+ENV FRONTEND_PORT 80
+ENV BACKEND_PORT 81
+ENV BACKEND_HOST localhost
+
 # copy compiled angular app from build-step
 COPY --from=build-step /app/dist/lipidlibrarianweb /usr/share/nginx/html
 

@@ -1,11 +1,11 @@
 server {
-  listen ${FRONTEND_PORT:=80};
-  listen [::]:${FRONTEND_PORT:=80};
+  listen ${FRONTEND_PORT};
+  listen [::]:${FRONTEND_PORT};
 
   client_max_body_size 1G;
 
   location /api {
-    proxy_pass http://${BACKEND_HOSTNAME:=localhost}:${BACKEND_PORT:=81}/api;
+    proxy_pass http://${BACKEND_HOSTNAME}:${BACKEND_PORT}/api;
   }
 
   location /static {
