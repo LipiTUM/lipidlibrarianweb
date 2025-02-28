@@ -114,6 +114,10 @@ export class LipidComponent implements OnInit {
     return(this.getBackendUrl('preview', this.getStructureForRender(lipid)) ?? '');
   }
 
+  getBackendExamplePreviewURL(lipid: Lipid): string {
+    return(this.getBackendUrl('preview', this.getExampleStructureForRender(lipid)) ?? '');
+  }
+
   getBackendSpeakURL(lipid: Lipid): string {
     return(this.getBackendUrl('speak', this.getDefinitionForRender(lipid)) ?? '');
   }
@@ -123,6 +127,14 @@ export class LipidComponent implements OnInit {
       return null;
     }
     return(window.location.origin + this.locationStrategy.getBaseHref() + "api/" + endpoint + "/" + encodeURIComponent(str));
+  }
+
+  getExampleStructureForRender(lipid: Lipid): string | undefined {
+    if (this.getStructureForRender(lipid) == undefined) {
+      return 'InChI=1S/C46H90NO8P/c1-6-8-10-12-14-16-18-20-22-23-25-27-29-31-33-35-37-39-46(49)55-44(43-54-56(50,51)53-41-40-47(3,4)5)42-52-45(48)38-36-34-32-30-28-26-24-21-19-17-15-13-11-9-7-2/h20,22,44H,6-19,21,23-43H2,1-5H3/b22-20-/t44-/m1/s1';
+    } else {
+      return undefined;
+    }
   }
 
   getStructureForRender(lipid: Lipid): string | undefined {
