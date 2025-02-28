@@ -25,8 +25,14 @@
             <div class="card-header"><h4>Overview</h4></div>
             <div class="card-body" id="lipid_overview_body">
               <div class="grid" style="--bs-columns: 2;">
-                <div class="g-col-2 g-col-xl-1" *ngIf="getStructureForRender(lipid)">
-                  <img [src]="getBackendPreviewURL(lipid)" style="max-width:100%;max-height:100%;height:auto;">
+                <div class="g-col-2 g-col-xl-1">
+                  <div *ngIf="getStructureForRender(lipid)">
+                    <img [src]="getBackendPreviewURL(lipid)" style="max-width:100%;max-height:100%;height:auto;">
+                  </div>
+                  <div *ngIf="getExampleStructureForRender(lipid)">
+                    <img [src]="getBackendExamplePreviewURL(lipid)" style="max-width:100%;max-height:100%;height:auto;">
+                    <p>*not the actual lipid</p>
+                  </div>
                   <div *ngIf="getDefinitionForRender(lipid)">
                     <p>{{ getDefinitionForRender(lipid) }}</p>
                     <audio controls><source [src]="getBackendSpeakURL(lipid)" type="audio/mpeg" /></audio>
