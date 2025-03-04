@@ -20,8 +20,6 @@ export const appConfig: ApplicationConfig = {
           gfm: true,
           breaks: false,
           pedantic: false,
-          smartLists: true,
-          smartypants: false,
         },
       },
     }),
