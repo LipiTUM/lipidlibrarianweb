@@ -6,11 +6,11 @@
   <div class="modal-body">
     <div class="mb-3">
       <p>
-        Please select the type of cookies you want to allow for the LipidLibrarianWeb.
+        Please select the type of cookies you want to allow for the LipidLibrarianWeb. We use a session tracking cookie solely to enable the query history function.
       </p>
       <p>
         <ngb-alert [dismissible]="false" *ngIf="f['enable_session_tracking_cookies'].value == false">
-          <strong>Warning:</strong>
+          <strong>Note:</strong>
           If you disable the session tracking cookie, LipidLibrarianWeb will not be able to remember your results beyond reloading the page. You'll have to remember/copy-paste the session token yourself.
         </ngb-alert>
       </p>
