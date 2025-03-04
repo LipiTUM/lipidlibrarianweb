@@ -1,7 +1,7 @@
-FROM python:3.11
+FROM python:3.11 AS build-step
 
 # set environment variables
-ARG LIPIDLIBRARIAN_GITHUB_COMMIT_REF
+ARG LIPIDLIBRARIAN_GIT_BRANCH
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -16,9 +16,7 @@ RUN apt-get update && apt-get install -y \
  git
 
 # Clone and Checkout LipidLibrarian
-RUN git clone https://github.com/LipiTUM/lipidlibrarian.git /app/lipidlibrarian && \
-    cd /app/lipidlibrarian && \
-    git checkout ${LIPIDLIBRARIAN_GITHUB_COMMIT_REF}
+RUN git clone --single-branch --branch ${LIPIDLIBRARIAN_GIT_BRANCH} https://github.com/LipiTUM/lipidlibrarian.git /app/lipidlibrarian
 WORKDIR /app/lipidlibrarian
 
 # Install virtual environment to /app/venv
@@ -33,6 +31,13 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
  pip install --no-cache-dir -r requirements.txt
+
+
+FROM python:3.11
+
+WORKDIR /app
+
+COPY --from=build-step /app/lipidlibrarian/venv /app/venv
 
 # Bundle app source
 COPY ./lipidlibrarianweb ./lipidlibrarianweb
