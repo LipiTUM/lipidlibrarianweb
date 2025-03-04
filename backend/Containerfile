@@ -12,7 +12,6 @@ WORKDIR /app
 # Install pipeline and container-entrypoint.sh dependencies
 RUN apt-get update && apt-get install -y \
  python3-venv \
- netcat-openbsd \
  git
 
 # Clone and Checkout LipidLibrarian
@@ -39,6 +38,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL True
 ENV PATH="/app/venv/bin:$PATH"
+
+RUN apt-get update && apt-get install -y netcat-openbsd
 
 WORKDIR /app
 
