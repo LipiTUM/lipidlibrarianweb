@@ -13,19 +13,18 @@ import { FragmentSortableHeaderDirective, SortEvent } from 'src/app/directives/f
 
 
 @Component({
-  selector: 'app-fragment-table',
-  standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    FormsModule,
-    NgbHighlight,
-    NgbPaginationModule,
-    FragmentSortableHeaderDirective,
-  ],
-  templateUrl: './fragment-table.component.html',
-  styleUrls: ['./fragment-table.component.sass'],
+    selector: 'app-fragment-table',
+    imports: [
+        NgIf,
+        NgFor,
+        AsyncPipe,
+        FormsModule,
+        NgbHighlight,
+        NgbPaginationModule,
+        FragmentSortableHeaderDirective,
+    ],
+    templateUrl: './fragment-table.component.html',
+    styleUrls: ['./fragment-table.component.sass']
 })
 export class FragmentTableComponent implements OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;

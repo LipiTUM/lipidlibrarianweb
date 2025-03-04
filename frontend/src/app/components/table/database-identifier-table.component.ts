@@ -12,19 +12,18 @@ import { DatabaseIdentifierSortableHeaderDirective, SortEvent } from 'src/app/di
 
 
 @Component({
-  selector: 'app-database-identifier-table',
-  standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    FormsModule,
-    NgbHighlight,
-    NgbPaginationModule,
-    DatabaseIdentifierSortableHeaderDirective,
-  ],
-  templateUrl: './database-identifier-table.component.html',
-  styleUrls: ['./database-identifier-table.component.sass'],
+    selector: 'app-database-identifier-table',
+    imports: [
+        NgIf,
+        NgFor,
+        AsyncPipe,
+        FormsModule,
+        NgbHighlight,
+        NgbPaginationModule,
+        DatabaseIdentifierSortableHeaderDirective,
+    ],
+    templateUrl: './database-identifier-table.component.html',
+    styleUrls: ['./database-identifier-table.component.sass']
 })
 export class DatabaseIdentifierTableComponent implements OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;

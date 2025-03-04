@@ -7,18 +7,17 @@ import { NotificationService } from '../../services/notification.service';
 
 
 @Component({
-  selector: 'app-notification-manager',
-  standalone: true,
-  imports: [
-    CommonModule,
-    NgIf,
-    NgFor,
-    NgTemplateOutlet,
-    NgbToastModule,
-  ],
-  templateUrl: './notification-manager.component.html',
-  styleUrls: ['./notification-manager.component.sass'],
-  host: { class: 'toast-container position-fixed top-0 end-0 p-3' }
+    selector: 'app-notification-manager',
+    imports: [
+        CommonModule,
+        NgIf,
+        NgFor,
+        NgTemplateOutlet,
+        NgbToastModule,
+    ],
+    templateUrl: './notification-manager.component.html',
+    styleUrls: ['./notification-manager.component.sass'],
+    host: { class: 'toast-container position-fixed top-0 end-0 p-3' }
 })
 export class NotificationManagerComponent {
 

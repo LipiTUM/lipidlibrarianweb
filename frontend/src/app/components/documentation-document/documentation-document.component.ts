@@ -6,13 +6,12 @@ import { MarkdownModule } from 'ngx-markdown';
 
 
 @Component({
-  selector: 'app-documentation-document',
-  standalone: true,
-  imports: [
-    MarkdownModule
-  ],
-  templateUrl: './documentation-document.component.html',
-  styleUrls: ['./documentation-document.component.sass']
+    selector: 'app-documentation-document',
+    imports: [
+        MarkdownModule
+    ],
+    templateUrl: './documentation-document.component.html',
+    styleUrls: ['./documentation-document.component.sass']
 })
 export class DocumentationDocumentComponent implements OnChanges {
   @Input() documentationDocument$?: Observable<string | null>;

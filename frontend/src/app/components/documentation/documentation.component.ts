@@ -9,18 +9,17 @@ import { DocumentationDocumentComponent } from '../documentation-document/docume
 
 
 @Component({
-  selector: 'app-documentation',
-  standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    RouterLink,
-    NgbNavModule,
-    DocumentationDocumentComponent
-  ],
-  templateUrl: './documentation.component.html',
-  styleUrls: ['./documentation.component.sass'],
+    selector: 'app-documentation',
+    imports: [
+        NgIf,
+        NgFor,
+        AsyncPipe,
+        RouterLink,
+        NgbNavModule,
+        DocumentationDocumentComponent
+    ],
+    templateUrl: './documentation.component.html',
+    styleUrls: ['./documentation.component.sass']
 })
 export class DocumentationComponent implements OnInit {
   docs: Array<{title: string, fragment: string}> = [

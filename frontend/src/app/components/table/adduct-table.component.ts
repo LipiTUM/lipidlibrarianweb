@@ -12,19 +12,18 @@ import { AdductSortableHeaderDirective, SortEvent } from 'src/app/directives/add
 
 
 @Component({
-  selector: 'app-adduct-table',
-  standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    FormsModule,
-    NgbHighlight,
-    NgbPaginationModule,
-    AdductSortableHeaderDirective,
-  ],
-  templateUrl: './adduct-table.component.html',
-  styleUrls: ['./adduct-table.component.sass'],
+    selector: 'app-adduct-table',
+    imports: [
+        NgIf,
+        NgFor,
+        AsyncPipe,
+        FormsModule,
+        NgbHighlight,
+        NgbPaginationModule,
+        AdductSortableHeaderDirective,
+    ],
+    templateUrl: './adduct-table.component.html',
+    styleUrls: ['./adduct-table.component.sass']
 })
 export class AdductTableComponent implements OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;

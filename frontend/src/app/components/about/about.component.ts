@@ -6,12 +6,11 @@ import { HistoryService } from 'src/app/services/history.service';
 
 @Component({
     selector: 'app-about',
-    standalone: true,
     imports: [
-      RouterLink
+        RouterLink
     ],
     templateUrl: './about.component.html',
-    styleUrls: ['./about.component.sass'],
+    styleUrls: ['./about.component.sass']
 })
 export class AboutComponent implements OnInit {
 

@@ -14,17 +14,16 @@ import { OntologyGraphEdgeComponent } from './ontology-graph-edge.component';
 
 
 @Component({
-  selector: 'app-ontology-graph',
-  standalone: true,
-  imports: [
-    NgFor,
-    OntologyGraphNodeComponent,
-    OntologyGraphEdgeComponent,
-    OntologyGraphDraggableBehaviourDirective,
-    OntologyGraphZoomableBehaviourDirective,
-  ],
-  templateUrl: './ontology-graph.component.html',
-  styleUrls: ['./ontology-graph.component.sass']
+    selector: 'app-ontology-graph',
+    imports: [
+        NgFor,
+        OntologyGraphNodeComponent,
+        OntologyGraphEdgeComponent,
+        OntologyGraphDraggableBehaviourDirective,
+        OntologyGraphZoomableBehaviourDirective,
+    ],
+    templateUrl: './ontology-graph.component.html',
+    styleUrls: ['./ontology-graph.component.sass']
 })
 export class OntologyGraphComponent implements AfterViewInit, OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;
