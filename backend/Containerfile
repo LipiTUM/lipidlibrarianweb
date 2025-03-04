@@ -1,4 +1,4 @@
-FROM python:3.11 AS build-step
+FROM python:3.11
 
 # set environment variables
 ARG LIPIDLIBRARIAN_GIT_BRANCH
@@ -12,6 +12,7 @@ WORKDIR /app
 # Install pipeline and container-entrypoint.sh dependencies
 RUN apt-get update && apt-get install -y \
  python3-venv \
+ netcat-openbsd \
  git
 
 # Clone and Checkout LipidLibrarian
@@ -30,20 +31,6 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
  pip install --no-cache-dir -r requirements.txt
-
-
-FROM python:3.11
-
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL True
-ENV PATH="/app/venv/bin:$PATH"
-
-RUN apt-get update && apt-get install -y netcat-openbsd
-
-WORKDIR /app
-
-COPY --from=build-step /app/lipidlibrarian/venv /app/venv
 
 # Bundle app source
 COPY ./lipidlibrarianweb ./lipidlibrarianweb
