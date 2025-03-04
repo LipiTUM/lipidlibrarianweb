@@ -5,9 +5,9 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, first, switchMap } from 'rxjs/operators';
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
+//import * as pdfMake from "pdfmake/build/pdfmake";
+//import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+//(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { NgbAccordionModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -233,6 +233,6 @@ export class LipidComponent implements OnInit {
       }
     };
 
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 }
