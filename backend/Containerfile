@@ -35,6 +35,11 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 FROM python:3.11
 
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL True
+ENV PATH="/app/venv/bin:$PATH"
+
 WORKDIR /app
 
 COPY --from=build-step /app/lipidlibrarian/venv /app/venv
