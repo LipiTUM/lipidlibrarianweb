@@ -26,28 +26,27 @@ import { ScrollSpyDirective } from 'src/app/directives/scrollspy.directive';
 
 
 @Component({
-  selector: 'app-lipid',
-  standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    NgStyle,
-    AsyncPipe,
-    JsonPipe,
-    RouterLink,
-    RouterLinkActive,
-    NgbAccordionModule,
-    NgbTooltipModule,
-    AdductTableComponent,
-    FragmentTableComponent,
-    SynonymTableComponent,
-    DatabaseIdentifierTableComponent,
-    StructureIdentifierTableComponent,
-    OntologyGraphComponent,
-    ScrollSpyDirective
-  ],
-  templateUrl: './lipid.component.html',
-  styleUrls: ['./lipid.component.sass'],
+    selector: 'app-lipid',
+    imports: [
+        NgIf,
+        NgFor,
+        NgStyle,
+        AsyncPipe,
+        JsonPipe,
+        RouterLink,
+        RouterLinkActive,
+        NgbAccordionModule,
+        NgbTooltipModule,
+        AdductTableComponent,
+        FragmentTableComponent,
+        SynonymTableComponent,
+        DatabaseIdentifierTableComponent,
+        StructureIdentifierTableComponent,
+        OntologyGraphComponent,
+        ScrollSpyDirective
+    ],
+    templateUrl: './lipid.component.html',
+    styleUrls: ['./lipid.component.sass']
 })
 export class LipidComponent implements OnInit {
   lipid$!: Observable<Lipid | undefined>;

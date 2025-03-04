@@ -10,17 +10,16 @@ import { QueryService } from 'src/app/services/query.service';
 
 
 @Component({
-  selector: 'app-query',
-  standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    RouterLink,
-    NgbProgressbarModule
-  ],
-  templateUrl: './query.component.html',
-  styleUrls: ['./query.component.sass'],
+    selector: 'app-query',
+    imports: [
+        NgIf,
+        NgFor,
+        AsyncPipe,
+        RouterLink,
+        NgbProgressbarModule
+    ],
+    templateUrl: './query.component.html',
+    styleUrls: ['./query.component.sass']
 })
 export class QueryComponent implements OnInit {
   query$?: Observable<Query | undefined>;

@@ -12,19 +12,18 @@ import { NgbActiveOffcanvas, NgbCollapseModule, NgbTooltipModule } from '@ng-boo
 
 
 @Component({
-  selector: 'app-history',
-  standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    RouterLink,
-    NgbTooltipModule,
-    NgbCollapseModule,
-    TokenComponent
-  ],
-  templateUrl: './history.component.html',
-  styleUrls: ['./history.component.sass'],
+    selector: 'app-history',
+    imports: [
+        NgIf,
+        NgFor,
+        AsyncPipe,
+        RouterLink,
+        NgbTooltipModule,
+        NgbCollapseModule,
+        TokenComponent
+    ],
+    templateUrl: './history.component.html',
+    styleUrls: ['./history.component.sass']
 })
 export class HistoryComponent implements OnInit {
   queries$?: Observable<Array<Query> | undefined>;

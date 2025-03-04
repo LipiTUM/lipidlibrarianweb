@@ -13,19 +13,18 @@ import { TokenValidation } from "src/app/components/token/token.validation";
  * The TokenComponent manages the UUID which defines the current workspace. It is stored as a Cookie and valid for 30 days.
  */
 @Component({
-  selector: 'app-token',
-  standalone: true,
-  imports: [
-    NgIf,
-    NgClass,
-    RouterLink,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbAccordionModule,
-    NgbCollapseModule
-  ],
-  templateUrl: './token.component.html',
-  styleUrls: ['./token.component.sass'],
+    selector: 'app-token',
+    imports: [
+        NgIf,
+        NgClass,
+        RouterLink,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbAccordionModule,
+        NgbCollapseModule
+    ],
+    templateUrl: './token.component.html',
+    styleUrls: ['./token.component.sass']
 })
 export class TokenComponent implements OnInit {
   @Input() activeOffcanvas?: NgbActiveOffcanvas;

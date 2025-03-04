@@ -8,16 +8,15 @@ import { NotificationService } from 'src/app/services/notification.service';
 
 
 @Component({
-  selector: 'app-cookieconsent',
-  standalone: true,
-  imports: [
-    NgIf,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbAlertModule
-  ],
-  templateUrl: './cookieconsent.component.html',
-  styleUrls: ['./cookieconsent.component.sass'],
+    selector: 'app-cookieconsent',
+    imports: [
+        NgIf,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbAlertModule
+    ],
+    templateUrl: './cookieconsent.component.html',
+    styleUrls: ['./cookieconsent.component.sass']
 })
 export class CookieConsentComponent {
 

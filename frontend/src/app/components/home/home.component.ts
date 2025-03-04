@@ -6,14 +6,13 @@ import { QueryFormComponent } from '../query-form/query-form.component';
 
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [
-    RouterLink,
-    QueryFormComponent
-  ],
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.sass'],
+    selector: 'app-home',
+    imports: [
+        RouterLink,
+        QueryFormComponent
+    ],
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.sass']
 })
 export class HomeComponent implements OnInit {
 

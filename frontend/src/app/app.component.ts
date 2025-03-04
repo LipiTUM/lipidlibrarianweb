@@ -15,23 +15,22 @@ import { NotificationService } from './services/notification.service';
 
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    NgStyle,
-    NgIf,
-    RouterLink,
-    RouterLinkActive,
-    FormsModule,
-    ReactiveFormsModule,
-    HistoryComponent,
-    RouterOutlet,
-    NgbDropdownModule,
-    NgbTooltipModule,
-    NotificationManagerComponent
-  ],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
+    selector: 'app-root',
+    imports: [
+        NgStyle,
+        NgIf,
+        RouterLink,
+        RouterLinkActive,
+        FormsModule,
+        ReactiveFormsModule,
+        HistoryComponent,
+        RouterOutlet,
+        NgbDropdownModule,
+        NgbTooltipModule,
+        NotificationManagerComponent
+    ],
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.sass']
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'lipid-librarian-web';

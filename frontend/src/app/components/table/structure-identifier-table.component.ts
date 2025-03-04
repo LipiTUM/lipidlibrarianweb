@@ -12,19 +12,18 @@ import { StructureIdentifierSortableHeaderDirective, SortEvent } from 'src/app/d
 
 
 @Component({
-  selector: 'app-structure-identifier-table',
-  standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    FormsModule,
-    NgbHighlight,
-    NgbPaginationModule,
-    StructureIdentifierSortableHeaderDirective,
-  ],
-  templateUrl: './structure-identifier-table.component.html',
-  styleUrls: ['./structure-identifier-table.component.sass'],
+    selector: 'app-structure-identifier-table',
+    imports: [
+        NgIf,
+        NgFor,
+        AsyncPipe,
+        FormsModule,
+        NgbHighlight,
+        NgbPaginationModule,
+        StructureIdentifierSortableHeaderDirective,
+    ],
+    templateUrl: './structure-identifier-table.component.html',
+    styleUrls: ['./structure-identifier-table.component.sass']
 })
 export class StructureIdentifierTableComponent implements OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;

@@ -12,19 +12,18 @@ import { SynonymSortableHeaderDirective, SortEvent } from 'src/app/directives/sy
 
 
 @Component({
-  selector: 'app-synonym-table',
-  standalone: true,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    FormsModule,
-    NgbHighlight,
-    NgbPaginationModule,
-    SynonymSortableHeaderDirective,
-  ],
-  templateUrl: './synonym-table.component.html',
-  styleUrls: ['./synonym-table.component.sass'],
+    selector: 'app-synonym-table',
+    imports: [
+        NgIf,
+        NgFor,
+        AsyncPipe,
+        FormsModule,
+        NgbHighlight,
+        NgbPaginationModule,
+        SynonymSortableHeaderDirective,
+    ],
+    templateUrl: './synonym-table.component.html',
+    styleUrls: ['./synonym-table.component.sass']
 })
 export class SynonymTableComponent implements OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;

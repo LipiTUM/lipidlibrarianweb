@@ -10,15 +10,14 @@ import {Form, FormControl} from "@angular/forms";
  *  https://www.itsolutionstuff.com/post/how-to-check-all-and-uncheck-all-checkboxes-in-angularexample.html
  */
 @Component({
-  selector: 'checkbox',
-  standalone: true,
-  imports: [
-    NgFor,
-    FormsModule,
-    NgIf
-  ],
-  templateUrl: './checkbox.component.html',
-  styleUrls: ['./checkbox.component.sass'],
+    selector: 'checkbox',
+    imports: [
+        NgFor,
+        FormsModule,
+        NgIf
+    ],
+    templateUrl: './checkbox.component.html',
+    styleUrls: ['./checkbox.component.sass']
 })
 export class CheckboxComponent {
   @Input() checkBoxValues: Array<Checkbox> = [];

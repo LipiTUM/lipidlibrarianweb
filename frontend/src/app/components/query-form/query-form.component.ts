@@ -13,21 +13,20 @@ import {noBoxesCheckedValidator} from "src/app/directives/at-least-one-box-check
 
 
 @Component({
-  selector: 'app-query-form',
-  standalone: true,
-  imports: [
-    NgIf,
-    JsonPipe,
-    RouterLink,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbAccordionModule,
-    NgbCollapseModule,
-    CheckboxComponent,
-    NgbDropdownModule
-  ],
-  templateUrl: './query-form.component.html',
-  styleUrls: ['./query-form.component.sass'],
+    selector: 'app-query-form',
+    imports: [
+        NgIf,
+        JsonPipe,
+        RouterLink,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbAccordionModule,
+        NgbCollapseModule,
+        CheckboxComponent,
+        NgbDropdownModule
+    ],
+    templateUrl: './query-form.component.html',
+    styleUrls: ['./query-form.component.sass']
 })
 export class QueryFormComponent implements OnInit {
   positiveAdducts: Array<Checkbox> = [
