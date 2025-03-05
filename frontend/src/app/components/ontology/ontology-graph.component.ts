@@ -4,9 +4,6 @@ import { Observable } from 'rxjs';
 import { Edge, NgxGraphModule, Node } from '@swimlane/ngx-graph';
 
 import { Lipid } from 'src/app/models/lipid.model';
-import { OntologyGraph } from 'src/app/models/ontology-graph.model';
-import { OntologyGraphEdge } from 'src/app/models/ontology-graph-edge.model';
-import { OntologyGraphNode } from 'src/app/models/ontology-graph-node.model';
 import { Ontology } from 'src/app/models/ontology.model';
 
 
@@ -21,7 +18,6 @@ import { Ontology } from 'src/app/models/ontology.model';
 })
 export class OntologyGraphComponent implements AfterViewInit, OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;
-  graph?: OntologyGraph;
   edges!: Array<Edge>;
   nodes!: Array<Node>;
 

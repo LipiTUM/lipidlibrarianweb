@@ -1,13 +1,6 @@
-export class OntologyGraphNode implements d3.SimulationNodeDatum {
+export class OntologyGraphNode {
   id!: string;
   label!: string;
-
-  x?: number;
-  y?: number;
-  vx?: number;
-  vy?: number;
-  fx?: number | null;
-  fy?: number | null;
 
   constructor(data?: any) {
     if (data) {
