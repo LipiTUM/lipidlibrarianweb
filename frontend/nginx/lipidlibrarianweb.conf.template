@@ -12,8 +12,8 @@ server {
     alias /usr/share/nginx/static/;
   }
 
-  location /media {
-    alias /usr/share/nginx/media/;
+  location /dynamic {
+    alias /usr/share/nginx/dynamic/;
   }
 
   location / {
