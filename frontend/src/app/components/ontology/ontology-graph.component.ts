@@ -7,6 +7,7 @@ import { Lipid } from 'src/app/models/lipid.model';
 import { OntologyGraph } from 'src/app/models/ontology-graph.model';
 import { OntologyGraphEdge } from 'src/app/models/ontology-graph-edge.model';
 import { OntologyGraphNode } from 'src/app/models/ontology-graph-node.model';
+import { Ontology } from 'src/app/models/ontology.model';
 
 
 @Component({
@@ -37,9 +38,11 @@ export class OntologyGraphComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit(): void {
     this.lipid$!.subscribe(lipid => {
-      if (lipid && lipid.ontology && lipid.ontology.nodes) {
-        this.edges = lipid.ontology.edges! as unknown as Array<Edge>;
-        this.nodes = lipid.ontology.nodes! as unknown as Array<Node>;
+      if (lipid && lipid.ontology) {
+        let ontology = new Ontology(lipid.ontology)
+        console.log("Ontology Graph: created ontology " + JSON.stringify(ontology))
+        this.edges = ontology.edges! as unknown as Array<Edge>;
+        this.nodes = ontology.nodes! as unknown as Array<Node>;
       } else {
         this.edges = [];
         this.nodes = [];
@@ -50,9 +53,11 @@ export class OntologyGraphComponent implements AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.lipid$!.subscribe(lipid => {
-      if (lipid && lipid.ontology && lipid.ontology.nodes) {
-        this.edges = lipid.ontology.edges! as unknown as Array<Edge>;
-        this.nodes = lipid.ontology.nodes! as unknown as Array<Node>;
+      if (lipid && lipid.ontology) {
+        let ontology = new Ontology(lipid.ontology)
+        console.log("Ontology Graph: created ontology " + JSON.stringify(ontology))
+        this.edges = ontology.edges! as unknown as Array<Edge>;
+        this.nodes = ontology.nodes! as unknown as Array<Node>;
       } else {
         this.edges = [];
         this.nodes = [];
