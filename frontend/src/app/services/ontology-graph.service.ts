@@ -16,6 +16,8 @@ export class OntologyGraphService {
   applyDraggableBehaviour(element: ElementRef, node: OntologyGraphNode, graph: OntologyGraph) {
     const d3element = d3.select(element.nativeElement);
 
+    d3element.append("svg");
+    d3element.attr("viewBox", `0 0 600 300`);
     d3element.call(d3.drag().on("start", (event, d) => {
       /** Preventing propagation of dragstart to parent elements */
       event.sourceEvent.stopPropagation();
