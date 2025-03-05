@@ -42,7 +42,6 @@
               "node_modules/prismjs/themes/prism-okaidia.css",
               "node_modules/prismjs/plugins/command-line/prism-command-line.css",
               "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
-              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "src/styles.sass"
             ],
             "scripts": [
@@ -121,7 +120,6 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "src/styles.sass"
             ],
             "scripts": []
