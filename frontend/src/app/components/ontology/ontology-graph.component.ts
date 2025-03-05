@@ -44,7 +44,7 @@ export class OntologyGraphComponent implements AfterViewInit, OnChanges {
         this.edges = [];
         this.nodes = [];
       }
-      console.log("Ontology Graph: initialized for lipid " + JSON.stringify(lipid?.nomenclature.name))
+      console.log("Ontology Graph: initialized for lipid " + JSON.stringify(lipid?.nomenclature.name) + " with ontology " + JSON.stringify(lipid?.ontology))
     });
   }
 
@@ -57,7 +57,7 @@ export class OntologyGraphComponent implements AfterViewInit, OnChanges {
         this.edges = [];
         this.nodes = [];
       }
-      console.log("Ontology Graph: updated for lipid " + JSON.stringify(lipid?.nomenclature.name))
+      console.log("Ontology Graph: updated for lipid " + JSON.stringify(lipid?.nomenclature.name) + " with ontology " + JSON.stringify(lipid?.ontology))
     });
   }
 }
