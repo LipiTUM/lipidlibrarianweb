@@ -1,7 +1,7 @@
 import { OntologyGraphNode } from "./ontology-graph-node.model";
 
 
-export class OntologyGraphEdge implements d3.SimulationLinkDatum<OntologyGraphNode> {
+export class OntologyGraphEdge {
   id!: string;
   source!: OntologyGraphNode;
   target!: OntologyGraphNode;
