@@ -15,7 +15,7 @@ services:
     ports:
       - "${APP_PORT}:${FRONTEND_PORT}"
     volumes:
-      - media_files:/usr/share/nginx/media
+      - dynamic_files:/usr/share/nginx/dynamic
       - static_files:/usr/share/nginx/static
     networks:
       - network
@@ -40,7 +40,7 @@ services:
       - APP_URL_DEST=${APP_URL_DEST}
       - BACKEND_PORT=${BACKEND_PORT}
     volumes:
-      - media_files:/app/media
+      - dynamic_files:/app/dynamic
       - static_files:/app/static
     networks:
       - network
@@ -63,4 +63,4 @@ networks:
 volumes:
   db_data:
   static_files:
-  media_files:
+  dynamic_files:

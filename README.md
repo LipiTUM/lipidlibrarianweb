@@ -1,13 +1,15 @@
 # LipidLibarianWeb
 
 ## Table of Contents
-1. [Introduction](#introduction)
-2. [Deployment](#deployment)
-    1. [Build](#build)
-    1. [Start](#start)
-    1. [Debug](#debug)
-    1. [Stop](#stop)
-3. [API](docs/lipid-librarian-web-api-spec.yaml)
+- [LipidLibarianWeb](#lipidlibarianweb)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Deployment](#deployment)
+    - [Build](#build)
+    - [Start](#start)
+    - [Debug](#debug)
+    - [Stop](#stop)
+    - [Deployment on Custom Prefix](#deployment-on-custom-prefix)
 
 ## Introduction
 
@@ -110,7 +112,7 @@ podman pod stop lipidlibrarianweb
 podman pod rm lipidlibrarianweb
 podman volume rm lipidlibrarianweb-db_data
 podman volume rm lipidlibrarianweb-static_files
-podman volume rm lipidlibrarianweb-media_files
+podman volume rm lipidlibrarianweb-dynamic_files
 ```
 
 ### Deployment on Custom Prefix

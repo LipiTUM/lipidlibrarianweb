@@ -24,7 +24,7 @@ podman create \
   --name lipidlibrarianweb-backend \
   --requires lipidlibrarianweb-db \
   --tz ${APP_TIMEZONE} \
-  --volume 'lipidlibrarianweb-media_files:/app/media:z,U' \
+  --volume 'lipidlibrarianweb-dynamic_files:/app/dynamic:z,U' \
   --volume 'lipidlibrarianweb-static_files:/app/static:z,U' \
   --env DJANGO_DEBUG=${DJANGO_DEBUG} \
   --env DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY} \
@@ -47,6 +47,6 @@ podman create \
   --env FRONTEND_PORT=${FRONTEND_PORT} \
   --env BACKEND_HOSTNAME=${BACKEND_HOSTNAME} \
   --env BACKEND_PORT=${BACKEND_PORT} \
-  --volume 'lipidlibrarianweb-media_files:/usr/share/nginx/media:ro,z' \
+  --volume 'lipidlibrarianweb-dynamic_files:/usr/share/nginx/dynamic:ro,z' \
   --volume 'lipidlibrarianweb-static_files:/usr/share/nginx/static:ro,z' \
   lipidlibrarianweb_frontend:latest
