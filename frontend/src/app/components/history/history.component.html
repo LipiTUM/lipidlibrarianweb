@@ -1,7 +1,9 @@
 <div class="wrapper">
-  <div class="offcanvas-header">
-    <h4 class="offcanvas-title" id="history-offcanvas-title">History</h4>
-    <div>
+  <div class="offcanvas-header d-flex">
+    <div class="p-2">
+      <h4 class="offcanvas-title" id="history-offcanvas-title">History</h4>
+    </div>
+    <div class="ms-auto p-2">
       <button type="button" class="btn btn-outline-secondary me-2" ngbTooltip="Update" placement="bottom" [openDelay]="500" aria-label="Update" (click)="reloadEvents$.emit()">
         <i class="bi bi-arrow-clockwise"></i>
       </button>

@@ -35,14 +35,18 @@
                 Examples
               </button>
               <div aria-labelledby="dropdownBasic1" ngbDropdownMenu>
+                <button (click)="updateBasicSearchExamples('Cholesterol')" ngbDropdownItem type="button">Cholesterol</button>
+                <button (click)="updateBasicSearchExamples('SE 27:1/18:1')" ngbDropdownItem type="button">SE 27:1/18:1</button>
                 <button (click)="updateBasicSearchExamples('PC 34:0')" ngbDropdownItem type="button">PC 34:0</button>
                 <button (click)="updateBasicSearchExamples('PC 16:0-18:0')" ngbDropdownItem type="button">PC 16:0-18:0
                 </button>
                 <button (click)="updateBasicSearchExamples('PC(18:1/20:0)')" ngbDropdownItem type="button">PC(18:1/20:0)
                 </button>
-                <button (click)="updateBasicSearchExamples('LDMPE 14:2')" ngbDropdownItem type="button">LDMPE 14:2
+                <button (click)="updateBasicSearchExamples('LPE 20:4(8Z,11Z,14Z,17Z)')" ngbDropdownItem type="button">
                 </button>
-                <button (click)="updateBasicSearchExamples('LMGP01030008')" ngbDropdownItem type="button">LMGP01030008
+                <button (click)="updateBasicSearchExamples('LacCer(d18:0/26:0)')" ngbDropdownItem type="button">LacCer(d18:0/26:0)
+                </button>
+                <button (click)="updateBasicSearchExamples('SLM:000487065')" ngbDropdownItem type="button">SLM:000487065
                 </button>
               </div>
             </div>
@@ -226,7 +230,7 @@
                   databases:</strong> all
                 </button>
                 <button (click)="updateAdvancedSearchExamples('search_term',
-                 'PE(12:0/18:0)',
+                 'Hex2Cer 18:1;O2/18:0',
                  -1,
                  -1,
                  [],
@@ -235,7 +239,7 @@
                  mzAccordion.collapse('mz_search_field');
                  searchTermAccordion.expand('search_term_field');"
                         ngbDropdownItem
-                        type="button"><strong>search-term:</strong> PE(12:0/18:0), <strong> databases:</strong>
+                        type="button"><strong>search-term:</strong> Hex2Cer 18:1;O2/18:0, <strong> databases:</strong>
                   SwissLipids
                 </button>
               </div>
