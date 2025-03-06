@@ -3,9 +3,11 @@
     class="chart-container"
     [links]=this.edges
     [nodes]=this.nodes
-    layout="d3ForceDirected"
+    layout="dagre"
     [autoZoom]=true
     [autoCenter]=true
+    [draggingEnabled]=false
+    [showMiniMap]=true
   >
 
     <ng-template #defsTemplate>
@@ -23,22 +25,6 @@
         />
         <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
           {{node.label}}
-        </svg:text>
-      </svg:g>
-    </ng-template>
-
-    <ng-template #linkTemplate let-link>
-      <svg:g class="edge">
-        <svg:path class="line" stroke-width="2" marker-end="url(#arrow)"></svg:path>
-        <svg:text class="edge-label" text-anchor="middle">
-          <textPath
-            class="text-path"
-            [attr.href]="'#' + link.id"
-            [style.dominant-baseline]="link.dominantBaseline"
-            startOffset="50%"
-          >
-            is a
-          </textPath>
         </svg:text>
       </svg:g>
     </ng-template>
