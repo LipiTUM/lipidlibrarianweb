@@ -15,19 +15,18 @@ export class Ontology {
 
       // fill nodes
       if (data.ontology_subgraph_node_data) {
-        for (let [ontology_node_id, ontology_node_data] of (Object.entries(data.ontology_subgraph_node_data as [string, any]))) {
-          ontology_node_data.id = ontology_node_id
-          node_map.set(ontology_node_id, new OntologyGraphNode(ontology_node_data));
+        for (let [ontology_node_id, ontology_node_name] of (Object.entries(data.ontology_subgraph_node_data as [string, string]))) {
+          node_map.set(ontology_node_id, new OntologyGraphNode({ 'id': ontology_node_id, 'label': ontology_node_name }));
         }
       }
 
       if (data.ontology_subgraph) {
         for (let ontology_subgraph_data of data.ontology_subgraph) {
           if (!node_map.has(ontology_subgraph_data[0])) {
-            node_map.set(ontology_subgraph_data[0], new OntologyGraphNode({ "id": ontology_subgraph_data[0] }));
+            node_map.set(ontology_subgraph_data[0], new OntologyGraphNode({ "id": ontology_subgraph_data[0], 'label': 'unknown' }));
           }
           if (!node_map.has(ontology_subgraph_data[1])) {
-            node_map.set(ontology_subgraph_data[1], new OntologyGraphNode({ "id": ontology_subgraph_data[1] }));
+            node_map.set(ontology_subgraph_data[1], new OntologyGraphNode({ "id": ontology_subgraph_data[1], 'label': 'unknown' }));
           }
         }
       }
@@ -45,7 +44,7 @@ export class Ontology {
           if (ontology_subgraph_data[0] && ontology_subgraph_data[1] && node_map.has(ontology_subgraph_data[0]) && node_map.has(ontology_subgraph_data[1])) {
             this.edges.push(
               new OntologyGraphEdge(
-                { "source": node_map.get(ontology_subgraph_data[0])!.id, "target": node_map.get(ontology_subgraph_data[1])!.id}
+                { "source": node_map.get(ontology_subgraph_data[0]), "target": node_map.get(ontology_subgraph_data[1])}
             ));
           }
         }
