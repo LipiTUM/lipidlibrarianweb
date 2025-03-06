@@ -3,10 +3,11 @@
     class="chart-container"
     [links]=this.edges
     [nodes]=this.nodes
-    layout="dagre"
+    layout="d3ForceDirected"
     [autoZoom]=true
     [autoCenter]=true
     [draggingEnabled]=false
+    [showMiniMap]=true
   >
 
     <ng-template #defsTemplate>
@@ -38,7 +39,7 @@
             [style.dominant-baseline]="link.dominantBaseline"
             startOffset="50%"
           >
-            {{link.label}}
+            is a
           </textPath>
         </svg:text>
       </svg:g>
