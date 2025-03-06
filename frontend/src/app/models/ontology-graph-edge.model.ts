@@ -9,7 +9,7 @@ export class OntologyGraphEdge {
 
   constructor(data?: any) {
     if (data) {
-      this.id = data.source.id + '-' + data.target.id;
+      this.id = data.source + '-' + data.target;
       this.source = data.source;
       this.target = data.target;
       if (data.label) {
