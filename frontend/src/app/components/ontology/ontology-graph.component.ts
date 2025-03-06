@@ -18,8 +18,8 @@ import { Ontology } from 'src/app/models/ontology.model';
 })
 export class OntologyGraphComponent implements AfterViewInit, OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;
-  edges!: Array<Edge>;
-  nodes!: Array<Node>;
+  edges: Array<Edge> = [];
+  nodes: Array<Node> = [];
 
   _options: { width: number, height: number } = { width: 800, height: 600 };
 
