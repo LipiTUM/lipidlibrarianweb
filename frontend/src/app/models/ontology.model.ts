@@ -44,7 +44,7 @@ export class Ontology {
           if (ontology_subgraph_data[0] && ontology_subgraph_data[1] && node_map.has(ontology_subgraph_data[0]) && node_map.has(ontology_subgraph_data[1])) {
             this.edges.push(
               new OntologyGraphEdge(
-                { "source": node_map.get(ontology_subgraph_data[0]), "target": node_map.get(ontology_subgraph_data[1])}
+                { "source": node_map.get(ontology_subgraph_data[0])!.id, "target": node_map.get(ontology_subgraph_data[1])!.id }
             ));
           }
         }
