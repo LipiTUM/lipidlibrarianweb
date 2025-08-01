@@ -88,6 +88,15 @@ DATABASES = {
     }
 }
 
+# ALEX123 database
+ALEX123_DB_ARGS = {
+    "database": os.environ.get("ALEX123_DB_NAME"),
+    'user': os.environ.get("ALEX123_DB_USER"),
+    'password': os.environ.get("ALEX123_DB_PASSWORD"),
+    'host': os.environ.get("ALEX123_DB_HOST"),
+    'port': os.environ.get("ALEX123_DB_PORT"),
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
