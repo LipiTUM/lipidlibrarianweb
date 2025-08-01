@@ -13,7 +13,7 @@ LipidLibrarian supports multiple query mechanisms:
 Accessible from every page in the navigation bar or menu and from the home page.
 
 - **Lipid Name** (e.g. PC 18:1/20:0)
-- ***m/z* Ratio** (e.g. 816.18249)
+- ***m/z* Ratio** (e.g. 816.6477;0.001;+H+)
 - **Database Identifier** (e.g. SLM:000487065)
 
 ### 2. Advanced Query

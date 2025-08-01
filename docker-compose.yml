@@ -46,6 +46,7 @@ services:
       - network
     depends_on:
       - db
+      - alex123-db
   db:
     image: postgres:alpine
     volumes:
@@ -56,6 +57,14 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     networks:
       - network
+  alex123-db:
+    image: mariadb:latest
+    environment:
+      - MARIADB_DATABASE=alex123
+      - MARIADB_USER=${ALEX123_DB_USER}
+      - MARIADB_PASSWORD=${ALEX123_DB_PASSWORD}
+      - MARIADB_RANDOM_ROOT_PASSWORD=1
+      - MARIADB_AUTO_UPGRADE=1
 
 networks:
   network:

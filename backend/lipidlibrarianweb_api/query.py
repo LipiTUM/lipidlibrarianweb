@@ -1,4 +1,5 @@
 import logging
+from django.conf import settings
 from django.core.files.base import ContentFile
 from lipidlibrarian.LipidQuery import LipidQuery
 
@@ -40,7 +41,7 @@ def execute_query(query):
 
     # Query lipidlibrarian
     try:
-        query_results = LipidQuery(input_string = query.query_string, selected_APIs = sources, cutoff=cutoff, requeries=requeries).query()
+        query_results = LipidQuery(input_string = query.query_string, selected_APIs = sources, cutoff=cutoff, requeries=requeries, sql_args=getattr(settings, "ALEX123_DB_ARGS", None)).query()
 
         for result in query_results:
             lipid = Lipid(name=result.nomenclature.name, level=result.nomenclature.level)
