@@ -6,6 +6,7 @@ from rdkit.Chem import Draw
 from urllib.parse import unquote
 
 from django.http import FileResponse
+from django_q.tasks import async_task
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
