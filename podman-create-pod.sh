@@ -34,6 +34,7 @@ podman create \
   --pod lipidlibrarianweb \
   --name lipidlibrarianweb-backend \
   --requires lipidlibrarianweb-db \
+  --requires lipidlibrarianweb-alex123-db \
   --tz ${APP_TIMEZONE} \
   --volume 'lipidlibrarianweb-dynamic_files:/app/dynamic:z,U' \
   --volume 'lipidlibrarianweb-static_files:/app/static:z,U' \
@@ -52,8 +53,47 @@ podman create \
 
 podman create \
   --pod lipidlibrarianweb \
-  --name lipid_ibrarianweb-frontend \
+  --name lipidlibrarianweb-backend-worker01 \
   --requires lipidlibrarianweb-backend \
+  --tz ${APP_TIMEZONE} \
+  --volume 'lipidlibrarianweb-dynamic_files:/app/dynamic:z,U' \
+  --volume 'lipidlibrarianweb-static_files:/app/static:z,U' \
+  --env DJANGO_DEBUG=${DJANGO_DEBUG} \
+  --env DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY} \
+  --env DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS} \
+  --env DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL} \
+  --env DJANGO_DB_HOST=${DB_HOST} \
+  --env DJANGO_DB_PORT=${DB_PORT} \
+  --env DJANGO_DB_NAME=${DB_NAME} \
+  --env DJANGO_DB_USER=${DB_USER} \
+  --env DJANGO_DB_PASSWORD=${DB_PASSWORD} \
+  --env BACKEND_PORT=${BACKEND_PORT} \
+  -u root \
+  lipidlibrarianweb_backend_worker:latest
+
+podman create \
+  --pod lipidlibrarianweb \
+  --name lipidlibrarianweb-backend-worker02 \
+  --requires lipidlibrarianweb-backend \
+  --tz ${APP_TIMEZONE} \
+  --volume 'lipidlibrarianweb-dynamic_files:/app/dynamic:z,U' \
+  --volume 'lipidlibrarianweb-static_files:/app/static:z,U' \
+  --env DJANGO_DEBUG=${DJANGO_DEBUG} \
+  --env DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY} \
+  --env DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS} \
+  --env DJANGO_LOG_LEVEL=${DJANGO_LOG_LEVEL} \
+  --env DJANGO_DB_HOST=${DB_HOST} \
+  --env DJANGO_DB_PORT=${DB_PORT} \
+  --env DJANGO_DB_NAME=${DB_NAME} \
+  --env DJANGO_DB_USER=${DB_USER} \
+  --env DJANGO_DB_PASSWORD=${DB_PASSWORD} \
+  --env BACKEND_PORT=${BACKEND_PORT} \
+  -u root \
+  lipidlibrarianweb_backend_worker:latest
+
+podman create \
+  --pod lipidlibrarianweb \
+  --name lipid_ibrarianweb-frontend \
   --tz ${APP_TIMEZONE} \
   --env FRONTEND_PORT=${FRONTEND_PORT} \
   --env BACKEND_HOSTNAME=${BACKEND_HOSTNAME} \

@@ -10,52 +10,68 @@ from .models import Lipid
 from .models import QueryResult
 
 
-def duplicate_query(query, existing_query):
-    query.status = QUERY_STATUS_RUNNING
-    query.save()
+def duplicate_query(query_id, existing_query_id):
+    try:
+        query = Query.objects.get(id=query_id)
+        existing_query = Query.objects.get(id=existing_query_id)
 
-    query_result_queryset = QueryResult.objects.filter(query=existing_query)
-    for query_result in query_result_queryset:
-        new_query_result = QueryResult(query=query, lipid=query_result.lipid)
-        new_query_result.save()
+        query.status = QUERY_STATUS_RUNNING
+        query.save(update_fields=["status"])
 
-    query.status = QUERY_STATUS_DONE
-    query.save()
+        for query_result in QueryResult.objects.filter(query=existing_query):
+            QueryResult.objects.create(query=query, lipid=query_result.lipid)
+
+        query.status = QUERY_STATUS_DONE
+        query.save(update_fields=["status"])
+
+    except Exception as e:
+        Query.objects.filter(id=query_id).update(status=QUERY_STATUS_ERROR)
+        logging.exception(e)
 
 
-def execute_query(query):
+def execute_query(query_id):
+    query = Query.objects.get(id=query_id)
+
     query.status = QUERY_STATUS_RUNNING
     query.save()
 
     sources = set()
     cutoff = None
     requeries = None
-    for filter in query.query_filters.split(";"):
-        temp = filter.split("=")
-        if temp[0] == "source":
-            sources.add(temp[1].lower())
-        if temp[0] == "cutoff":
-            cutoff = float(temp[1])
-        if temp[0] == "requeries":
-            requeries = temp[1]
 
-    # Query lipidlibrarian
+    for filter in query.query_filters.split(";"):
+        key, val = filter.split("=")
+        if key == "source":
+            sources.add(val.lower())
+        elif key == "cutoff":
+            cutoff = float(val)
+        elif key == "requeries":
+            requeries = val
+
     try:
-        query_results = LipidQuery(input_string = query.query_string, selected_APIs = sources, cutoff=cutoff, requeries=requeries, sql_args=getattr(settings, "ALEX123_DB_ARGS", None)).query()
+        query_results = LipidQuery(
+            input_string=query.query_string,
+            selected_APIs=sources,
+            cutoff=cutoff,
+            requeries=requeries,
+            sql_args=getattr(settings, "ALEX123_DB_ARGS", None)
+        ).query()
 
         for result in query_results:
-            lipid = Lipid(name=result.nomenclature.name, level=result.nomenclature.level)
-            lipid.save()
+            lipid = Lipid.objects.create(
+                name=result.nomenclature.name,
+                level=result.nomenclature.level
+            )
 
-            query_result = QueryResult(query=query, lipid=lipid)
-            query_result.save()
+            content = ContentFile(format(result, "json"))
+            lipid.file.save("", content)
 
-            lipid_file = ContentFile(format(result, 'json'))
-            lipid.file.save("", lipid_file)
+            QueryResult.objects.create(query=query, lipid=lipid)
 
         query.status = QUERY_STATUS_DONE
         query.save()
+
     except Exception as e:
-        logging.error(f"LipidLibrarian Error caught: {e}")
+        logging.exception("LipidLibrarian Error:")
         query.status = QUERY_STATUS_ERROR
         query.save()
