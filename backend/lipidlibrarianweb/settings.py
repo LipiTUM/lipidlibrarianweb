@@ -98,6 +98,11 @@ ALEX123_DB_ARGS = {
     'port': os.environ.get("ALEX123_DB_PORT"),
 }
 
+# worker settings
+Q_CLUSTER = {
+    'retry': 120,
+    'timeout': 60,
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
