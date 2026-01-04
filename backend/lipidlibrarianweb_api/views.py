@@ -58,12 +58,10 @@ class QueryView(APIView):
             queryset = Query.objects.filter(query_string=query.query_string, query_filters=query.query_filters, status=QUERY_STATUS_DONE)
             if queryset:
                 # query has already been executed; duplicating...
-                existing_query = queryset.first()
-                thread = threading.Thread(target=duplicate_query, args=(query, existing_query,))
+                async_task("api.tasks.duplicate_query", query.id, existing.id)
             else:
                 # query has not already been executed; querying...
-                thread = threading.Thread(target=execute_query, args=(query,))
-            thread.start()
+                async_task("api.tasks.execute_query", query.id)
             return Response(query_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(query_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
