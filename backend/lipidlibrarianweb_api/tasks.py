@@ -7,6 +7,7 @@ from .models import QUERY_STATUS_RUNNING
 from .models import QUERY_STATUS_DONE
 from .models import QUERY_STATUS_ERROR
 from .models import Lipid
+from .models import Query
 from .models import QueryResult
 
 
