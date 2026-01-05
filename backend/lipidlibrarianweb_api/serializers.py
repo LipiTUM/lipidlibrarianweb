@@ -39,10 +39,20 @@ class BulkQueryItemSerializer(serializers.ModelSerializer):
         fields = ['query']
 
 
+class BulkQueryItemCreateSerializer(serializers.Serializer):
+    query_string = serializers.CharField()
+    query_filters = serializers.CharField(required=False, allow_blank=True)
+
+
 class BulkQuerySerializer(serializers.ModelSerializer):
     items = BulkQueryItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = BulkQuery
-        fields = ('id', 'token', 'timestamp', 'items')
-        extra_kwargs = {'timestamp': {'read_only': True, 'required': True}}
+        fields = ('id', 'token', 'timestamp', 'status', 'items')
+        extra_kwargs = {'timestamp': {'read_only': True, 'required': True}, 'status': {'read_only': True, 'required': True}}
+
+
+class BulkQueryCreateSerializer(serializers.Serializer):
+    token = serializers.UUIDField()
+    queries = BulkQueryCreateItemSerializer(many=True)
