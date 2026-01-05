@@ -7,6 +7,7 @@ from urllib.parse import unquote
 
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from django_q.tasks import async_task
 from rest_framework import status
 from rest_framework.views import APIView
