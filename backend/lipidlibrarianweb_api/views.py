@@ -59,10 +59,10 @@ class QueryView(APIView):
             queryset = Query.objects.filter(query_string=query.query_string, query_filters=query.query_filters, status=QUERY_STATUS_DONE)
             if queryset:
                 # query has already been executed; duplicating...
-                async_task("api.tasks.duplicate_query", query.id, existing.id)
+                async_task("lipidlibrarianweb_api.tasks.duplicate_query", query.id, existing.id)
             else:
                 # query has not already been executed; querying...
-                async_task("api.tasks.execute_query", query.id)
+                async_task("lipidlibrarianweb_api.tasks.execute_query", query.id)
             return Response(query_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(query_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
