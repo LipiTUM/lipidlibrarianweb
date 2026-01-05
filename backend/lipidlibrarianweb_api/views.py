@@ -178,7 +178,7 @@ def get_bulk_query(request, bulk_query_id):
 @api_view(['GET'])
 def lipid(request, lipid_id):
     lipid = get_object_or_404(Lipid, id=lipid_id)
-    FileResponse(lipid.file.open())
+    return FileResponse(lipid.file.open())
 
 
 @api_view(['GET'])
