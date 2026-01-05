@@ -55,10 +55,12 @@ class QueryView(APIView):
         :returns: the created query database entry, or a bad request negative status code
         """
         query_data = {
-            "query_string": request.POST.get('query_string'),
-            "query_filters": request.POST.get('query_filters'),
-            "token": request.POST.get('token'),
+            "query_string": request.data.get('query_string'),
+            "query_filters": request.data.get('query_filters'),
+            "token": request.data.get('token'),
         }
+        if query_data["query_filters"] == "":
+            query_data["query_filters"] = "source=ALEX123;source=LipidMaps;source=LION;source=LINEX;source=SwissLipids;cutoff=5;requeries=1"
         query_serializer = QuerySerializer(data=query_data)
         if query_serializer.is_valid():
             query = query_serializer.save()
@@ -116,6 +118,8 @@ class BulkQueryView(APIView):
             for item_data in items_data:
                 query_data = item_data.get('query', {})
                 query_data['token'] = token
+                if query_data["query_filters"] == "":
+                    query_data["query_filters"] = "source=ALEX123;source=LipidMaps;source=LION;source=LINEX;source=SwissLipids;cutoff=5;requeries=1"
 
                 # Validate and create the Query
                 query_serializer = QuerySerializer(data=query_data)

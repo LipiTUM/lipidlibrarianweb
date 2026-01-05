@@ -19,7 +19,7 @@ export class QueryService {
     private http: HttpClient,
     private sessionService: SessionService,
     private locationStrategy: LocationStrategy
-  ) { 
+  ) {
     this.backend_url = window.location.origin + this.locationStrategy.getBaseHref();
   }
 
@@ -31,13 +31,23 @@ export class QueryService {
    * @returns An Observable, which should contain the lipids as json.
    */
   executeQuery(query_string: string, query_filters: string): Observable<any> {
-    const formData: FormData = new FormData();
-    formData.append('query_string', query_string);
-    formData.append('query_filters', query_filters);
-    formData.append('token', this.sessionService.getToken());
+    const payload = {
+      query_string: query_string,
+      query_filters: query_filters,
+      token: this.sessionService.getToken()
+    };
 
-    console.log("[query.service::executeQuery] Created Query: " + 'api/query'  + "; formData: " + formData.get('query_string') + ", " + formData.get('query_filters') + ", " + formData.get('token') + ";")
-    return this.http.post(this.backend_url + 'api/query', formData)
+    console.log("[query.service::executeQuery] Sending Query JSON:", payload);
+
+    return this.http.post(
+      this.backend_url + 'api/query',
+      payload,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
   }
 
   getLipid(lipid_id: string): Observable<any> {
