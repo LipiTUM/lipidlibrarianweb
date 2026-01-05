@@ -13,8 +13,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.decorators import renderer_classes
 
-from .query import duplicate_query
-from .query import execute_query
+from .tasks import duplicate_query
+from .tasks import execute_query
 from .renderers import PNGRenderer
 from .renderers import MP3Renderer
 from .models import Query

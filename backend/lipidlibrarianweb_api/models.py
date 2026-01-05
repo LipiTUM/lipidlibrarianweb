@@ -32,3 +32,14 @@ class Query(models.Model):
 class QueryResult(models.Model):
     query = models.ForeignKey(Query, on_delete=models.CASCADE, related_name="results")
     lipid = models.ForeignKey(Lipid, on_delete=models.CASCADE)
+
+
+class BulkQuery(models.Model):
+    id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
+    token = models.UUIDField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class BulkQueryItem(models.Model):
+    bulk_query = models.ForeignKey(BulkQuery, on_delete=models.CASCADE, related_name="items")
+    query = models.ForeignKey(Query, on_delete=models.CASCADE)
