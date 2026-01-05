@@ -98,8 +98,16 @@ ALEX123_DB_ARGS = {
     'port': os.environ.get("ALEX123_DB_PORT"),
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://{os.environ.get("DJANGO_CACHE_HOST")}:{os.environ.get("DJANGO_CACHE_PORT")}",
+    }
+}
+
 # worker settings
 Q_CLUSTER = {
+    'redis': f"redis://{os.environ.get("DJANGO_CACHE_HOST")}:{os.environ.get("DJANGO_CACHE_PORT")}",
     'retry': 120,
     'timeout': 60,
 }

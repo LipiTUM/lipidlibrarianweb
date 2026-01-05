@@ -13,3 +13,4 @@ gTTS==2.3.2
 numpy<2
 markdown
 django-q2
+redis

@@ -21,6 +21,10 @@ services:
       - network
     depends_on:
       - backend
+  cache:
+    image: valkey/valkey:9-alpine
+    networks:
+      - network
   backend:
     build:
       context: "./backend"
@@ -37,6 +41,8 @@ services:
       - DJANGO_DB_NAME=${DB_NAME}
       - DJANGO_DB_USER=${DB_USER}
       - DJANGO_DB_PASSWORD=${DB_PASSWORD}
+      - DJANGO_CACHE_HOST=${CACHE_HOST}
+      - DJANGO_CACHE_PORT=${CACHE_PORT}
       - APP_URL_DEST=${APP_URL_DEST}
       - BACKEND_PORT=${BACKEND_PORT}
     volumes:
@@ -47,6 +53,7 @@ services:
     depends_on:
       - db
       - alex123-db
+      - cache
   db:
     image: postgres:alpine
     volumes:

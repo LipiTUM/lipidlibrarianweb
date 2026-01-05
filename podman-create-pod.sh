@@ -32,9 +32,17 @@ podman create \
 
 podman create \
   --pod lipidlibrarianweb \
+  --name lipidlibrarianweb-cache \
+  --tz ${APP_TIMEZONE} \
+  -u root \
+  docker.io/valkey/valkey:9-alpine
+
+podman create \
+  --pod lipidlibrarianweb \
   --name lipidlibrarianweb-backend \
   --requires lipidlibrarianweb-db \
   --requires lipidlibrarianweb-alex123-db \
+  --requires lipidlibrarianweb-cache \
   --tz ${APP_TIMEZONE} \
   --volume 'lipidlibrarianweb-dynamic_files:/app/dynamic:z,U' \
   --volume 'lipidlibrarianweb-static_files:/app/static:z,U' \
@@ -47,6 +55,8 @@ podman create \
   --env DJANGO_DB_NAME=${DB_NAME} \
   --env DJANGO_DB_USER=${DB_USER} \
   --env DJANGO_DB_PASSWORD=${DB_PASSWORD} \
+  --env DJANGO_CACHE_HOST=${CACHE_HOST} \
+  --env DJANGO_CACHE_PORT=${CACHE_PORT} \
   --env BACKEND_PORT=${BACKEND_PORT} \
   -u root \
   lipidlibrarianweb_backend:latest
@@ -67,6 +77,8 @@ podman create \
   --env DJANGO_DB_NAME=${DB_NAME} \
   --env DJANGO_DB_USER=${DB_USER} \
   --env DJANGO_DB_PASSWORD=${DB_PASSWORD} \
+  --env DJANGO_CACHE_HOST=${CACHE_HOST} \
+  --env DJANGO_CACHE_PORT=${CACHE_PORT} \
   --env BACKEND_PORT=${BACKEND_PORT} \
   -u root \
   lipidlibrarianweb_backend_worker:latest
@@ -87,6 +99,8 @@ podman create \
   --env DJANGO_DB_NAME=${DB_NAME} \
   --env DJANGO_DB_USER=${DB_USER} \
   --env DJANGO_DB_PASSWORD=${DB_PASSWORD} \
+  --env DJANGO_CACHE_HOST=${CACHE_HOST} \
+  --env DJANGO_CACHE_PORT=${CACHE_PORT} \
   --env BACKEND_PORT=${BACKEND_PORT} \
   -u root \
   lipidlibrarianweb_backend_worker:latest
