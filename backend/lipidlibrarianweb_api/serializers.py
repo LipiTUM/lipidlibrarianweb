@@ -55,4 +55,4 @@ class BulkQuerySerializer(serializers.ModelSerializer):
 
 class BulkQueryCreateSerializer(serializers.Serializer):
     token = serializers.UUIDField()
-    queries = BulkQueryCreateItemSerializer(many=True)
+    queries = BulkQueryItemCreateSerializer(many=True)
