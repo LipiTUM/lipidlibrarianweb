@@ -171,7 +171,7 @@ def get_bulk_query(request, bulk_query_id):
     
     if request.method == 'GET':
         return Response(
-            BulkQueryStatusSerializer(bulk_query).data,
+            BulkQuerySerializer(bulk_query).data,
             status=status.HTTP_200_OK
         )
 
