@@ -155,7 +155,7 @@ def get_query(request, query_id):
 
     if request.method == 'GET':
         return Response(
-            QuerySerializer(query_serializer).data,
+            QuerySerializer(query).data,
             status=status.HTTP_200_OK
         )
 
