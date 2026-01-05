@@ -102,8 +102,8 @@ class BulkQueryView(APIView):
 
             for item in queries_data:
                 queryset = Query.objects.filter(
-                    query_string=query.query_string,
-                    query_filters=query.query_filters,
+                    query_string=item.query_string,
+                    query_filters=item.query_filters,
                     status=QUERY_STATUS_DONE
                 )
                 if queryset:
