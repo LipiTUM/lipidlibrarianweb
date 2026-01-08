@@ -2,7 +2,8 @@
   <nav class="navbar navbar-expand-xl bg-body-tertiary">
     <div class="container-fluid">
       <a class="navbar-brand" routerLink="/">
-        <img src="assets/logo_horizontal.png" alt="Logo" height="24" class="d-inline-block align-text-middle me-2">
+        <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" src="assets/logo_horizontal.png" alt="Logo" height="24" class="logo d-inline-block align-text-middle me-2">
+        <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" src="assets/logo_horizontal_dark.png" alt="Logo" height="24" class="logo d-inline-block align-text-middle me-2">
         <span>LipidLibrarian</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" (click)="openOffcanvas(mobileMenu, { position: 'end' })">
@@ -84,8 +85,9 @@
     <div class="g-col-1">
       <div class="grid gap-1" style="--bs-columns: 1;">
         <div class="g-col-1">
-          <img class="me-1" src="assets/icon.png" width="24" height="24">
-          <span>Developed by LipiTUM <small class="text-muted">&copy; 2023</small></span>
+          <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" class="me-1" src="assets/icon.png" width="35" height="35">
+          <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" class="me-1" src="assets/icon_dark.png" width="35" height="35">
+          <span>Developed by LipiTUM <small class="text-muted">&copy; 2026</small></span>
         </div>
         <div class="g-col-1">
           <ul class="list-unstyled text-small mt-2">

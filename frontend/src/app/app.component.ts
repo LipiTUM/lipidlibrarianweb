@@ -57,7 +57,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     public sessionService: SessionService,
     public offcanvasService: NgbOffcanvas,
     private modalService: NgbModal,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
   ) { }
 
   ngOnInit(): void {

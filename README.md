@@ -16,6 +16,8 @@
 
 ## Development Deployment
 
+This development deployment is tested with podman rootless on a system with SELinux enabled.
+
 ### Init ALEX123 Database
 
     mkdir alex123
