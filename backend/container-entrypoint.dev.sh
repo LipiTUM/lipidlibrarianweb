@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+# django database migrations
+python manage.py makemigrations
+python manage.py migrate
+
+python manage.py runserver 0.0.0.0:${BACKEND_PORT:=8001}

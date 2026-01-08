@@ -1,0 +1,59 @@
+name: lipidlibrarianweb
+
+services:
+  frontend:
+    build:
+      context: "./frontend"
+      dockerfile: "Containerfile"
+      target: "dev"
+    environment:
+      - FRONTEND_PORT=8000
+      - BACKEND_HOST=backend
+      - BACKEND_PORT=8001
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./frontend:/app:O
+      - /app/node_modules
+      - /app/.angular/cache
+    networks:
+      - network
+  backend:
+    build:
+      context: "./backend"
+      dockerfile: "Containerfile"
+      target: "dev"
+      args:
+        - LIPIDLIBRARIAN_GIT_BRANCH=${LIPIDLIBRARIAN_GIT_BRANCH}
+    environment:
+      - BACKEND_PORT=8001
+      - ALEX123_DB_NAME=${ALEX123_DB_NAME}
+      - ALEX123_DB_USER=${ALEX123_DB_USER}
+      - ALEX123_DB_PASSWORD=${ALEX123_DB_PASSWORD}
+      - ALEX123_DB_HOST=alex123-db
+      - ALEX123_DB_PORT=3306
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./backend:/app:O
+    networks:
+      - network
+  alex123-db:
+    image: mariadb:latest
+    environment:
+      - MARIADB_DATABASE=${ALEX123_DB_NAME}
+      - MARIADB_USER=${ALEX123_DB_USER}
+      - MARIADB_PASSWORD=${ALEX123_DB_PASSWORD}
+      - MARIADB_RANDOM_ROOT_PASSWORD=1
+      - MARIADB_AUTO_UPGRADE=1
+    ports:
+      - "3306:3306"
+    volumes:
+      - alex123_db_data:/var/lib/mysql:Z
+      - ./alex123:/docker-entrypoint-initdb.d:O
+
+networks:
+  network:
+
+volumes:
+  alex123_db_data:
