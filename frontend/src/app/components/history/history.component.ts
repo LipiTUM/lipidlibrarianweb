@@ -85,9 +85,4 @@ export class HistoryComponent implements OnInit {
       }
     });
   }
-
-  navigateToLipid(query_id: string): void {
-    this.historyService.updateCollapsed(query_id);
-    this.activeOffcanvas.dismiss('Navigation');
-  }
 }

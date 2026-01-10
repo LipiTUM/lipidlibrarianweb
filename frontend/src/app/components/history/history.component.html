@@ -36,8 +36,11 @@
               (click)="historyService.updateCollapsed(query.id)"
             >
               <div class="grid" style="--bs-columns: 12;">
-                <div class="g-col-10 text-start">
+                <div class="g-col-9 text-start">
                   <strong>Query: {{ query.query_string }}</strong>
+                </div>
+                <div class="g-col-1">
+                  <a [routerLink]="['query', query.id]" (click)="historyService.updateCollapsed(query.id); activeOffcanvas.dismiss('Navigation');"><i class="bi bi-link-45deg"></i></a>
                 </div>
                 <div class="g-col-1">
                   <i class="bi bi-trash-fill" (click)="deleteQuery(query.id)"></i>

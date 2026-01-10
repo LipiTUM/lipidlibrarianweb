@@ -20,6 +20,11 @@ class Lipid(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
 
+class LipidSource(models.Model):
+    lipid = models.ForeignKey(Lipid, on_delete=models.CASCADE, related_name="sources")
+    source = models.CharField(max_length=255)
+
+
 class Query(models.Model):
     id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
     token = models.UUIDField()

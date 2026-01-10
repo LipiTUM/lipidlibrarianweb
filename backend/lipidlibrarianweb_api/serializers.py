@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Query
 from .models import QueryResult
 from .models import Lipid
+from .models import LipidSource
 from .models import BulkQuery
 from .models import BulkQueryItem
 from .models import QUERY_STATUS_CREATED
@@ -11,46 +12,54 @@ from .models import QUERY_STATUS_DONE
 from .models import QUERY_STATUS_ERROR
 
 
+class LipidSourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LipidSource
+        fields = ("source",)
+
+
 class LipidSerializer(serializers.ModelSerializer):
+    sources = LipidSourceSerializer(many=True, read_only=True)
+
     class Meta:
         model = Lipid
-        fields = ('id', 'file', 'name', 'level', 'timestamp')
+        fields = ('id', 'file', 'name', 'level', 'timestamp', 'sources')
         extra_kwargs = {'timestamp': {'read_only': True, 'required': True}}
-
-
-class QueryResultSerializer(serializers.ModelSerializer):
-    lipid = LipidSerializer(many=False, read_only=True)
-
-    class Meta:
-        model = QueryResult
-        fields = ['lipid']
 
 
 class QuerySerializer(serializers.ModelSerializer):
-    results = QueryResultSerializer(many=True, read_only=True)
+    results = serializers.SerializerMethodField(read_only=True)
+    type = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Query
-        fields = ('id', 'token', 'query_string', 'query_filters', 'timestamp', 'status', 'results')
+        fields = ('id', 'type', 'token', 'query_string', 'query_filters', 'timestamp', 'status', 'results')
         extra_kwargs = {'timestamp': {'read_only': True, 'required': True}}
 
+    def get_type(self, obj):
+        return "query"
 
-class BulkQueryItemSerializer(serializers.ModelSerializer):
-    query = QuerySerializer(many=False, read_only=True)
+    def get_results(self, obj):
+        return LipidSerializer([qr.lipid for qr in obj.results.all()], many=True).data
 
-    class Meta:
-        model = BulkQueryItem
-        fields = ['query']
 
 
 class BulkQuerySerializer(serializers.ModelSerializer):
-    items = BulkQueryItemSerializer(many=True, read_only=True)
     status = serializers.SerializerMethodField(read_only=True)
+    type = serializers.SerializerMethodField(read_only=True)
+    items = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = BulkQuery
-        fields = ('id', 'token', 'timestamp', 'status', 'items')
+        fields = ('id', 'type', 'token', 'timestamp', 'status', 'items')
         extra_kwargs = {'timestamp': {'read_only': True, 'required': True}}
+    
+    def get_type(self, obj):
+        return "bulk"
+    
+    def get_items(self, obj):
+        # flatten the nested BulkQueryItem
+        return [QuerySerializer(item.query).data for item in obj.items.all()]
 
     def get_status(self, obj):
         statuses = obj.items.values_list("query__status", flat=True)

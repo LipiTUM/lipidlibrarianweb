@@ -27,7 +27,6 @@ from .models import QUERY_STATUS_DONE
 from .serializers import QuerySerializer
 from .serializers import LipidSerializer
 from .serializers import BulkQuerySerializer
-from .serializers import BulkQueryItemSerializer
 
 
 class QueryView(APIView):
@@ -209,6 +208,33 @@ def get_bulk_query(request, bulk_query_id):
         return Response(
             BulkQuerySerializer(bulk_query).data,
             status=status.HTTP_200_OK
+        )
+
+@api_view(['GET'])
+def get_query_or_bulk_query(request, query_id):
+    """
+    Get either a single Query or a BulkQuery by ID.
+    Returns:
+    - type: "query" or "bulk"
+    - serialized data
+    """
+    # Try single Query first
+    try:
+        query = Query.objects.get(id=query_id)
+        serializer = QuerySerializer(query)
+        return Response(serializer.data)
+    except Query.DoesNotExist:
+        pass
+
+    # Try BulkQuery
+    try:
+        bulk = BulkQuery.objects.prefetch_related('items__query').get(id=query_id)
+        serializer = BulkQuerySerializer(bulk)
+        return Response(serializer.data)
+    except BulkQuery.DoesNotExist:
+        return Response(
+            {"detail": "Query or BulkQuery not found."},
+            status=status.HTTP_404_NOT_FOUND
         )
 
 

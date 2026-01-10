@@ -50,6 +50,34 @@ export class QueryService {
     );
   }
 
+  executeBulkQuery(query_strings: string, query_filters: string): Observable<any> {
+    const payload = {
+      token: this.sessionService.getToken(),
+      items: query_strings
+        .trim()
+        .split("\n")
+        .map(q => ({
+          query: {
+            token: this.sessionService.getToken(),
+            query_string: q,
+            query_filters: query_filters
+          }
+        }))
+    };
+
+    console.log("[query.service::executeBulkQuery] Sending Query JSON:", payload);
+
+    return this.http.post(
+      this.backend_url + 'api/bulk-query',
+      payload,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+  }
+
   getLipid(lipid_id: string): Observable<any> {
     const lipid_data: string | null = localStorage.getItem(lipid_id)
     if (lipid_data != null) {
@@ -62,6 +90,10 @@ export class QueryService {
     if (this.sessionService.getCookieConsentStatus()) {
       localStorage.setItem(lipid.id, JSON.stringify(lipid));
     }
+  }
+
+  getQueryOrBulkQuery(query_id: string) {
+    return this.http.get(this.backend_url + 'api/query-or-bulk-query/' + query_id);
   }
 
   getQuery(query_id: string): Observable<any> {

@@ -1,0 +1,153 @@
+<div *ngIf="query$ | async as query; else error">
+ <div class="card shadow-sm mb-4">
+
+  <!-- Header -->
+  <div class="card-header bg-light d-flex align-items-center justify-content-between">
+    <h5 class="mb-0 text-truncate">
+      Query:
+      <span class="fw-normal text-muted">
+        {{ query.query_string }}
+      </span>
+    </h5>
+
+    <!-- Delete button -->
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-danger"
+      aria-label="Delete query"
+      (click)="deleteQuery(query.id, query.query_string)">
+      <i class="bi bi-trash"></i>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="card-body">
+
+    <!-- Progress -->
+    <div class="mb-3">
+      <ngb-progressbar
+        [type]="query.status === 'done' ? 'success' : 'primary'"
+        [value]="100"
+        [striped]="query.status !== 'done'"
+        [animated]="query.status !== 'done'"
+        height="6px">
+      </ngb-progressbar>
+    </div>
+
+    <!-- Meta -->
+    <div class="row mb-3 small text-muted">
+      <div class="col-md-4">
+        <strong>Status:</strong>
+        <span
+          class="badge ms-1"
+          [ngClass]="query.status === 'done' ? 'bg-success' : 'bg-primary'">
+          {{ query.status }}
+        </span>
+      </div>
+
+      <div class="col-md-4">
+        <strong>Options:</strong>
+        <span class="d-block text-break">
+          {{ query.query_filters }}
+        </span>
+      </div>
+
+      <div class="col-md-4">
+        <strong>Submitted:</strong>
+        <span class="d-block">
+          {{ query.timestamp }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div *ngIf="query.status === 'done'" class="border-top pt-3">
+      <h6 class="mb-3">Results</h6>
+
+      <table *ngIf="query.results?.length; else noResults"
+       class="table table-hover align-right">
+
+  <thead class="table-light">
+    <tr>
+      <th>Name</th>
+      <th class="text-end">Type</th>
+      <th class="text-end">Sources</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let query_result of query.results">
+
+      <!-- Name -->
+      <td>
+        <a
+          class="fw-medium text-decoration-none"
+          [routerLink]="['/lipid', query_result.id]">
+          {{ query_result.name }}
+        </a>
+      </td>
+
+      <!-- Enum display -->
+      <td class="text-end">
+        <span class="badge bg-secondary">
+          {{ getLevelLabel(query_result.level) }}
+        </span>
+      </td>
+
+      <!-- Sources -->
+      <td class="text-end">
+        <div class="d-inline-flex gap-1">
+          <span
+            *ngFor="let source of query_result.sources"
+            class="source-dot"
+            [style.backgroundColor]="getBackgroundColor(source)"
+            [style.color]="getTextColor(source)"
+            [class.opacity-25]="!source.active"
+            title="{{ source.displayName }}">
+            {{ source.abbreviation }}
+          </span>
+        </div>
+      </td>
+
+    </tr>
+  </tbody>
+</table>
+
+
+
+      <ng-template #noResults>
+        <p class="text-muted mb-0 fst-italic">
+          No results found.
+        </p>
+      </ng-template>
+    </div>
+
+  </div>
+</div>
+
+
+</div>
+
+<ng-template #error>
+  <div class="container px-4 py-5">
+    <div class="mb-5">
+      <h1>404 Query Not Found</h1>
+    </div>
+    <div class="grid" style="--bs-columns: 1">
+      <div class="g-col-1">
+        <p><ngb-progressbar type="danger" [value]="100" [striped]="false" [animated]="false"></ngb-progressbar></p>
+      </div>
+      <div class="g-col-1">
+        <div class="d-flex justify-content-center">
+          <div class="d-grid gap-2">
+            <p>
+              <i class="bi bi-exclamation-triangle"></i>
+              <span> &nbsp; Query not found. It may have been deleted after not being accessed for a month. You are welcome to execute the query again.</span>
+            </p>
+            <button type="button" class="btn btn-primary btn-sm" routerLink="/">Home</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -7,6 +7,7 @@ from .models import QUERY_STATUS_RUNNING
 from .models import QUERY_STATUS_DONE
 from .models import QUERY_STATUS_ERROR
 from .models import Lipid
+from .models import LipidSource
 from .models import Query
 from .models import QueryResult
 
@@ -61,11 +62,17 @@ def execute_query(query_id):
         for result in query_results:
             lipid = Lipid.objects.create(
                 name=result.nomenclature.name,
-                level=result.nomenclature.level
+                level=result.nomenclature.level.name
             )
 
             content = ContentFile(format(result, "json"))
             lipid.file.save("", content)
+
+            for src in result.sources:
+                LipidSource.objects.create(
+                    lipid=lipid,
+                    source=src.source,
+                )
 
             QueryResult.objects.create(query=query, lipid=lipid)
 

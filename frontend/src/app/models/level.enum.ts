@@ -7,3 +7,14 @@ export enum Level {
   molecular_lipid_species = "molecular_lipid_species",
   isomeric_lipid_species = "isomeric_lipid_species",
 }
+
+
+export const LevelLabel: Record<Level, string> = {
+  [Level.level_unknown]: 'unknown',
+  [Level.lipid_category]: 'cateogory',
+  [Level.lipid_class]: 'class',
+  [Level.sum_lipid_species]: 'sum species',
+  [Level.structural_lipid_species]: 'structural species',
+  [Level.molecular_lipid_species]: 'molecular species',
+  [Level.isomeric_lipid_species]: 'isomeric species',
+};
