@@ -20,17 +20,17 @@ RUN git clone --single-branch --branch ${LIPIDLIBRARIAN_GIT_BRANCH} https://gith
 
 # Install LipidLibrarian
 WORKDIR /app/lipidlibrarian
-RUN make install
+RUN echo '[install]\ncompile = no\n[global]\nno-cache-dir = True' > /etc/pip.conf && \
+	make install install_optional && \
+	mv /app/lipidlibrarian/venv /opt/venv && \
+	ln -sf /opt/venv /app/lipidlibrarian/venv && \
+	ln -sf /opt/venv /app/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN mv /app/lipidlibrarian/venv /opt/venv
-RUN ln -sf /opt/venv /app/lipidlibrarian/venv
-RUN ln -sf /opt/venv /app/venv
 WORKDIR /app
 
 # Install django rest framework
 COPY requirements.txt ./
-RUN pip install --no-cache-dir --upgrade pip && \
- pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Bundle app source
 COPY ./lipidlibrarianweb ./lipidlibrarianweb
