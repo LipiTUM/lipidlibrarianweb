@@ -24,7 +24,8 @@ RUN echo '[install]\ncompile = no\n[global]\nno-cache-dir = True' > /etc/pip.con
 	make install install_optional && \
 	mv /app/lipidlibrarian/venv /opt/venv && \
 	ln -sf /opt/venv /app/lipidlibrarian/venv && \
-	ln -sf /opt/venv /app/venv
+	ln -sf /opt/venv /app/venv && \
+	ln -sf /opt/venv/lib/python3.11/site-packages/lynx /app/lynx
 ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app
 
