@@ -1,0 +1,147 @@
+name: lipidlibrarianweb
+
+services:
+  frontend:
+    build:
+      context: "./frontend"
+      dockerfile: "Containerfile"
+      args:
+        - APP_URL_DEST=${APP_URL_DEST}
+    environment:
+      - FRONTEND_PORT=8000
+      - BACKEND_HOST=backend
+      - BACKEND_PORT=8001
+    ports:
+      - "${APP_PORT}:8000"
+    volumes:
+      - dynamic_files:/usr/share/nginx/dynamic
+      - static_files:/usr/share/nginx/static
+    networks:
+      - network
+    depends_on:
+      - backend
+  cache:
+    image: valkey/valkey:9-alpine
+    networks:
+      - network
+  backend:
+    build:
+      context: "./backend"
+      dockerfile: "Containerfile"
+      args:
+        - LIPIDLIBRARIAN_GIT_BRANCH=${LIPIDLIBRARIAN_GIT_BRANCH}
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DB_NAME=${DB_NAME}
+      - DJANGO_DB_USER=${DB_USER}
+      - DJANGO_DB_PASSWORD=${DB_PASSWORD}
+      - DJANGO_CACHE_HOST=cache
+      - DJANGO_CACHE_PORT=6379
+      - ALEX123_DB_NAME=${ALEX123_DB_NAME}
+      - ALEX123_DB_USER=${ALEX123_DB_USER}
+      - ALEX123_DB_PASSWORD=${ALEX123_DB_PASSWORD}
+      - ALEX123_DB_HOST=alex123-db
+      - ALEX123_DB_PORT=3306
+    volumes:
+      - dynamic_files:/app/dynamic
+      - static_files:/app/static
+    networks:
+      - network
+    depends_on:
+      - db
+      - alex123-db
+      - cache
+  db:
+    image: postgres:alpine
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    networks:
+      - network
+  alex123-db:
+    image: mariadb:latest
+    environment:
+      - MARIADB_DATABASE=${ALEX123_DB_NAME}
+      - MARIADB_USER=${ALEX123_DB_USER}
+      - MARIADB_PASSWORD=${ALEX123_DB_PASSWORD}
+      - MARIADB_RANDOM_ROOT_PASSWORD=1
+      - MARIADB_AUTO_UPGRADE=1
+    volumes:
+      - alex123_db_data:/var/lib/mysql
+  worker01:
+    build:
+      context: "./backend"
+      dockerfile: "Containerfile"
+      args:
+        - LIPIDLIBRARIAN_GIT_BRANCH=${LIPIDLIBRARIAN_GIT_BRANCH}
+    command: worker
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DB_NAME=${DB_NAME}
+      - DJANGO_DB_USER=${DB_USER}
+      - DJANGO_DB_PASSWORD=${DB_PASSWORD}
+      - DJANGO_CACHE_HOST=cache
+      - DJANGO_CACHE_PORT=6379
+      - ALEX123_DB_NAME=${ALEX123_DB_NAME}
+      - ALEX123_DB_USER=${ALEX123_DB_USER}
+      - ALEX123_DB_PASSWORD=${ALEX123_DB_PASSWORD}
+      - ALEX123_DB_HOST=alex123-db
+      - ALEX123_DB_PORT=3306
+    volumes:
+      - dynamic_files:/app/dynamic
+      - static_files:/app/static
+    networks:
+      - network
+    depends_on:
+      - db
+      - alex123-db
+      - cache
+  worker02:
+    build:
+      context: "./backend"
+      dockerfile: "Containerfile"
+      args:
+        - LIPIDLIBRARIAN_GIT_BRANCH=${LIPIDLIBRARIAN_GIT_BRANCH}
+    command: worker
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_ALLOWED_HOSTS="localhost 127.0.0.1"
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DB_NAME=${DB_NAME}
+      - DJANGO_DB_USER=${DB_USER}
+      - DJANGO_DB_PASSWORD=${DB_PASSWORD}
+      - DJANGO_CACHE_HOST=cache
+      - DJANGO_CACHE_PORT=6379
+      - ALEX123_DB_NAME=${ALEX123_DB_NAME}
+      - ALEX123_DB_USER=${ALEX123_DB_USER}
+      - ALEX123_DB_PASSWORD=${ALEX123_DB_PASSWORD}
+      - ALEX123_DB_HOST=alex123-db
+      - ALEX123_DB_PORT=3306
+    volumes:
+      - dynamic_files:/app/dynamic
+      - static_files:/app/static
+    networks:
+      - network
+    depends_on:
+      - db
+      - alex123-db
+      - cache
+
+networks:
+  network:
+
+volumes:
+  db_data:
+  static_files:
+  dynamic_files:
+  alex123_db_data:

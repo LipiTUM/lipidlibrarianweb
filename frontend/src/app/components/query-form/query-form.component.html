@@ -10,12 +10,70 @@
       <div ngbAccordionCollapse>
         <div ngbAccordionBody>
           <ng-template>
-            <!--Search Term Field-->
+            <!-- Bulk Query Toggle -->
+            <div class="form-check form-switch mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="bulkQueryToggle"
+                formControlName="bulk_query"
+              >
+              <label class="form-check-label" for="bulkQueryToggle">
+                Batch query
+              </label>
+            </div>
+            <!-- Search Term Field -->
             <div class="form-floating mb-3">
-              <input class="form-control" formControlName="lipid_name" id="floatingLipidName" type="text">
-              <label for="floatingLipidName">Search Term</label>
-              <!-- Validation Lipid Name -->
-              <div *ngIf="lipid_name.invalid && (lipid_name.dirty || lipid_name.touched)" class="alert alert-danger">
+              <!-- Single-line input -->
+              <input
+                *ngIf="!is_bulk_query"
+                class="form-control mb-3"
+                formControlName="lipid_name"
+                id="floatingLipidName"
+                type="text"
+                placeholder="Search Term"
+              >
+              <div *ngIf="!is_bulk_query" class="d-inline-block" ngbDropdown>
+                <button class="btn btn-primary" id="dropdownBasic1" ngbDropdownToggle type="button">
+                  Examples
+                </button>
+                <div aria-labelledby="dropdownBasic1" ngbDropdownMenu>
+                  <button (click)="updateBasicSearchExamples('Cholesterol')" ngbDropdownItem type="button">Cholesterol</button>
+                  <button (click)="updateBasicSearchExamples('SE 27:1/18:1')" ngbDropdownItem type="button">SE 27:1/18:1</button>
+                  <button (click)="updateBasicSearchExamples('PC 34:0')" ngbDropdownItem type="button">PC 34:0</button>
+                  <button (click)="updateBasicSearchExamples('PC 16:0-18:0')" ngbDropdownItem type="button">PC 16:0-18:0
+                  </button>
+                  <button (click)="updateBasicSearchExamples('PC(18:1/20:0)')" ngbDropdownItem type="button">PC(18:1/20:0)
+                  </button>
+                  <button (click)="updateBasicSearchExamples('LPE 20:4(8Z,11Z,14Z,17Z)')" ngbDropdownItem type="button">LPE 20:4(8Z,11Z,14Z,17Z)
+                  </button>
+                  <button (click)="updateBasicSearchExamples('LacCer(d18:0/26:0)')" ngbDropdownItem type="button">LacCer(d18:0/26:0)
+                  </button>
+                  <button (click)="updateBasicSearchExamples('SLM:000487065')" ngbDropdownItem type="button">SLM:000487065
+                  </button>
+                </div>
+              </div>
+
+              <!-- Multi-line textarea -->
+              <textarea
+                *ngIf="is_bulk_query"
+                class="form-control"
+                formControlName="lipid_name"
+                id="floatingLipidName"
+                rows="5"
+                placeholder="One item per line"
+                style="height: auto"
+              ></textarea>
+
+              <label for="floatingLipidName">
+                {{ is_bulk_query ? 'Search Terms (one per line, max 15)' : 'Search Term' }}
+              </label>
+
+              <!-- Validation -->
+              <div
+                *ngIf="lipid_name.invalid && (lipid_name.dirty || lipid_name.touched)"
+                class="alert alert-danger mt-2"
+              >
                 <div *ngIf="lipid_name.errors?.['required']">
                   Lipid name is required.
                 </div>
@@ -28,26 +86,9 @@
                     <li>Special Symbols: /, _ , ( , ) , . , ; , : , + , - and ,</li>
                   </ul>
                 </div>
-              </div>
-            </div>
-            <div class="d-inline-block" ngbDropdown>
-              <button class="btn btn-primary" id="dropdownBasic1" ngbDropdownToggle type="button">
-                Examples
-              </button>
-              <div aria-labelledby="dropdownBasic1" ngbDropdownMenu>
-                <button (click)="updateBasicSearchExamples('Cholesterol')" ngbDropdownItem type="button">Cholesterol</button>
-                <button (click)="updateBasicSearchExamples('SE 27:1/18:1')" ngbDropdownItem type="button">SE 27:1/18:1</button>
-                <button (click)="updateBasicSearchExamples('PC 34:0')" ngbDropdownItem type="button">PC 34:0</button>
-                <button (click)="updateBasicSearchExamples('PC 16:0-18:0')" ngbDropdownItem type="button">PC 16:0-18:0
-                </button>
-                <button (click)="updateBasicSearchExamples('PC(18:1/20:0)')" ngbDropdownItem type="button">PC(18:1/20:0)
-                </button>
-                <button (click)="updateBasicSearchExamples('LPE 20:4(8Z,11Z,14Z,17Z)')" ngbDropdownItem type="button">LPE 20:4(8Z,11Z,14Z,17Z)
-                </button>
-                <button (click)="updateBasicSearchExamples('LacCer(d18:0/26:0)')" ngbDropdownItem type="button">LacCer(d18:0/26:0)
-                </button>
-                <button (click)="updateBasicSearchExamples('SLM:000487065')" ngbDropdownItem type="button">SLM:000487065
-                </button>
+                <div *ngIf="lipid_name.errors?.['maxItems']">
+                  Too many queries.
+                </div>
               </div>
             </div>
           </ng-template>
@@ -168,27 +209,87 @@
                 <div ngbAccordionCollapse>
                   <div ngbAccordionBody>
                     <ng-template>
-                      <!--Lipid Name Field-->
-                      <div class="form-floating mb-3">
-                        <input class="form-control" formControlName="lipid_name" id="floatingLipidName2" type="text">
-                        <label for="floatingLipidName">Search Term</label>
-                        <!-- Validation Lipid Name -->
-                        <div *ngIf="lipid_name.invalid && (lipid_name.dirty || lipid_name.touched)"
-                             class="alert alert-danger">
-                          <div *ngIf="lipid_name.errors?.['required']">
-                            Lipid name is required.
-                          </div>
-                          <div *ngIf="lipid_name.errors?.['pattern']">
-                            Lipid name must be composed of following symbols:
-                            <ul>
-                              <li>[A-Z] and [a-z]</li>
-                              <li>space</li>
-                              <li>0-9</li>
-                              <li>Special Symbols: /, _ , ( , ) , . , ; , : , + , - and ,</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
+                      <!-- Bulk Query Toggle -->
+            <div class="form-check form-switch mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="bulkQueryToggle"
+                formControlName="bulk_query"
+              >
+              <label class="form-check-label" for="bulkQueryToggle">
+                Batch query
+              </label>
+            </div>
+            <!-- Search Term Field -->
+            <div class="form-floating mb-3">
+              <!-- Single-line input -->
+              <input
+                *ngIf="!is_bulk_query"
+                class="form-control mb-3"
+                formControlName="lipid_name"
+                id="floatingLipidName"
+                type="text"
+                placeholder="Search Term"
+              >
+              <div *ngIf="!is_bulk_query" class="d-inline-block" ngbDropdown>
+                <button class="btn btn-primary" id="dropdownBasic1" ngbDropdownToggle type="button">
+                  Examples
+                </button>
+                <div aria-labelledby="dropdownBasic1" ngbDropdownMenu>
+                  <button (click)="updateBasicSearchExamples('Cholesterol')" ngbDropdownItem type="button">Cholesterol</button>
+                  <button (click)="updateBasicSearchExamples('SE 27:1/18:1')" ngbDropdownItem type="button">SE 27:1/18:1</button>
+                  <button (click)="updateBasicSearchExamples('PC 34:0')" ngbDropdownItem type="button">PC 34:0</button>
+                  <button (click)="updateBasicSearchExamples('PC 16:0-18:0')" ngbDropdownItem type="button">PC 16:0-18:0
+                  </button>
+                  <button (click)="updateBasicSearchExamples('PC(18:1/20:0)')" ngbDropdownItem type="button">PC(18:1/20:0)
+                  </button>
+                  <button (click)="updateBasicSearchExamples('LPE 20:4(8Z,11Z,14Z,17Z)')" ngbDropdownItem type="button">LPE 20:4(8Z,11Z,14Z,17Z)
+                  </button>
+                  <button (click)="updateBasicSearchExamples('LacCer(d18:0/26:0)')" ngbDropdownItem type="button">LacCer(d18:0/26:0)
+                  </button>
+                  <button (click)="updateBasicSearchExamples('SLM:000487065')" ngbDropdownItem type="button">SLM:000487065
+                  </button>
+                </div>
+              </div>
+
+              <!-- Multi-line textarea -->
+              <textarea
+                *ngIf="is_bulk_query"
+                class="form-control"
+                formControlName="lipid_name"
+                id="floatingLipidName"
+                rows="5"
+                placeholder="One item per line"
+                style="height: auto"
+              ></textarea>
+
+              <label for="floatingLipidName">
+                {{ is_bulk_query ? 'Search Terms (one per line, max 15)' : 'Search Term' }}
+              </label>
+
+              <!-- Validation -->
+              <div
+                *ngIf="lipid_name.invalid && (lipid_name.dirty || lipid_name.touched)"
+                class="alert alert-danger mt-2"
+              >
+                <div *ngIf="lipid_name.errors?.['required']">
+                  Lipid name is required.
+                </div>
+                <div *ngIf="lipid_name.errors?.['pattern']">
+                  Lipid name must be composed of following symbols:
+                  <ul>
+                    <li>[A-Z] and [a-z]</li>
+                    <li>space</li>
+                    <li>0-9</li>
+                    <li>Special Symbols: /, _ , ( , ) , . , ; , : , + , - and ,</li>
+                  </ul>
+                </div>
+                <div *ngIf="lipid_name.errors?.['maxItems']">
+                  Too many queries.
+                </div>
+              </div>
+            </div>
                     </ng-template>
                   </div>
                 </div>
@@ -222,7 +323,7 @@
                  0.1,
                  ['+H+', '+2H+', '+Na+', '+NH4+', '+[39]K+', '+[7]Li+', '+[6]Li+', '+H+ -H2O', '+CD3'],
                  ['-H+', '-2H+', '-3H+', '+CH3COO-', '+HCOO-',  '+[35]Cl-', '+[37]Cl-', '+CH3OCOO-', '-H+CH3COOH', '-H+CH3COONa', '-H+HCOOH', '-H+HCOONa', '-H+SO3-',  '+F-'],
-                 ['ALEX123', 'LipidMaps', 'LION', 'LINEX', 'SwissLipids']);
+                 ['ALEX¹²³', 'LipidMaps', 'LION', 'LINEX', 'SwissLipids']);
                 mzAccordion.expand('mz_search_field');
                 searchTermAccordion.collapse('search_term_field');"
                         ngbDropdownItem type="button">

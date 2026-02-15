@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM docker.io/library/python:3.11 as base
 
 # set environment variables
 ARG LIPIDLIBRARIAN_GIT_BRANCH
@@ -17,27 +17,48 @@ RUN apt-get update && apt-get install -y \
 
 # Clone and Checkout LipidLibrarian
 RUN git clone --single-branch --branch ${LIPIDLIBRARIAN_GIT_BRANCH} https://github.com/LipiTUM/lipidlibrarian.git /app/lipidlibrarian
-WORKDIR /app/lipidlibrarian
-
-# Install virtual environment to /app/venv
-ENV PATH="/app/venv/bin:$PATH"
-RUN ln -sf /app/lipidlibrarian/venv /app/venv
 
 # Install LipidLibrarian
-RUN make install
-
+WORKDIR /app/lipidlibrarian
+RUN echo '[install]\ncompile = no\n[global]\nno-cache-dir = True' > /etc/pip.conf && \
+	make install install_optional && \
+	mv /app/lipidlibrarian/venv /opt/venv && \
+	ln -sf /opt/venv /app/lipidlibrarian/venv && \
+	ln -sf /opt/venv /app/venv && \
+	ln -sf /opt/venv/lib/python3.11/site-packages/lynx /app/lynx
+ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app
 
+# Install django rest framework
 COPY requirements.txt ./
-RUN pip install --no-cache-dir --upgrade pip && \
- pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Bundle app source
 COPY ./lipidlibrarianweb ./lipidlibrarianweb
 COPY ./lipidlibrarianweb_api ./lipidlibrarianweb_api
 COPY ./manage.py ./
-COPY ./container-entrypoint.sh ./
 
-# Prepare the start command
+
+FROM base AS dev
+
+ENV BACKEND_PORT=8001
+ENV DJANGO_SETTINGS_MODULE=lipidlibrarianweb.settings.dev
+
+COPY ./container-entrypoint.dev.sh /container-entrypoint.sh
+RUN chmod +x /container-entrypoint.sh
+
+EXPOSE 8001
+ENTRYPOINT ["/container-entrypoint.sh"]
+
+
+FROM base AS prod
+
+ENV BACKEND_PORT=8001
+ENV DJANGO_SETTINGS_MODULE=lipidlibrarianweb.settings.prod
+
+COPY ./container-entrypoint.prod.sh ./container-entrypoint.sh
 RUN chmod +x container-entrypoint.sh
+
+EXPOSE 8001
 ENTRYPOINT ["/app/container-entrypoint.sh"]
+CMD ["backend"]

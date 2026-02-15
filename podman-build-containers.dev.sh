@@ -1,9 +1,28 @@
 #!/usr/bin/env bash
 
+source .env
+
+pushd backend
+
 echo "Building lipidlibrarianweb_backend OCI container..."
 
 buildah build --layers -f Containerfile \
     --build-arg LIPIDLIBRARIAN_GIT_BRANCH=${LIPIDLIBRARIAN_GIT_BRANCH} \
+    --target dev \
     -t lipidlibrarianweb_backend .
 
 echo "Building lipidlibrarianweb_backend OCI container done."
+
+popd
+
+pushd frontend
+
+echo "Building lipidlibrarianweb_frontend OCI container..."
+
+buildah build --layers -f Containerfile \
+  --target dev \
+  -t lipidlibrarianweb_frontend .
+
+echo "Building lipidlibrarianweb_frontend OCI container done."
+
+popd

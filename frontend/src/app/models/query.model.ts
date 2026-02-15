@@ -4,6 +4,7 @@ import { Status } from "./status.enum";
 
 export class Query {
   id!: string;
+  type!: string;
   token!: string;
   query_string!: string;
   query_filters!: string;
@@ -14,6 +15,7 @@ export class Query {
   constructor(data?: any) {
     if (data) {
       this.id = data.id;
+      this.type = data.type;
       this.token = data.token;
       this.query_string = data.query_string;
       this.query_filters = data.query_filters;

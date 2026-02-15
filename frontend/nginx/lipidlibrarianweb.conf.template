@@ -4,15 +4,15 @@ server {
 
   client_max_body_size 1G;
 
-  location /api {
-    proxy_pass http://${BACKEND_HOSTNAME}:${BACKEND_PORT}/api;
+  location /api/ {
+    proxy_pass http://${BACKEND_HOST}:${BACKEND_PORT};
   }
 
-  location /static {
+  location /static/ {
     alias /usr/share/nginx/static/;
   }
 
-  location /dynamic {
+  location /dynamic/ {
     alias /usr/share/nginx/dynamic/;
   }
 

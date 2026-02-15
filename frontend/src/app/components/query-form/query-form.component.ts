@@ -11,6 +11,7 @@ import {CheckboxComponent} from '../checkbox/checkbox.component';
 import {NotificationService} from 'src/app/services/notification.service';
 import {noBoxesCheckedValidator} from "src/app/directives/at-least-one-box-checked.directive";
 
+import {maxLinesValidator} from "./query-form.validation";
 
 @Component({
     selector: 'app-query-form',
@@ -57,7 +58,7 @@ export class QueryFormComponent implements OnInit {
     {id: 13, value: '+F-', isSelected: true},
   ];
   querySources: Array<Checkbox> = [
-    {id: 1, value: 'ALEX123', isSelected: true},
+    {id: 1, value: 'ALEX¹²³', isSelected: true},
     {id: 2, value: 'LipidMaps', isSelected: true},
     {id: 3, value: 'LION', isSelected: true},
     {id: 4, value: 'LINEX', isSelected: true},
@@ -77,7 +78,6 @@ export class QueryFormComponent implements OnInit {
     return this.queryForm.controls;
   }
 
-
   get is_mz_search() {
     return this.queryForm.get("mz_search")?.value == "mz_search";
   }
@@ -88,6 +88,10 @@ export class QueryFormComponent implements OnInit {
 
   get is_advanced_search() {
     return this.queryForm.get("advanced")?.value;
+  }
+
+  get is_bulk_query() {
+    return this.queryForm.get("bulk_query")?.value;
   }
 
   get lipid_name() {
@@ -114,11 +118,9 @@ export class QueryFormComponent implements OnInit {
     return this.queryForm.get('sources')!;
   }
 
-
   get is_basic_search_valid() {
     return (!this.is_advanced_search && this.lipid_name.valid);
   }
-
 
   get is_advanced_search_valid() {
     return (this.is_advanced_search && this.query_sources.valid &&
@@ -166,8 +168,9 @@ export class QueryFormComponent implements OnInit {
   ngOnInit(): void {
     this.queryForm = new FormGroup({
       mz_search: new FormControl("not_selected"),
+      bulk_query: new FormControl(false),
       advanced: new FormControl(false),
-      lipid_name: new FormControl('', [Validators.required, Validators.pattern("[A-Za-z-+\\/\\_\\(\\)\\;\\,\\.\\d: ]*")]),
+      lipid_name: new FormControl('', [Validators.required, Validators.pattern("[A-Za-z\\d \\-+/_();,.:\\s]*"), maxLinesValidator(15)]),
       mz_value: new FormControl('', [Validators.required]),
       tolerance: new FormControl('0.05', [Validators.required, Validators.min(0), Validators.max(1)]),
       positiveAdducts: new FormControl(Array<Checkbox>, [noBoxesCheckedValidator]),
@@ -242,21 +245,40 @@ export class QueryFormComponent implements OnInit {
 
     console.log("[app.component::onSubmit] Processed Submit Request: query_string: " + query_string + "; query filters: "+ query_filters+"; Executing Query;")
 
-    this.queryService.executeQuery(query_string, query_filters).subscribe({
-      next: (data: any) => {
-        let query = new Query(data);
-        console.log("[query-form.component::onSubmit] Query Executed successfully: " + JSON.stringify(data) + ";")
-        this.showQuerySuccessNotification(query_string);
-        this.router.navigate(['/', 'query', query.id]).then(nav => {
-          console.log("[query-form.component::onSubmit] Navigating to the corresponding Query View;");
-        }, err => {
-          console.log(err);
-        });
-      },
-      error: (data: any) => {
-        this.showBackendNotAvailableNotification();
-        console.log("[query-form.component::onSubmit] Executing Query returned an Error: " + JSON.stringify(data) + ";");
-      }
-    });
+    if (this.is_bulk_query) {
+      this.queryService.executeBulkQuery(query_string, query_filters).subscribe({
+        next: (data: any) => {
+          let query = new Query(data);
+          console.log("[query-form.component::onSubmit] Bulk Query Executed successfully: " + JSON.stringify(data) + ";")
+          this.showQuerySuccessNotification(query_string);
+          this.router.navigate(['/', 'query', query.id]).then(nav => {
+            console.log("[query-form.component::onSubmit] Navigating to the corresponding Bulk Query View;");
+          }, err => {
+            console.log(err);
+          });
+        },
+        error: (data: any) => {
+          this.showBackendNotAvailableNotification();
+          console.log("[query-form.component::onSubmit] Executing Query returned an Error: " + JSON.stringify(data) + ";");
+        }
+      });
+    } else {
+      this.queryService.executeQuery(query_string, query_filters).subscribe({
+        next: (data: any) => {
+          let query = new Query(data);
+          console.log("[query-form.component::onSubmit] Query Executed successfully: " + JSON.stringify(data) + ";")
+          this.showQuerySuccessNotification(query_string);
+          this.router.navigate(['/', 'query', query.id]).then(nav => {
+            console.log("[query-form.component::onSubmit] Navigating to the corresponding Query View;");
+          }, err => {
+            console.log(err);
+          });
+        },
+        error: (data: any) => {
+          this.showBackendNotAvailableNotification();
+          console.log("[query-form.component::onSubmit] Executing Query returned an Error: " + JSON.stringify(data) + ";");
+        }
+      });
+    }
   }
 }

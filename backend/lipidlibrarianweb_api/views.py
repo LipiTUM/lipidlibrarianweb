@@ -6,21 +6,27 @@ from rdkit.Chem import Draw
 from urllib.parse import unquote
 
 from django.http import FileResponse
+from django.shortcuts import get_object_or_404
+from django.db import transaction
+from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.decorators import renderer_classes
 
-from .query import duplicate_query
-from .query import execute_query
+from .tasks import duplicate_query
+from .tasks import execute_query
 from .renderers import PNGRenderer
 from .renderers import MP3Renderer
 from .models import Query
 from .models import Lipid
+from .models import BulkQuery
+from .models import BulkQueryItem
 from .models import QUERY_STATUS_DONE
 from .serializers import QuerySerializer
 from .serializers import LipidSerializer
+from .serializers import BulkQuerySerializer
 
 
 class QueryView(APIView):
@@ -48,10 +54,12 @@ class QueryView(APIView):
         :returns: the created query database entry, or a bad request negative status code
         """
         query_data = {
-            "query_string": request.POST.get('query_string'),
-            "query_filters": request.POST.get('query_filters'),
-            "token": request.POST.get('token'),
+            "query_string": request.data.get('query_string'),
+            "query_filters": request.data.get('query_filters'),
+            "token": request.data.get('token'),
         }
+        if query_data["query_filters"] == "":
+            query_data["query_filters"] = "source=ALEX123;source=LipidMaps;source=LION;source=LINEX;source=SwissLipids;cutoff=5;requeries=1"
         query_serializer = QuerySerializer(data=query_data)
         if query_serializer.is_valid():
             query = query_serializer.save()
@@ -59,39 +67,181 @@ class QueryView(APIView):
             if queryset:
                 # query has already been executed; duplicating...
                 existing_query = queryset.first()
-                thread = threading.Thread(target=duplicate_query, args=(query, existing_query,))
+                if "django_q" in settings.INSTALLED_APPS:
+                    from django_q.tasks import async_task
+                    async_task("lipidlibrarianweb_api.tasks.duplicate_query", query.id, existing_query.id)
+                else:
+                    threading.Thread(
+                        target=duplicate_query,
+                        args=(query.id, existing_query.id),
+                        daemon=True,
+                    ).start()
             else:
                 # query has not already been executed; querying...
-                thread = threading.Thread(target=execute_query, args=(query,))
-            thread.start()
+                if "django_q" in settings.INSTALLED_APPS:
+                    from django_q.tasks import async_task
+                    async_task("lipidlibrarianweb_api.tasks.execute_query", query.id)
+                else:
+                    threading.Thread(
+                        target=execute_query,
+                        args=(query.id,),
+                        daemon=True,
+                    ).start()
             return Response(query_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(query_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class BulkQueryView(APIView):
+    """
+    API endpoint for submitting multiple queries as a bulk query.
+    """
+
+    def get(self, request, *args, **kwargs):
+        """
+        Get all bulk queries for a given token, including nested items.
+        """
+        token = request.GET.get('token')
+        queryset = BulkQuery.objects.filter(token=token)
+        serializer = BulkQuerySerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Submit a bulk query consisting of multiple Query objects.
+        The POST data should contain:
+        {
+            "token": "...",
+            "items": [
+                {"query": {"query_string": "...", "query_filters": "..."}},
+                ...
+            ]
+        }
+        """
+        token = request.data.get('token')
+        items_data = request.data.get('items', [])
+
+        if not token or not items_data:
+            return Response(
+                {"detail": "token and items are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        with transaction.atomic():
+            bulk_query = BulkQuery.objects.create(token=token)
+
+            for item_data in items_data:
+                query_data = item_data.get('query', {})
+                query_data['token'] = token
+                if query_data["query_filters"] == "":
+                    query_data["query_filters"] = "source=ALEX123;source=LipidMaps;source=LION;source=LINEX;source=SwissLipids;cutoff=5;requeries=1"
+
+                # Validate and create the Query
+                query_serializer = QuerySerializer(data=query_data)
+                if query_serializer.is_valid():
+                    query = query_serializer.save()
+                else:
+                    return Response(query_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+                # Create the mapping
+                BulkQueryItem.objects.create(bulk_query=bulk_query, query=query)
+
+                # Deduplication: check for an already executed identical query
+                existing_query = Query.objects.filter(
+                    query_string=query.query_string,
+                    query_filters=query.query_filters,
+                    status=QUERY_STATUS_DONE
+                ).first()
+
+                if existing_query:
+                    # Duplicate instead of re-executing
+                    if "django_q" in settings.INSTALLED_APPS:
+                        from django_q.tasks import async_task
+                        async_task("lipidlibrarianweb_api.tasks.duplicate_query", query.id, existing_query.id)
+                    else:
+                        threading.Thread(
+                            target=duplicate_query,
+                            args=(query.id, existing_query.id),
+                            daemon=True,
+                        ).start()
+                else:
+                    # Execute new query
+                    if "django_q" in settings.INSTALLED_APPS:
+                        from django_q.tasks import async_task
+                        async_task("lipidlibrarianweb_api.tasks.execute_query", query.id)
+                    else:
+                        threading.Thread(
+                            target=execute_query,
+                            args=(query.id,),
+                            daemon=True,
+                        ).start()
+
+        # Serialize the bulk query including nested items for the response
+        serializer = BulkQuerySerializer(bulk_query)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 @api_view(['GET', 'DELETE'])
 def get_query(request, query_id):
-    query = Query.objects.filter(id=query_id).first()
+    query = get_object_or_404(Query, id=query_id)
     
     if request.method == 'DELETE':
         query.delete()
         return Response(status=status.HTTP_200_OK)
 
     if request.method == 'GET':
-        if query:
-            query_serializer = QuerySerializer(query)
-            return Response(query_serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            QuerySerializer(query).data,
+            status=status.HTTP_200_OK
+        )
+
+
+@api_view(['GET', 'DELETE'])
+def get_bulk_query(request, bulk_query_id):
+    bulk_query = get_object_or_404(BulkQuery, id=bulk_query_id)
+
+    if request.method == 'DELETE':
+        bulk_query.delete()
+        return Response(status=status.HTTP_200_OK)
+    
+    if request.method == 'GET':
+        return Response(
+            BulkQuerySerializer(bulk_query).data,
+            status=status.HTTP_200_OK
+        )
+
+@api_view(['GET'])
+def get_query_or_bulk_query(request, query_id):
+    """
+    Get either a single Query or a BulkQuery by ID.
+    Returns:
+    - type: "query" or "bulk"
+    - serialized data
+    """
+    # Try single Query first
+    try:
+        query = Query.objects.get(id=query_id)
+        serializer = QuerySerializer(query)
+        return Response(serializer.data)
+    except Query.DoesNotExist:
+        pass
+
+    # Try BulkQuery
+    try:
+        bulk = BulkQuery.objects.prefetch_related('items__query').get(id=query_id)
+        serializer = BulkQuerySerializer(bulk)
+        return Response(serializer.data)
+    except BulkQuery.DoesNotExist:
+        return Response(
+            {"detail": "Query or BulkQuery not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
 
 @api_view(['GET'])
 def lipid(request, lipid_id):
-    lipid = Lipid.objects.filter(id=lipid_id).first()
-    if lipid:
-        return FileResponse(lipid.file.open())
-    else:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    lipid = get_object_or_404(Lipid, id=lipid_id)
+    return FileResponse(lipid.file.open())
 
 
 @api_view(['GET'])
@@ -131,3 +281,10 @@ def debug_query(request):
     queryset = Query.objects.all()
     query_serializer = QuerySerializer(queryset, many=True)
     return Response(query_serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def debug_bulk_query(request):
+    queryset = BulkQuery.objects.all()
+    bulk_query_serializer = BulkQuerySerializer(queryset, many=True)
+    return Response(bulk_query_serializer.data, status=status.HTTP_200_OK)

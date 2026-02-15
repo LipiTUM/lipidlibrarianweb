@@ -1,13 +1,17 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
-import { Observable, catchError, combineLatest, map, of, switchMap, takeWhile, timer } from 'rxjs';
+import { ActivatedRoute, RouterLink, ParamMap } from '@angular/router';
+import { Observable, catchError, tap, map, of, switchMap } from 'rxjs';
 
 import { NgbProgressbarModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { Query } from 'src/app/models/query.model';
+import { BulkQuery } from 'src/app/models/bulk-query.model';
 import { QueryService } from 'src/app/services/query.service';
+import { QueryCardComponent } from 'src/app/components/query-card/query-card.component'
 
+
+type QueryOrBulk = Query | BulkQuery;
 
 @Component({
     selector: 'app-query',
@@ -16,15 +20,16 @@ import { QueryService } from 'src/app/services/query.service';
         NgFor,
         AsyncPipe,
         RouterLink,
-        NgbProgressbarModule
+        NgbProgressbarModule,
+        QueryCardComponent,
     ],
     templateUrl: './query.component.html',
     styleUrls: ['./query.component.sass']
 })
 export class QueryComponent implements OnInit {
-  query$?: Observable<Query | undefined>;
-  reloadEvents$: EventEmitter<any> = new EventEmitter();
+  queries$!: Observable<Query[]> | undefined;
   errorObject?: any;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -32,23 +37,35 @@ export class QueryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.reloadEvents$.subscribe(() => {});
-    combineLatest([this.route.paramMap, this.reloadEvents$]).subscribe(
-      ([params, reloadEvent]) => {
-        this.query$ = timer(0, 5000).pipe(
-          switchMap(() => {
-            this.errorObject = undefined;
-            return this.queryService.getQuery(params.get('query_id')!)
-          }),
-          map((query_data: any) => new Query(query_data)),
-          takeWhile((query: Query) => query.status !== 'done', true),
-          catchError((err: any) => {
-            this.errorObject = err;
-            return of(undefined);
-          })
-        );
-      }
+    this.queries$ = this.route.paramMap.pipe(
+      switchMap((params: ParamMap) =>
+        this.queryService.getQueryOrBulkQuery(params.get('query_id')!)
+      ),
+      map(result => {
+        if (!result) {
+          throw new Error('Empty response from backend');
+        }
+        return this.normalize(result as QueryOrBulk);
+      }),
+      tap({
+        error: err => console.log('PIPE ERROR:', err)
+      }),
+      catchError(err => {
+        this.errorObject = err;
+        return of([]);
+      })
     );
-    this.reloadEvents$.emit();
+  }
+
+  private normalize(result: QueryOrBulk): Query[] {
+    if (result.type === 'bulk') {
+      return (result as BulkQuery).items.map((item: any) => new Query(item));
+    } else {
+      return [(result as Query)];
+    }
+  }
+
+  trackByQueryId(_: number, query: Query) {
+    return query.id;
   }
 }

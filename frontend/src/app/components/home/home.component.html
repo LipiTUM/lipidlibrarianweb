@@ -1,7 +1,8 @@
 <div class="container px-4 py-5 text-center">
   <div class="grid py-5" style="--bs-columns: 1; --bs-gap: 1rem">
     <div class="g-col">
-      <img alt="" class="d-block mx-auto" height="57" src="assets/logo_horizontal.png">
+      <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" alt="" class="d-block mx-auto" height="57" src="assets/logo_horizontal.png">
+      <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" alt="" class="d-block mx-auto" height="57" src="assets/logo_horizontal_dark.png">
     </div>
     <div class="g-col-1">
       <h1 class="display-5 fw-bold">Lipid Librarian</h1>
