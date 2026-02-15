@@ -58,7 +58,7 @@ export class QueryFormComponent implements OnInit {
     {id: 13, value: '+F-', isSelected: true},
   ];
   querySources: Array<Checkbox> = [
-    {id: 1, value: 'ALEX123', isSelected: true},
+    {id: 1, value: 'ALEX¹²³', isSelected: true},
     {id: 2, value: 'LipidMaps', isSelected: true},
     {id: 3, value: 'LION', isSelected: true},
     {id: 4, value: 'LINEX', isSelected: true},
