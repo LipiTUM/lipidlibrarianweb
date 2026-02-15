@@ -5,7 +5,7 @@ server {
   client_max_body_size 1G;
 
   location /api/ {
-    proxy_pass http://${BACKEND_HOST}:${BACKEND_PORT}/api;
+    proxy_pass http://${BACKEND_HOST}:${BACKEND_PORT};
   }
 
   location /static/ {
