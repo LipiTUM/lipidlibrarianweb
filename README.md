@@ -4,7 +4,6 @@
 - [LipidLibarianWeb](#lipidlibarianweb)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
-  - [Development Deployment](#development-deployment)
   - [Deployment](#deployment)
     - [Build](#build)
     - [Start](#start)
