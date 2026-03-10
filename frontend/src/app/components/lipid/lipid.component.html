@@ -10,7 +10,6 @@
           <a class="nav-link" routerLink="." fragment="lipid_overview" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_overview')">Overview</a>
           <a *ngIf="lipid.adducts.length" class="nav-link" routerLink="." fragment="lipid_adducts" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_adducts')">Adducts</a>
           <a *ngIf="lipid.adducts.length" class="nav-link" routerLink="." fragment="lipid_fragments" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_fragments')">Fragments</a>
-          <a *ngIf="lipid.database_identifiers.length" class="nav-link" routerLink="." fragment="lipid_database_identifiers" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_database_identifiers')">Database Identifiers</a>
           <a *ngIf="lipid.nomenclature.structure_identifiers.length" class="nav-link" routerLink="." fragment="lipid_structure_identifiers" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_structure_identifiers')">Structure Identifiers</a>
           <a *ngIf="lipid.nomenclature.synonyms.length" class="nav-link" routerLink="." fragment="lipid_synonyms" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_synonyms')">Synonyms</a>
           <a *ngIf="lipid.ontology.ontology_terms.length" class="nav-link" routerLink="." fragment="lipid_ontology" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_ontology')">Ontology</a>
@@ -23,56 +22,139 @@
         <div id="lipid_overview">
           <div class="card mb-3">
             <div class="card-header"><h4>Overview</h4></div>
-            <div class="card-body" id="lipid_overview_body">
-              <div class="grid" style="--bs-columns: 2;">
-                <div class="g-col-2 g-col-xl-1">
-                  <div *ngIf="getStructureForRender(lipid)">
-                    <img [src]="getBackendPreviewURL(lipid)" style="max-width:100%;max-height:100%;height:auto;">
+            <div class="card-body p-0">
+
+              <!-- Main overview section -->
+              <div class="grid px-4 pt-4 pb-2" style="--bs-columns: 2;">
+
+                <!-- Structure image -->
+                <div class="g-col-2 g-col-xl-1 d-flex flex-column align-items-center justify-content-start">
+                  <div *ngIf="getStructureForRender(lipid)" class="structure-img-wrapper w-100">
+                    <img [src]="getBackendPreviewURL(lipid)"
+                         class="img-fluid rounded"
+                         style="max-height: 280px; object-fit: contain;">
                   </div>
-                  <div *ngIf="getExampleStructureForRender(lipid)">
-                    <img [src]="getBackendExamplePreviewURL(lipid)" style="max-width:100%;max-height:100%;height:auto;">
-                    <p>*not the actual lipid</p>
+                  <div *ngIf="getExampleStructureForRender(lipid)" class="structure-img-wrapper w-100">
+                    <img [src]="getBackendExamplePreviewURL(lipid)"
+                         class="img-fluid rounded"
+                         style="max-height: 280px; object-fit: contain;">
+                    <p class="text-muted small fst-italic mt-1 mb-0 text-center">
+                      <i class="bi bi-info-circle me-1"></i>Representative structure — not this specific lipid
+                    </p>
                   </div>
-                  <div *ngIf="getDefinitionForRender(lipid)">
-                    <p>{{ getDefinitionForRender(lipid) }}</p>
+                  <div *ngIf="getDefinitionForRender(lipid)" class="mt-3">
+                    <p class="text-muted small">{{ getDefinitionForRender(lipid) }}</p>
                   </div>
                 </div>
-                <div class="g-col-1 g-col-xl-1">
-                  <h5>Name:</h5>
-                  <ul>
-                    <li>{{ lipid.nomenclature.name }}</li>
-                  </ul>
-                  <h5>Level:</h5>
-                  <ul>
-                    <li>{{ lipid.nomenclature.level }}</li>
-                  </ul>
-                  <h5>Class:</h5>
-                  <ul>
-                    <li>{{ lipid.nomenclature.lipid_class }} ({{ lipid.nomenclature.lipid_class_abbreviation }})</li>
-                  </ul>
-                  <h5>Category:</h5>
-                  <ul>
-                    <li>{{ lipid.nomenclature.lipid_category }}</li>
-                  </ul>
-                  <h5>Mass:</h5>
-                  <ul>
-                    <li *ngFor="let mass of lipid.masses">{{ mass.mass_type }}: {{ mass.value }}</li>
-                  </ul>
-                  <h5>Sources:</h5>
-                  <ul>
-                    <li *ngFor="let source of lipid.sources">{{ source.source }} ({{ source.lipid_level }}: {{ source.lipid_name }})</li>
-                  </ul>
+
+                <!-- Properties -->
+                <div class="g-col-2 g-col-xl-1">
+                  <dl class="overview-dl">
+
+                    <!-- Name + formula -->
+                    <div class="overview-dl__row">
+                      <dt>Shorthand Name</dt>
+                      <dd><span class="fw-semibold">{{ lipid.nomenclature.name }}</span></dd>
+                    </div>
+
+                    <div *ngIf="lipid.nomenclature.sum_formula" class="overview-dl__row">
+                      <dt>Sum Formula</dt>
+                      <dd>
+                        <span class="text-muted small font-monospace">
+                          {{ lipid.nomenclature.sum_formula }}
+                        </span>
+                      </dd>
+                    </div>
+
+                    <div class="overview-dl__divider"></div>
+
+                    <!-- Taxonomy rows -->
+                    <div class="overview-dl__row">
+                      <dt>Category</dt>
+                      <dd>{{ lipid.nomenclature.lipid_category }}</dd>
+                    </div>
+
+                    <div class="overview-dl__row">
+                      <dt>Class</dt>
+                      <dd>
+                        {{ lipid.nomenclature.lipid_class }}
+                        <span *ngIf="lipid.nomenclature.lipid_class_abbreviation">
+                          ({{ lipid.nomenclature.lipid_class_abbreviation }})
+                        </span>
+                      </dd>
+                    </div>
+
+                    <div class="overview-dl__row">
+                      <dt>Level</dt>
+                      <dd>
+                        <span class="badge bg-secondary">
+                          {{ getLevelLabel(lipid.nomenclature.level) }}
+                        </span>
+                      </dd>
+                    </div>
+
+                    <div class="overview-dl__divider"></div>
+
+                    <!-- Mass rows -->
+                    <div class="overview-dl__row" *ngFor="let mass of getGroupedMasses(lipid)">
+                      <dt>{{ mass.mass_type }}</dt>
+                      <dd class="d-flex align-items-center flex-wrap gap-2">
+                        <span class="font-monospace">{{ mass.value | number:'1.4-6' }}</span>
+                        <span *ngFor="let src of mass.sources"
+                              class="source-chip source-chip--sm"
+                              title="{{ formatSourceName(src.source) }}: {{ src.lipid_level }} · {{ src.lipid_name }}">
+                          {{ formatSourceName(src.source) }}
+                        </span>
+                      </dd>
+                    </div>
+
+                  </dl>
                 </div>
               </div>
+
+              <!-- Data provenance band -->
+              <div class="provenance-band border-top mt-2 px-4 py-3">
+                <p class="text-uppercase fw-semibold small text-muted mb-2 letter-spacing-1">
+                  <i class="bi bi-database me-1"></i>Recorded in
+                </p>
+
+                <!-- Sources with a database identifier and link -->
+                <div *ngIf="lipid.database_identifiers.length" class="d-flex flex-wrap gap-2 mb-2">
+                  <a *ngFor="let dbid of lipid.database_identifiers"
+                    [href]="dbid.url"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    class="db-source-card text-decoration-none"
+                    [title]="formatSourceName(dbid.database!) + ': ' + dbid.identifier">
+                    <span class="db-source-card__name">{{ formatSourceName(dbid.database!) }}</span>
+                    <span class="db-source-card__id font-monospace">{{ dbid.identifier }}</span>
+                    <i class="bi bi-box-arrow-up-right db-source-card__icon"></i>
+                  </a>
+                </div>
+
+                <!-- Sources without a database identifier -->
+                <div *ngIf="getSourcesWithoutDatabaseIdentifier(lipid).length"
+                    class="d-flex flex-wrap gap-2">
+                  <span *ngFor="let src of getSourcesWithoutDatabaseIdentifier(lipid)"
+                        class="source-chip"
+                        title="{{ src.lipid_level }}: {{ src.lipid_name }}">
+                    {{ formatSourceName(src.source) }}
+                    <span class="source-chip__meta">{{ getLevelLabel(src.lipid_level) }} · {{ src.lipid_name }}</span>
+                  </span>
+                </div>
+
+                <!-- Fallback: no sources -->
+                <p *ngIf="!lipid.database_identifiers.length && !lipid.sources.length"
+                  class="text-muted small mb-0 fst-italic">No source information available.</p>
+              </div>
+
             </div>
           </div>
         </div>
 
         <div *ngIf="lipid.adducts.length" id="lipid_adducts" ngbScrollSpyFragment="lipid_adducts">
           <div class="card mb-3">
-            <div class="card-header">
-              <h4>Adducts</h4>
-            </div>
+            <div class="card-header"><h4>Adducts</h4></div>
             <div class="card-body">
               <app-adduct-table [lipid$]="lipid$"></app-adduct-table>
             </div>
@@ -81,31 +163,16 @@
 
         <div *ngIf="lipid.adducts.length" id="lipid_fragments" ngbScrollSpyFragment="lipid_fragments">
           <div class="card mb-3">
-            <div class="card-header">
-              <h4>Fragments</h4>
-            </div>
+            <div class="card-header"><h4>Fragments</h4></div>
             <div class="card-body">
               <app-fragment-table [lipid$]="lipid$"></app-fragment-table>
             </div>
           </div>
         </div>
 
-        <div *ngIf="lipid.database_identifiers.length" id="lipid_database_identifiers" ngbScrollSpyFragment="lipid_database_identifiers">
-          <div class="card mb-3">
-            <div class="card-header">
-              <h4>Database Identifiers</h4>
-            </div>
-            <div class="card-body">
-              <app-database-identifier-table [lipid$]="lipid$"></app-database-identifier-table>
-            </div>
-          </div>
-        </div>
-
         <div *ngIf="lipid.nomenclature.structure_identifiers.length" id="lipid_structure_identifiers" ngbScrollSpyFragment="lipid_structure_identifiers">
           <div class="card mb-3">
-            <div class="card-header">
-              <h4>Structure Identifiers</h4>
-            </div>
+            <div class="card-header"><h4>Structure Identifiers</h4></div>
             <div class="card-body">
               <app-structure-identifier-table [lipid$]="lipid$"></app-structure-identifier-table>
             </div>
@@ -114,9 +181,7 @@
 
         <div *ngIf="lipid.nomenclature.synonyms.length" id="lipid_synonyms" ngbScrollSpyFragment="lipid_synonyms">
           <div class="card mb-3">
-            <div class="card-header">
-              <h4>Synonyms</h4>
-            </div>
+            <div class="card-header"><h4>Synonyms</h4></div>
             <div class="card-body">
               <app-synonym-table [lipid$]="lipid$"></app-synonym-table>
             </div>
@@ -125,9 +190,7 @@
 
         <div *ngIf="lipid.ontology.ontology_terms.length" id="lipid_ontology" ngbScrollSpyFragment="lipid_ontology">
           <div class="card mb-3">
-            <div class="card-header">
-              <h4>Ontology</h4>
-            </div>
+            <div class="card-header"><h4>Ontology</h4></div>
             <div class="card-body">
               <app-ontology-graph [lipid$]="lipid$"></app-ontology-graph>
             </div>
@@ -136,9 +199,7 @@
 
         <div *ngIf="lipid.reactions.length" id="lipid_reactions" ngbScrollSpyFragment="lipid_reactions">
           <div class="card mb-3">
-            <div class="card-header">
-              <h4>Reactions</h4>
-            </div>
+            <div class="card-header"><h4>Reactions</h4></div>
             <div class="card-body">
               <div ngbAccordion [closeOthers]="true">
                 <div ngbAccordionItem *ngFor="let reaction of lipid.reactions">
@@ -151,8 +212,8 @@
                         <table class="table table-striped">
                           <thead>
                             <tr>
-                              <th scope="col" databaseIdentifierSortableAttribute="database">Database</th>
-                              <th scope="col" databaseIdentifierSortableAttribute="identifier">Identifier</th>
+                              <th scope="col">Database</th>
+                              <th scope="col">Identifier</th>
                               <th scope="col">Link</th>
                             </tr>
                           </thead>
@@ -175,17 +236,16 @@
 
         <div id="lipid_download" ngbScrollSpyFragment="lipid_download">
           <div class="card mb-3">
-            <div class="card-header">
-              <h4>Download</h4>
-            </div>
+            <div class="card-header"><h4>Download</h4></div>
             <div class="card-body">
               <div class="grid px-4" style="--bs-columns: 3">
-                <a class="btn btn-lg btn-outline-primary g-col-1" [href]="generateDownloadUrl(lipid)" download="{{ lipid.nomenclature.name }}.json">Download JSON</a>
-                <button *ngIf="isDevelopmentDeployment()" class="btn btn-lg btn-outline-primary g-col-1" (click)="generatePDF(lipid)">Download PDF</button>
+                <a class="btn btn-lg btn-outline-primary g-col-1" [href]="generateDownloadUrlJSON()" download="{{ lipid.nomenclature.name }}.json">Download JSON</a>
+                <a class="btn btn-lg btn-outline-primary g-col-1" [href]="generateDownloadUrlHTML()" download="{{ lipid.nomenclature.name }}.html">Download HTML</a>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -195,9 +255,7 @@
   <div *ngIf="errorObject; else waitingForData">
     <div *ngIf="errorObject.status == 404; else backendError">
       <div class="container px-4 py-5">
-        <div class="mb-5">
-          <h1>404 Lipid Not Found</h1>
-        </div>
+        <div class="mb-5"><h1>404 Lipid Not Found</h1></div>
         <div class="d-grid gap-2">
           <p>
             <i class="bi bi-exclamation-triangle"></i>
@@ -211,9 +269,7 @@
 
   <ng-template #backendError>
     <div class="container px-4 py-5">
-      <div class="mb-5">
-        <h1>Connection Error</h1>
-      </div>
+      <div class="mb-5"><h1>Connection Error</h1></div>
       <div class="d-grid gap-2">
         <p>
           <i class="bi bi-exclamation-triangle"></i>
@@ -226,9 +282,7 @@
 
   <ng-template #waitingForData>
     <div class="container px-4 py-5">
-      <div class="mb-5">
-        <h1>Loading Lipid...</h1>
-      </div>
+      <div class="mb-5"><h1>Loading Lipid...</h1></div>
       <div class="d-flex justify-content-center">
         <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">Loading...</span>

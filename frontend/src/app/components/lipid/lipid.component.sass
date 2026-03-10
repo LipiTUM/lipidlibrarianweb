@@ -7,3 +7,110 @@
     z-index: 2
     height: calc(100vh - 7rem)
     overflow-y: auto
+
+.overview-dl
+  display: grid
+  grid-template-columns: 1fr
+  gap: 0
+  margin: 0
+
+  &__row
+    display: grid
+    grid-template-columns: 9rem 1fr
+    align-items: baseline
+    gap: 0.5rem 1rem
+    padding: 0.55rem 0
+    border-bottom: 1px solid var(--bs-border-color-translucent)
+
+    &:has(+ .overview-dl__divider)
+      border-bottom: none
+
+    &:last-child
+      border-bottom: none
+
+  &__divider
+    grid-column: 1 / -1
+    height: 0
+    border-top: 2px solid var(--bs-border-color)
+    margin: 0.5rem 0
+
+  dt
+    font-size: 0.78rem
+    font-weight: 600
+    text-transform: uppercase
+    letter-spacing: 0.05em
+    color: var(--bs-secondary-color)
+    padding-top: 0.1rem
+    white-space: nowrap
+
+  dd
+    margin: 0
+    font-size: 0.95rem
+    color: var(--bs-body-color)
+    word-break: break-word
+
+.source-chip
+  display: inline-flex
+  align-items: center
+  padding: 0.2rem 0.6rem
+  border-radius: 999px
+  background-color: var(--bs-secondary-bg)
+  border: 1px solid var(--bs-border-color)
+  font-size: 0.75rem
+  font-weight: 500
+  color: var(--bs-secondary-color)
+  white-space: nowrap
+
+  &--sm
+    padding: 0.1rem 0.45rem
+    font-size: 0.7rem
+
+  &__meta
+    font-weight: 400
+    opacity: 0.65
+    padding-left: 0.3rem
+    border-left: 1px solid var(--bs-border-color)
+    margin-left: 0.15rem
+
+.provenance-band
+  background-color: var(--bs-tertiary-bg)
+
+.db-source-card
+  display: inline-flex
+  align-items: center
+  gap: 0.4rem
+  padding: 0.35rem 0.75rem
+  border-radius: 8px
+  border: 1px solid var(--bs-border-color)
+  background: var(--bs-body-bg)
+  color: var(--bs-body-color)
+  font-size: 0.85rem
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease
+
+  &:hover
+    border-color: var(--bs-primary)
+    box-shadow: 0 0 0 3px var(--bs-primary-border-subtle)
+    background-color: var(--bs-primary-bg-subtle)
+    color: var(--bs-primary)
+
+  &__name
+    font-weight: 600
+
+  &__id
+    font-size: 0.78rem
+    color: var(--bs-secondary-color)
+    padding: 0.1rem 0.35rem
+    background: var(--bs-secondary-bg)
+    border-radius: 4px
+
+  &__icon
+    font-size: 0.7rem
+    opacity: 0.5
+    flex-shrink: 0
+
+  &:hover &__id
+    background: var(--bs-primary-bg-subtle)
+    color: var(--bs-primary-text-emphasis)
+
+.letter-spacing-1
+  letter-spacing: 0.06em

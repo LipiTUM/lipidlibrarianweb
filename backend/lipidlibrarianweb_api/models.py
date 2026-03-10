@@ -10,11 +10,15 @@ QUERY_STATUS_ERROR = "error"
 
 
 class Lipid(models.Model):
-    def lipid_file_path_generator(instance, filename):
+    def lipid_json_file_path_generator(instance, filename):
         return f"{instance.id}.json"
+    
+    def lipid_html_file_path_generator(instance, filename):
+        return f"{instance.id}.html"
 
     id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
-    file = models.FileField(upload_to=lipid_file_path_generator)
+    file_json = models.FileField(upload_to=lipid_json_file_path_generator)
+    file_html = models.FileField(upload_to=lipid_html_file_path_generator)
     name = models.CharField(max_length=255)
     level = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)

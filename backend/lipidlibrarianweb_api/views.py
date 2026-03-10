@@ -241,7 +241,13 @@ def get_query_or_bulk_query(request, query_id):
 @api_view(['GET'])
 def lipid(request, lipid_id):
     lipid = get_object_or_404(Lipid, id=lipid_id)
-    return FileResponse(lipid.file.open())
+    return FileResponse(lipid.file_json.open())
+
+
+@api_view(['GET'])
+def lipid_html(request, lipid_id):
+    lipid = get_object_or_404(Lipid, id=lipid_id)
+    return FileResponse(lipid.file_html.open())
 
 
 @api_view(['GET'])

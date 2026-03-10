@@ -66,7 +66,9 @@ def execute_query(query_id):
             )
 
             content = ContentFile(format(result, "json"))
-            lipid.file.save("", content)
+            lipid.file_json.save("", content)
+            content = ContentFile(format(result, "html"))
+            lipid.file_html.save("", content)
 
             for src in result.sources:
                 LipidSource.objects.create(
