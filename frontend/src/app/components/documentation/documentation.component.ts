@@ -26,7 +26,8 @@ export class DocumentationComponent implements OnInit {
     {title: 'API', fragment: 'api'},
     {title: 'Query', fragment: 'query'},
     {title: 'History', fragment: 'history'},
-    {title: 'Token', fragment: 'token'}
+    {title: 'Session Token', fragment: 'token'},
+    {title: 'Install', fragment: 'install'}
   ];
 
   constructor(
