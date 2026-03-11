@@ -9,7 +9,8 @@
 
       <app-query-card
         *ngFor="let query of queries; trackBy: trackByQueryId"
-        [queryId]="query.id!">
+        [queryId]="query.id!"
+        (singleResultReady)="onSingleResultReady($event, queries)">
       </app-query-card>
 
       <!-- Download all results -->

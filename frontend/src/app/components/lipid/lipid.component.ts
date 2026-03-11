@@ -134,6 +134,7 @@ export class LipidComponent implements OnInit {
       metanetx:     'MetaNetX',
       hmdb:         'HMDB',
       pubchem:      'PubChem',
+      kegg:         'KEGG',
     };
 
     return displayNames[source.toLowerCase()] ?? source;

@@ -29,6 +29,48 @@ from .serializers import LipidSerializer
 from .serializers import BulkQuerySerializer
 
 
+def _dispatch_query(query_id, existing_query_id=None):
+    """
+    Schedule duplicate_query or execute_query to run after the current DB
+    transaction has been committed.
+    """
+    if existing_query_id is not None:
+        if "django_q" in settings.INSTALLED_APPS:
+            from django_q.tasks import async_task
+            transaction.on_commit(
+                lambda: async_task(
+                    "lipidlibrarianweb_api.tasks.duplicate_query",
+                    query_id,
+                    existing_query_id,
+                )
+            )
+        else:
+            transaction.on_commit(
+                lambda qid=query_id, eqid=existing_query_id: threading.Thread(
+                    target=duplicate_query,
+                    args=(qid, eqid),
+                    daemon=True,
+                ).start()
+            )
+    else:
+        if "django_q" in settings.INSTALLED_APPS:
+            from django_q.tasks import async_task
+            transaction.on_commit(
+                lambda: async_task(
+                    "lipidlibrarianweb_api.tasks.execute_query",
+                    query_id,
+                )
+            )
+        else:
+            transaction.on_commit(
+                lambda qid=query_id: threading.Thread(
+                    target=execute_query,
+                    args=(qid,),
+                    daemon=True,
+                ).start()
+            )
+
+
 class QueryView(APIView):
     """
     QueryView is the API endpoint for interactions with queries. It is generally used to obtain or
@@ -62,31 +104,21 @@ class QueryView(APIView):
             query_data["query_filters"] = "source=ALEX123;source=LipidMaps;source=LION;source=LINEX;source=SwissLipids;cutoff=5;requeries=1"
         query_serializer = QuerySerializer(data=query_data)
         if query_serializer.is_valid():
-            query = query_serializer.save()
-            queryset = Query.objects.filter(query_string=query.query_string, query_filters=query.query_filters, status=QUERY_STATUS_DONE)
-            if queryset:
-                # query has already been executed; duplicating...
-                existing_query = queryset.first()
-                if "django_q" in settings.INSTALLED_APPS:
-                    from django_q.tasks import async_task
-                    async_task("lipidlibrarianweb_api.tasks.duplicate_query", query.id, existing_query.id)
+            with transaction.atomic():
+                query = query_serializer.save()
+                existing_query = Query.objects.filter(
+                    query_string=query.query_string,
+                    query_filters=query.query_filters,
+                    status=QUERY_STATUS_DONE,
+                ).exclude(id=query.id).first()
+
+                if existing_query:
+                    # query has already been executed; duplicating...
+                    _dispatch_query(query.id, existing_query.id)
                 else:
-                    threading.Thread(
-                        target=duplicate_query,
-                        args=(query.id, existing_query.id),
-                        daemon=True,
-                    ).start()
-            else:
-                # query has not already been executed; querying...
-                if "django_q" in settings.INSTALLED_APPS:
-                    from django_q.tasks import async_task
-                    async_task("lipidlibrarianweb_api.tasks.execute_query", query.id)
-                else:
-                    threading.Thread(
-                        target=execute_query,
-                        args=(query.id,),
-                        daemon=True,
-                    ).start()
+                    # query has not already been executed; querying...
+                    _dispatch_query(query.id)
+
             return Response(query_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(query_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -151,30 +183,14 @@ class BulkQueryView(APIView):
                     query_string=query.query_string,
                     query_filters=query.query_filters,
                     status=QUERY_STATUS_DONE
-                ).first()
+                ).exclude(id=query.id).first()
 
                 if existing_query:
-                    # Duplicate instead of re-executing
-                    if "django_q" in settings.INSTALLED_APPS:
-                        from django_q.tasks import async_task
-                        async_task("lipidlibrarianweb_api.tasks.duplicate_query", query.id, existing_query.id)
-                    else:
-                        threading.Thread(
-                            target=duplicate_query,
-                            args=(query.id, existing_query.id),
-                            daemon=True,
-                        ).start()
+                    # query has already been executed; duplicating...
+                    _dispatch_query(query.id, existing_query.id)
                 else:
-                    # Execute new query
-                    if "django_q" in settings.INSTALLED_APPS:
-                        from django_q.tasks import async_task
-                        async_task("lipidlibrarianweb_api.tasks.execute_query", query.id)
-                    else:
-                        threading.Thread(
-                            target=execute_query,
-                            args=(query.id,),
-                            daemon=True,
-                        ).start()
+                    # query has not already been executed; querying...
+                    _dispatch_query(query.id)
 
         # Serialize the bulk query including nested items for the response
         serializer = BulkQuerySerializer(bulk_query)

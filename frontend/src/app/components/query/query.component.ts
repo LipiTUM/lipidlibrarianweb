@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgIf, NgFor, AsyncPipe, LocationStrategy } from '@angular/common';
-import { ActivatedRoute, RouterLink, ParamMap } from '@angular/router';
+import { ActivatedRoute, RouterLink, ParamMap, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, tap, map, of, switchMap, forkJoin, firstValueFrom } from 'rxjs';
 
@@ -41,6 +41,7 @@ export class QueryComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private queryService: QueryService,
     private notificationService: NotificationService,
     private http: HttpClient,
@@ -85,6 +86,13 @@ export class QueryComponent implements OnInit {
     return query.id;
   }
 
+  onSingleResultReady(lipidId: string, queries: Query[]): void {
+    if (queries.length === 1) {
+      this.router.navigate(['/lipid', lipidId]);
+    }
+  }
+
+  // The download-helpers code is AI generated.
   // ---------------------------------------------------------------------------
   // Download helpers
   // ---------------------------------------------------------------------------
