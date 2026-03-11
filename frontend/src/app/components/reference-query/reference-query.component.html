@@ -1,0 +1,106 @@
+<div *ngIf="query$ | async as query; else waitingForDataOrError">
+  <div class="container px-4 py-5">
+    <div class="mb-5">
+      <h1>Querying LipidLibrarian...</h1>
+    </div>
+
+    <div class="grid" style="--bs-columns: 1">
+      <div class="g-col-1">
+        <div *ngIf="query.status === 'done'">
+          <p><ngb-progressbar type="success" [value]="100" [striped]="false" [animated]="false"></ngb-progressbar></p>
+        </div>
+        <div *ngIf="query.status !== 'done'">
+          <p><ngb-progressbar type="primary" [value]="100" [striped]="true" [animated]="true"></ngb-progressbar></p>
+        </div>
+      </div>
+      <div class="g-col-1">
+        <div>
+          <p>Status: {{ query.status }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="query" class="g-col-1">
+        <p>Query String: {{ query.query_string }}</p>
+        <p>Query Options: {{ query.query_filters }}</p>
+        <p>Query Submit Timestamp: {{ query.timestamp }}</p>
+      </div>
+
+      <div *ngIf="query.status === 'done'" class="g-col-1">
+        <h2>Results</h2>
+        <div *ngIf="query.results && query.results.length > 0" class="d-grid gap-2 col-6 mx-auto">
+          <button *ngFor="let result of query.results" class="btn btn-outline-secondary" [routerLink]="['/lipid', result.id]">
+            {{ result.name }}
+          </button>
+        </div>
+        <div *ngIf="!query.results || query.results.length == 0">
+          <p>No results found.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #waitingForDataOrError>
+  <div *ngIf="errorObject; else waitingForData">
+    <div *ngIf="errorObject.status == 404; else backendError">
+      <div class="container px-4 py-5">
+        <div class="mb-5">
+          <h1>404 Query Not Found</h1>
+        </div>
+        <div class="grid" style="--bs-columns: 1">
+          <div class="g-col-1">
+            <p><ngb-progressbar type="danger" [value]="100" [striped]="false" [animated]="false"></ngb-progressbar></p>
+          </div>
+          <div class="g-col-1">
+            <div class="d-flex justify-content-center">
+              <div class="d-grid gap-2">
+                <p>
+                  <i class="bi bi-exclamation-triangle"></i>
+                  <span> &nbsp; Query not found. It may have been deleted after not being accessed for a month. You are welcome to execute the query again.</span>
+                </p>
+                <button type="button" class="btn btn-primary btn-sm" routerLink="/">Home</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #backendError>
+    <div class="container px-4 py-5">
+      <div class="mb-5">
+        <h1>Connection Error</h1>
+      </div>
+      <div class="grid" style="--bs-columns: 1">
+        <div class="g-col-1">
+          <p><ngb-progressbar type="danger" [value]="100" [striped]="false" [animated]="false"></ngb-progressbar></p>
+        </div>
+        <div class="g-col-1">
+          <div class="d-flex justify-content-center">
+            <div class="d-grid gap-2">
+              <p>
+                <i class="bi bi-exclamation-triangle"></i>
+                <span> &nbsp; Connection to our backend server could not be established. Please try again later.</span>
+              </p>
+              <button type="button" class="btn btn-primary btn-sm" routerLink="/">Home</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #waitingForData>
+    <div class="container px-4 py-5">
+      <div class="mb-5">
+        <h1>Loading Query...</h1>
+      </div>
+      <div class="grid" style="--bs-columns: 1">
+        <div class="g-col-1">
+          <p><ngb-progressbar type="primary" [value]="100" [striped]="true" [animated]="true"></ngb-progressbar></p>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-template>

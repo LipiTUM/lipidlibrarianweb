@@ -2,7 +2,7 @@ import { Component, OnInit, isDevMode } from '@angular/core';
 import { NgIf, AsyncPipe, JsonPipe, NgFor, NgStyle, ViewportScroller, LocationStrategy, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, IsActiveMatchOptions, ParamMap, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Observable, of } from 'rxjs';
+import { Observable, of, map } from 'rxjs';
 import { catchError, debounceTime, first, switchMap } from 'rxjs/operators';
 
 //import * as pdfMake from "pdfmake/build/pdfmake";
@@ -77,6 +77,7 @@ export class LipidComponent implements OnInit {
         this.errorObject = undefined;
         return this.queryService.getLipid(params.get('lipid_id')!);
       }),
+      map(data => new Lipid(data)),
       catchError((err: any) => {
         this.errorObject = err;
         return of(undefined);
