@@ -10,30 +10,29 @@
 
 .overview-dl
   display: grid
-  grid-template-columns: 1fr
+  grid-template-columns: max-content 1fr
   gap: 0
   margin: 0
-
   &__row
+    grid-column: 1 / -1
     display: grid
-    grid-template-columns: 9rem 1fr
+    grid-template-columns: subgrid
     align-items: baseline
     gap: 0.5rem 1rem
     padding: 0.55rem 0
     border-bottom: 1px solid var(--bs-border-color-translucent)
-
     &:has(+ .overview-dl__divider)
       border-bottom: none
-
     &:last-child
       border-bottom: none
-
+    @media (max-width: 400px)
+      grid-template-columns: 1fr
+      gap: 0.1rem
   &__divider
     grid-column: 1 / -1
     height: 0
     border-top: 2px solid var(--bs-border-color)
     margin: 0.5rem 0
-
   dt
     font-size: 0.78rem
     font-weight: 600
@@ -42,7 +41,6 @@
     color: var(--bs-secondary-color)
     padding-top: 0.1rem
     white-space: nowrap
-
   dd
     margin: 0
     font-size: 0.95rem
