@@ -23,7 +23,7 @@ class LipidSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lipid
-        fields = ('id', 'file', 'name', 'level', 'timestamp', 'sources')
+        fields = ('id', 'file_json', 'file_html', 'name', 'level', 'timestamp', 'sources')
         extra_kwargs = {'timestamp': {'read_only': True, 'required': True}}
 
 

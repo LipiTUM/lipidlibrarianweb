@@ -12,6 +12,52 @@ from .models import Query
 from .models import QueryResult
 
 
+def dispatch_query(query_id, existing_query_id=None):
+    """
+    Schedule duplicate_query or execute_query to run after the current DB
+    transaction has been committed.  Using transaction.on_commit() ensures the
+    worker thread will always find the Query row in the database, eliminating
+    the race condition that occurred when threads were started inside an
+    atomic block.
+    """
+    if existing_query_id is not None:
+        if "django_q" in settings.INSTALLED_APPS:
+            from django_q.tasks import async_task
+            transaction.on_commit(
+                lambda: async_task(
+                    "lipidlibrarianweb_api.tasks.duplicate_query",
+                    query_id,
+                    existing_query_id,
+                )
+            )
+        else:
+            transaction.on_commit(
+                lambda qid=query_id, eqid=existing_query_id: threading.Thread(
+                    target=duplicate_query,
+                    args=(qid, eqid),
+                    daemon=True,
+                ).start()
+            )
+    else:
+        if "django_q" in settings.INSTALLED_APPS:
+            from django_q.tasks import async_task
+            transaction.on_commit(
+                lambda: async_task(
+                    "lipidlibrarianweb_api.tasks.execute_query",
+                    query_id,
+                )
+            )
+        else:
+            transaction.on_commit(
+                lambda qid=query_id: threading.Thread(
+                    target=execute_query,
+                    args=(qid,),
+                    daemon=True,
+                ).start()
+            )
+
+
+
 def duplicate_query(query_id, existing_query_id):
     try:
         query = Query.objects.get(id=query_id)
@@ -66,7 +112,9 @@ def execute_query(query_id):
             )
 
             content = ContentFile(format(result, "json"))
-            lipid.file.save("", content)
+            lipid.file_json.save("", content)
+            content = ContentFile(format(result, "html"))
+            lipid.file_html.save("", content)
 
             for src in result.sources:
                 LipidSource.objects.create(

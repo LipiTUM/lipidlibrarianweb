@@ -81,16 +81,29 @@
 </main>
 
 <footer class="container px-4 py-5">
-  <div class="grid" style="--bs-columns: 2;">
+  <div class="grid" style="--bs-columns: 3;">
     <div class="g-col-1">
       <div class="grid gap-1" style="--bs-columns: 1;">
         <div class="g-col-1">
           <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" class="me-1" src="assets/icon.png" width="35" height="35">
           <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" class="me-1" src="assets/icon_dark.png" width="35" height="35">
-          <span>Developed by LipiTUM <small class="text-muted">&copy; 2026</small></span>
+          <span>Developed at <a href="https://lipitum.de/">LipiTUM</a>&nbsp;<small class="text-muted">&copy; 2021 - 2025</small></span>
         </div>
         <div class="g-col-1">
-          <ul class="list-unstyled text-small mt-2">
+          <!--<img *ngIf="this.sessionService.getPreferredTheme() === 'light'" class="me-1" src="assets/icon.png" width="35" height="35">
+          <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" class="me-1" src="assets/icon_dark.png" width="35" height="35"> !-->
+          <span>Find us now at <a href="https://www.uniklinikum-dresden.de/de/das-klinikum/kliniken-polikliniken-institute/klinische-chemie-und-laboratoriumsmedizin/ikl-forschung-research/groups/pauling-lab-computational-integrative-omics-in-biomedicine">CioBio</a>&nbsp;<small class="text-muted">&copy; 2026</small></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-col-1">
+      <div class="grid gap-1" style="--bs-columns: 1;">
+        <div class="g-col-1">
+          <h5>Legal</h5>
+        </div>
+        <div class="g-col-1">
+          <ul class="list-unstyled text-small">
             <li><a class="link-secondary" (click)="openCookieConsentModal()">Manage Cookie Consent</a></li>
             <li><a class="link-secondary" href="https://lipitum.de/Contact-us/">Data Protection Notice</a></li>
             <li><a class="link-secondary" href="https://lipitum.de/Contact-us/">Impressum</a></li>

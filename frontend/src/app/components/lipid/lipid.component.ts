@@ -1,15 +1,14 @@
 import { Component, OnInit, isDevMode } from '@angular/core';
-import { NgIf, AsyncPipe, JsonPipe, NgFor, NgStyle, ViewportScroller, LocationStrategy } from '@angular/common';
+import { NgIf, AsyncPipe, JsonPipe, NgFor, NgStyle, ViewportScroller, LocationStrategy, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, IsActiveMatchOptions, ParamMap, Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Observable, of } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Observable, of, map } from 'rxjs';
 import { catchError, debounceTime, first, switchMap } from 'rxjs/operators';
 
 //import * as pdfMake from "pdfmake/build/pdfmake";
 //import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 //(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
-import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { NgbAccordionModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { Lipid } from "src/app/models/lipid.model";
@@ -23,6 +22,8 @@ import { DatabaseIdentifierTableComponent } from '../table/database-identifier-t
 import { StructureIdentifierTableComponent } from '../table/structure-identifier-table.component';
 import { OntologyGraphComponent } from '../ontology/ontology-graph.component';
 import { ScrollSpyDirective } from 'src/app/directives/scrollspy.directive';
+import { Source } from 'src/app/models/source.model';
+import { Level, LevelLabel } from 'src/app/models/level.enum';
 
 
 @Component({
@@ -35,6 +36,7 @@ import { ScrollSpyDirective } from 'src/app/directives/scrollspy.directive';
         JsonPipe,
         RouterLink,
         RouterLinkActive,
+        DecimalPipe,
         NgbAccordionModule,
         NgbTooltipModule,
         AdductTableComponent,
@@ -75,6 +77,7 @@ export class LipidComponent implements OnInit {
         this.errorObject = undefined;
         return this.queryService.getLipid(params.get('lipid_id')!);
       }),
+      map(data => new Lipid(data)),
       catchError((err: any) => {
         this.errorObject = err;
         return of(undefined);
@@ -107,6 +110,35 @@ export class LipidComponent implements OnInit {
 
   isDevelopmentDeployment(): boolean {
     return(isDevMode());
+  }
+
+  LevelLabel = LevelLabel;
+
+  getLevelLabel(level: Level): string {
+    return this.LevelLabel[level] ?? 'level_unknown';
+  }
+
+  formatSourceName(source: string): string {
+    const displayNames: Record<string, string> = {
+      lipidlibrarian:'Goslin | LipidLynxX',
+      swisslipids: 'SwissLipids',
+      lipidmaps: 'LIPID MAPS',
+      lipid_maps: 'LIPID MAPS',
+      'lipid maps': 'LIPID MAPS',
+      alex123: 'ALEX¹²³',
+      linex: 'LINEX',
+      lionweb: 'LION/web',
+      lion_web: 'LION/web',
+      'lion/web': 'LION/web',
+      lion: 'LION/web',
+      chebi: 'ChEBI',
+      metanetx: 'MetaNetX',
+      hmdb: 'HMDB',
+      pubchem: 'PubChem',
+      kegg: 'KEGG',
+    };
+
+    return displayNames[source.toLowerCase()] ?? source;
   }
 
   getBackendPreviewURL(lipid: Lipid): string {
@@ -194,45 +226,55 @@ export class LipidComponent implements OnInit {
     }
   }
 
-  generateDownloadUrl(lipid: Lipid): SafeUrl {
-    const data = JSON.stringify(lipid);
-    const blob = new Blob([data], { type: 'text/json' });
-    return this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(blob));
+  getGroupedMasses(lipid: Lipid): { mass_type: string; value: number; sources: Source[] }[] {
+    const groups = new Map<string, { mass_type: string; value: number; sources: Source[] }>();
+
+    for (const mass of lipid.masses) {
+      const key = `${mass.mass_type}__${mass.value}`;
+      if (groups.has(key)) {
+        groups.get(key)!.sources.push(...mass.sources);
+      } else {
+        groups.set(key, {
+          mass_type: mass.mass_type!,
+          value: mass.value!,
+          sources: [...mass.sources]
+        });
+      }
+    }
+
+    // Deduplicate sources within each group by source name
+    for (const group of groups.values()) {
+      const seen = new Set<string>();
+      group.sources = group.sources.filter(src => {
+        if (seen.has(src.source)) return false;
+        seen.add(src.source);
+        return true;
+      });
+    }
+
+    return Array.from(groups.values());
   }
 
-  generatePDF(lipid: Lipid) {
-    let docDefinition: TDocumentDefinitions = {
-      styles: {
-        default: { fontSize: 15, bold: true },
-        header: { fontSize: 22, bold: true },
-        anotherStyle: { italics: true, alignment: 'right' }
-      },
+  getSourcesWithoutDatabaseIdentifier(lipid: Lipid) {
+    const databaseNames = new Set(
+      lipid.database_identifiers.map(dbid => dbid.database)
+    );
+    return lipid.sources.filter(src => !databaseNames.has(src.source));
+  }
 
-      footer: function(currentPage, pageCount) { return currentPage.toString() + ' of ' + pageCount; },
-      content: [
-        { text: lipid.nomenclature.name!, style: 'header' },
-        { image: 'render', width: 350 },
-        { text: lipid.nomenclature.sum_formula! },
-        {
-          table: {
-            headerRows: 1,
-            widths: [ '*', 'auto', 100, '*' ],
-            body: [
-              [ 'First', 'Second', 'Third', 'The last one' ],
-              [ 'Value 1', 'Value 2', 'Value 3', 'Value 4' ],
-              [ { text: 'Bold value', bold: true }, 'Val 2', 'Val 3', 'Val 4' ]
-            ]
-          },
-          layout: 'lightHorizontalLines'
-        }
-      ],
-      images: {
-        render: {
-          url: this.getBackendPreviewURL(lipid)
-        }
-      }
-    };
+  generateDownloadUrlJSON(): string {
+  const lipidId = this.route.snapshot.paramMap.get('lipid_id');
+  return window.location.origin
+    + this.locationStrategy.getBaseHref()
+    + 'api/lipid/'
+    + lipidId;
+}
 
-    //pdfMake.createPdf(docDefinition).open();
+  generateDownloadUrlHTML(): string {
+    const lipidId = this.route.snapshot.paramMap.get('lipid_id');
+    return window.location.origin
+      + this.locationStrategy.getBaseHref()
+      + 'api/lipid-html/'
+      + lipidId;
   }
 }

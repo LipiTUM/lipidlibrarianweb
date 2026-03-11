@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { NgIf, NgFor, AsyncPipe, CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Observable, Subject, takeUntil, shareReplay, switchMap, takeWhile, timer, catchError, tap, map } from 'rxjs';
@@ -28,9 +28,11 @@ import { Level, LevelLabel } from 'src/app/models/level.enum';
 })
 export class QueryCardComponent {
   @Input() queryId!: string;
+  @Output() singleResultReady = new EventEmitter<string>();
 
   query$!: Observable<Query | undefined>;
   errorObject?: any;
+  emittedSingleResultReady: boolean = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -46,7 +48,10 @@ export class QueryCardComponent {
       takeUntil(this.destroy$),
       shareReplay({ bufferSize: 1, refCount: true }),
       map(apiResponse => new Query(apiResponse)),
-      tap(q => console.debug('Query:', q)),
+      tap(q => {
+        console.debug('Query:', q);
+        this.emitSingleResultReady(q);
+      }),
       catchError(err => {
         console.error(err);
         this.errorObject = err;
@@ -58,6 +63,14 @@ export class QueryCardComponent {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private emitSingleResultReady(query: Query): void {
+    if (this.emittedSingleResultReady) return;
+    if (query.status === 'done' && query.results?.length === 1) {
+      this.emittedSingleResultReady = true;
+      this.singleResultReady.emit(query.results[0].id);
+    }
   }
 
   deleteQuery(query_id: string, query_string: string): void {

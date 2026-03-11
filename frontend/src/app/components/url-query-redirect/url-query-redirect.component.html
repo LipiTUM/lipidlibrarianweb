@@ -1,0 +1,21 @@
+<div class="container px-4 py-5">
+  <div class="mb-5">
+    <h1>Starting Query…</h1>
+  </div>
+  <div class="grid" style="--bs-columns: 1">
+    <div class="g-col-1">
+      <ngb-progressbar
+        type="primary"
+        [value]="100"
+        [striped]="true"
+        [animated]="true">
+      </ngb-progressbar>
+    </div>
+    <div *ngIf="errorMessage" class="g-col-1 mt-3">
+      <div class="alert alert-danger d-flex align-items-center gap-2">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+    </div>
+  </div>
+</div>

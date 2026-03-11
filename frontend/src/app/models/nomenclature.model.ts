@@ -18,8 +18,8 @@ export class Nomenclature {
 
   constructor(data?: any) {
     if (data) {
-      this.lipid_category = data.lipid_category;
-      this.lipid_class = data.lipid_class;
+      this.lipid_category = data._lipid_category_name;
+      this.lipid_class = data._lipid_class_name;
       this.sum_formula = data.sum_formula;
 
       if (data.synonyms) {

@@ -6,6 +6,7 @@ import { Observable, catchError, first, map, of, switchMap, timer } from 'rxjs';
 import { Query } from 'src/app/models/query.model';
 import { QueryService } from 'src/app/services/query.service';
 import { HistoryService } from 'src/app/services/history.service';
+import { SessionService } from 'src/app/services/session.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { TokenComponent } from '../token/token.component';
 import { NgbActiveOffcanvas, NgbCollapseModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -34,6 +35,7 @@ export class HistoryComponent implements OnInit {
   constructor(
     public activeOffcanvas: NgbActiveOffcanvas,
     public historyService: HistoryService,
+    private sessionService: SessionService,
     private queryService: QueryService,
     private notificationService: NotificationService
   ) { }
@@ -84,5 +86,14 @@ export class HistoryComponent implements OnInit {
         });
       }
     });
+  }
+
+  deleteAllQueries(): void {
+    this.sessionService.setToken(this.sessionService.generateToken());
+    this.notificationService.show('History cleared successfully.', {
+      header: 'History Cleared',
+      classname: 'bg-success text-light'
+    });
+    this.reloadEvents$.emit();
   }
 }
