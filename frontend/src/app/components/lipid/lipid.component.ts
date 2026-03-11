@@ -120,22 +120,22 @@ export class LipidComponent implements OnInit {
 
   formatSourceName(source: string): string {
     const displayNames: Record<string, string> = {
-      lipidlibrarian:      'LipidLibrarian',
-      swisslipids:  'SwissLipids',
-      lipidmaps:    'LIPID MAPS',
-      lipid_maps:   'LIPID MAPS',
+      lipidlibrarian:'Goslin | LipidLynxX',
+      swisslipids: 'SwissLipids',
+      lipidmaps: 'LIPID MAPS',
+      lipid_maps: 'LIPID MAPS',
       'lipid maps': 'LIPID MAPS',
-      alex123:      'ALEX¹²³',
-      linex:        'LINEX',
-      lionweb:      'LION/web',
-      lion_web:     'LION/web',
-      'lion/web':   'LION/web',
-      lion:         'LION/web',
-      chebi:        'ChEBI',
-      metanetx:     'MetaNetX',
-      hmdb:         'HMDB',
-      pubchem:      'PubChem',
-      kegg:         'KEGG',
+      alex123: 'ALEX¹²³',
+      linex: 'LINEX',
+      lionweb: 'LION/web',
+      lion_web: 'LION/web',
+      'lion/web': 'LION/web',
+      lion: 'LION/web',
+      chebi: 'ChEBI',
+      metanetx: 'MetaNetX',
+      hmdb: 'HMDB',
+      pubchem: 'PubChem',
+      kegg: 'KEGG',
     };
 
     return displayNames[source.toLowerCase()] ?? source;
