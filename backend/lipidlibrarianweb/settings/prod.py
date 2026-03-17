@@ -63,8 +63,8 @@ CACHES = {
 # django-q2 worker
 Q_CLUSTER = {
     'redis': f'redis://{os.environ.get("DJANGO_CACHE_HOST")}:{os.environ.get("DJANGO_CACHE_PORT")}',
-    'retry': 120,
-    'timeout': 60,
+    'retry': 180,
+    'timeout': 120,
 }
 
 # Static files (CSS, JavaScript, Images)
