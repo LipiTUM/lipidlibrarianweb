@@ -17,12 +17,22 @@
       <tr>
         <th scope="col" structureIdentifierSortableAttribute="value" (sort)="onSort($event)">Value</th>
         <th scope="col" structureIdentifierSortableAttribute="structure_type" (sort)="onSort($event)">Type</th>
+        <th scope="col">Sources</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let structureIdentifier of structureIdentifiers$ | async">
         <td><ngb-highlight [result]="structureIdentifier.value" [term]="service.searchTerm"></ngb-highlight></td>
         <td><ngb-highlight [result]="structureIdentifier.structure_type" [term]="service.searchTerm"></ngb-highlight></td>
+        <td>
+          <div class="d-flex flex-wrap gap-1">
+            <span *ngFor="let src of structureIdentifier.sources"
+                  class="source-chip source-chip--sm"
+                  title="{{ formatSourceName(src.source) }}: {{ src.lipid_level }} · {{ src.lipid_name }}">
+              {{ formatSourceName(src.source) }}
+            </span>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>

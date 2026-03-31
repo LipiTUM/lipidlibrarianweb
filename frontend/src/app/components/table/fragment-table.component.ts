@@ -48,7 +48,7 @@ export class FragmentTableComponent implements OnChanges {
               let display_fragment = new Fragment(fragment);
               display_fragment.adduct_name = adduct.name;
               display_fragment.mass = mass.value;
-              display_fragment.source = mass.sources.map( source => {source.source}).join(', ');
+              display_fragment.sources = mass.sources;
               display_fragments.push(display_fragment);
             }
           }
@@ -71,5 +71,27 @@ export class FragmentTableComponent implements OnChanges {
 
     this.service.sortColumn = column;
     this.service.sortDirection = direction;
+  }
+
+  formatSourceName(source: string): string {
+    const displayNames: Record<string, string> = {
+      lipidlibrarian: 'Goslin | LipidLynxX',
+      swisslipids: 'SwissLipids',
+      lipidmaps: 'LIPID MAPS',
+      lipid_maps: 'LIPID MAPS',
+      'lipid maps': 'LIPID MAPS',
+      alex123: 'ALEX¹²³',
+      linex: 'LINEX',
+      lionweb: 'LION/web',
+      lion_web: 'LION/web',
+      'lion/web': 'LION/web',
+      lion: 'LION/web',
+      chebi: 'ChEBI',
+      metanetx: 'MetaNetX',
+      hmdb: 'HMDB',
+      pubchem: 'PubChem',
+      kegg: 'KEGG',
+    };
+    return displayNames[source.toLowerCase()] ?? source;
   }
 }

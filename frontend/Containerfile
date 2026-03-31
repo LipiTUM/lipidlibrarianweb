@@ -1,10 +1,10 @@
-FROM docker.io/library/node:22-alpine AS base
+FROM docker.io/library/node:22.22.1-alpine AS base
 
 WORKDIR /app
 
 # Install build dependencies
 COPY ./package.json ./
-COPY ./package-lock.json ./
+#COPY ./package-lock.json ./
 RUN npm install -g npm@latest && \
     npm install -g @angular/cli && \
     npm install --legacy-peer-deps

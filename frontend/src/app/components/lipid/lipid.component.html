@@ -9,7 +9,7 @@
         <nav class="nav nav-pills gap-1 flex-column" aria-orientation="vertical">
           <a class="nav-link" routerLink="." fragment="lipid_overview" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_overview')">Overview</a>
           <a *ngIf="lipid.adducts.length" class="nav-link" routerLink="." fragment="lipid_adducts" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_adducts')">Adducts</a>
-          <a *ngIf="lipid.adducts.length" class="nav-link" routerLink="." fragment="lipid_fragments" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_fragments')">Fragments</a>
+          <a *ngIf="hasFragments(lipid)" class="nav-link" routerLink="." fragment="lipid_fragments" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_fragments')">Fragments</a>
           <a *ngIf="lipid.nomenclature.structure_identifiers.length" class="nav-link" routerLink="." fragment="lipid_structure_identifiers" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_structure_identifiers')">Structure Identifiers</a>
           <a *ngIf="lipid.nomenclature.synonyms.length" class="nav-link" routerLink="." fragment="lipid_synonyms" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_synonyms')">Synonyms</a>
           <a *ngIf="lipid.ontology.ontology_terms.length" class="nav-link" routerLink="." fragment="lipid_ontology" routerLinkActive="active" [routerLinkActiveOptions]="linkActiveOptions" (click)="scrollTo('lipid_ontology')">Ontology</a>
@@ -94,7 +94,9 @@
 
                     <!-- Mass rows -->
                     <div class="overview-dl__row" *ngFor="let mass of getGroupedMasses(lipid)">
-                      <dt>{{ mass.mass_type }}</dt>
+                      <dt>
+                        {{ mass.mass_type }}
+                      </dt>
                       <dd class="d-flex align-items-center flex-wrap gap-2">
                         <span class="font-monospace">{{ mass.value | number:'1.4-6' }}</span>
                         <span *ngFor="let src of mass.sources"
@@ -158,7 +160,7 @@
           </div>
         </div>
 
-        <div *ngIf="lipid.adducts.length" id="lipid_fragments" ngbScrollSpyFragment="lipid_fragments">
+        <div *ngIf="hasFragments(lipid)" id="lipid_fragments" ngbScrollSpyFragment="lipid_fragments">
           <div class="card mb-3">
             <div class="card-header"><h4>Fragments</h4></div>
             <div class="card-body">
@@ -187,7 +189,16 @@
 
         <div *ngIf="lipid.ontology.ontology_terms.length" id="lipid_ontology" ngbScrollSpyFragment="lipid_ontology">
           <div class="card mb-3">
-            <div class="card-header"><h4>Ontology</h4></div>
+            <div class="card-header d-flex align-items-center">
+              <h4 class="mb-0 flex-grow-1">Ontology</h4>
+              <div class="d-flex flex-wrap gap-1">
+                <span *ngFor="let src of getOntologySources(lipid)"
+                      class="source-chip source-chip--sm"
+                      title="{{ formatSourceName(src.source) }}: {{ src.lipid_level }} · {{ src.lipid_name }}">
+                  {{ formatSourceName(src.source) }}
+                </span>
+              </div>
+            </div>
             <div class="card-body">
               <app-ontology-graph [lipid$]="lipid$"></app-ontology-graph>
             </div>
@@ -201,7 +212,16 @@
               <div ngbAccordion [closeOthers]="true">
                 <div ngbAccordionItem *ngFor="let reaction of lipid.reactions">
                   <h2 ngbAccordionHeader>
-                    <button ngbAccordionButton>{{ reaction.description }}</button>
+                    <button ngbAccordionButton>
+                      <span class="flex-grow-1">{{ getReactionDescription(reaction) }}</span>
+                      <span class="d-flex flex-wrap gap-1 me-2 flex-shrink-0">
+                        <span *ngFor="let src of reaction.sources"
+                              class="source-chip source-chip--sm"
+                              title="{{ formatSourceName(src.source) }}: {{ src.lipid_level }} · {{ src.lipid_name }}">
+                          {{ formatSourceName(src.source) }}
+                        </span>
+                      </span>
+                    </button>
                   </h2>
                   <div ngbAccordionCollapse>
                     <div ngbAccordionBody>

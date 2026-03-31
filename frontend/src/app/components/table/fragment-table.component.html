@@ -19,6 +19,7 @@
         <th scope="col" fragmentSortableAttribute="mass" (sort)="onSort($event)">Mass</th>
         <th scope="col" fragmentSortableAttribute="adduct_name" (sort)="onSort($event)">Adduct Name</th>
         <th scope="col" fragmentSortableAttribute="sum_formula" (sort)="onSort($event)">Sum Formula</th>
+        <th scope="col">Sources</th>
       </tr>
     </thead>
     <tbody>
@@ -27,6 +28,15 @@
         <td><ngb-highlight [result]="fragment.mass?.toString()" [term]="service.searchTerm"></ngb-highlight></td>
         <td><ngb-highlight [result]="fragment.adduct_name" [term]="service.searchTerm"></ngb-highlight></td>
         <td><ngb-highlight [result]="fragment.sum_formula" [term]="service.searchTerm"></ngb-highlight></td>
+        <td>
+          <div class="d-flex flex-wrap gap-1">
+            <span *ngFor="let src of fragment.sources"
+                  class="source-chip source-chip--sm"
+                  title="{{ formatSourceName(src.source) }}: {{ src.lipid_level }} · {{ src.lipid_name }}">
+              {{ formatSourceName(src.source) }}
+            </span>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>
