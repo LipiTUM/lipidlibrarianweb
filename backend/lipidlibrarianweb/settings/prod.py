@@ -63,11 +63,10 @@ CACHES = {
 # django-q2 worker
 Q_CLUSTER = {
     'redis': f'redis://{os.environ.get("DJANGO_CACHE_HOST")}:{os.environ.get("DJANGO_CACHE_PORT")}',
-    'retry': 180,
-    'timeout': 120,
+    'retry': 600,
+    'timeout': 480,
     'save_limit': 0,
     'orm': 'default',
-    'recycle': 1,
     'poll': 2,
 }
 

@@ -40,6 +40,15 @@ case "$ROLE" in
 		gunicorn lipidlibrarianweb.wsgi:application --bind 0.0.0.0:${BACKEND_PORT:=8001} --timeout 480 --workers 12 --user=root --group=root
 		;;
 	worker)
+		# wait until the ALEX123 database is ready
+		echo "Waiting for ALEX123 database to accept queries..."
+		until mysql -h "${ALEX123_DB_HOST:=localhost}" -P "${ALEX123_DB_PORT:=3306}" \
+			-u "${ALEX123_DB_USER:=alex123}" -p"${ALEX123_DB_PASSWORD:=alex123}" \
+			-e "SELECT 1;" "${ALEX123_DB_NAME:=alex123}" &>/dev/null; do
+			sleep 0.5
+		done
+		echo "ALEX123 database ready."
+
 		# run a worker
 		python manage.py qcluster
 		;;
