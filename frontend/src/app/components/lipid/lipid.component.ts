@@ -18,12 +18,12 @@ import { QueryService } from 'src/app/services/query.service';
 import { AdductTableComponent } from '../table/adduct-table.component';
 import { FragmentTableComponent } from '../table/fragment-table.component';
 import { SynonymTableComponent } from '../table/synonym-table.component';
-import { DatabaseIdentifierTableComponent } from '../table/database-identifier-table.component';
 import { StructureIdentifierTableComponent } from '../table/structure-identifier-table.component';
 import { OntologyGraphComponent } from '../ontology/ontology-graph.component';
 import { ScrollSpyDirective } from 'src/app/directives/scrollspy.directive';
 import { Source } from 'src/app/models/source.model';
 import { Level, LevelLabel } from 'src/app/models/level.enum';
+import { Reaction } from 'src/app/models/reaction.model';
 
 
 @Component({
@@ -42,7 +42,6 @@ import { Level, LevelLabel } from 'src/app/models/level.enum';
         AdductTableComponent,
         FragmentTableComponent,
         SynonymTableComponent,
-        DatabaseIdentifierTableComponent,
         StructureIdentifierTableComponent,
         OntologyGraphComponent,
         ScrollSpyDirective
@@ -141,6 +140,10 @@ export class LipidComponent implements OnInit {
     return displayNames[source.toLowerCase()] ?? source;
   }
 
+  hasFragments(lipid: Lipid): boolean {
+    return lipid.adducts.some(adduct => adduct.fragments.length > 0);
+  }
+
   getBackendPreviewURL(lipid: Lipid): string {
     return(this.getBackendUrl('preview', this.getStructureForRender(lipid)) ?? '');
   }
@@ -158,6 +161,27 @@ export class LipidComponent implements OnInit {
       return null;
     }
     return(window.location.origin + this.locationStrategy.getBaseHref() + "api/" + endpoint + "/" + encodeURIComponent(str));
+  }
+
+  getOntologySources(lipid: Lipid): Source[] {
+    const seen = new Set<string>();
+    const result: Source[] = [];
+    for (const src of lipid.ontology.sources) {
+      if (!seen.has(src.source)) {
+        seen.add(src.source);
+        result.push(src);
+      }
+    }
+    return result;
+  }
+
+  getMassTypeTooltip(massType: string): string {
+    const definitions: Record<string, string> = {
+      'average mass':       'Weighted average of all naturally occurring isotopes of each element, reflecting natural isotopic abundances. Typically used in low-resolution mass spectrometry.',
+      'monoisotopic mass':  'Mass calculated using only the most abundant isotope of each element. The standard in high-resolution mass spectrometry.',
+      'neutral mass':       'Mass of the uncharged, adduct-free molecule. Reported by SwissLipids.',
+    };
+    return definitions[massType.trim().toLowerCase()] ?? '';
   }
 
   getExampleStructureForRender(lipid: Lipid): string | undefined {
@@ -251,8 +275,20 @@ export class LipidComponent implements OnInit {
         return true;
       });
     }
-
     return Array.from(groups.values());
+  }
+
+  getReactionDescription(reaction: Reaction): string {
+    if (reaction.description?.trim()) {
+      return reaction.description.replace('</smallsup>', '');
+    }
+    const phospholipase = reaction.database_identifiers.find(
+      dbid => dbid.identifier === 'RHEA:32907'
+    );
+    if (phospholipase) {
+      return 'PC = HG(PC) + FA + FA';
+    }
+    return 'Unknown reaction';
   }
 
   getSourcesWithoutDatabaseIdentifier(lipid: Lipid) {

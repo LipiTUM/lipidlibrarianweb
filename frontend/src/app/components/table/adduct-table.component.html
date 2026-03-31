@@ -19,6 +19,7 @@
         <th scope="col" adductSortableAttribute="mass" (sort)="onSort($event)">Mass</th>
         <th scope="col" adductSortableAttribute="charge" (sort)="onSort($event)">Charge</th>
         <th scope="col" adductSortableAttribute="adduct_mass" (sort)="onSort($event)">Adduct Mass</th>
+        <th scope="col">Sources</th>
       </tr>
     </thead>
     <tbody>
@@ -27,6 +28,15 @@
         <td><ngb-highlight [result]="adduct.mass?.toString()" [term]="service.searchTerm"></ngb-highlight></td>
         <td><ngb-highlight [result]="adduct.charge == 1 ? 'positive' : 'negative'" [term]="service.searchTerm"></ngb-highlight></td>
         <td><ngb-highlight [result]="adduct.adduct_mass?.toString()" [term]="service.searchTerm"></ngb-highlight></td>
+        <td>
+          <div class="d-flex flex-wrap gap-1">
+            <span *ngFor="let src of adduct.sources"
+                  class="source-chip source-chip--sm"
+                  title="{{ formatSourceName(src.source) }}: {{ src.lipid_level }} · {{ src.lipid_name }}">
+              {{ formatSourceName(src.source) }}
+            </span>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>

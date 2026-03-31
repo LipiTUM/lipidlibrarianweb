@@ -17,12 +17,22 @@
       <tr>
         <th scope="col" synonymSortableAttribute="value" (sort)="onSort($event)">Value</th>
         <th scope="col" synonymSortableAttribute="synonym_type" (sort)="onSort($event)">Type</th>
+        <th scope="col">Sources</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let synonym of synonyms$ | async">
         <td><ngb-highlight [result]="synonym.value" [term]="service.searchTerm"></ngb-highlight></td>
         <td><ngb-highlight [result]="synonym.synonym_type" [term]="service.searchTerm"></ngb-highlight></td>
+        <td>
+          <div class="d-flex flex-wrap gap-1">
+            <span *ngFor="let src of synonym.sources"
+                  class="source-chip source-chip--sm"
+                  title="{{ formatSourceName(src.source) }}: {{ src.lipid_level }} · {{ src.lipid_name }}">
+              {{ formatSourceName(src.source) }}
+            </span>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>

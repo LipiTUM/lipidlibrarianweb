@@ -45,7 +45,7 @@ export class AdductTableComponent implements OnChanges {
           for (let mass of adduct.masses) {
             let display_adduct = new Adduct(adduct);
             display_adduct.mass = mass.value;
-            display_adduct.source = mass.sources.map( source => {source.source}).join(', ');
+            display_adduct.sources = mass.sources;
             display_adducts.push(display_adduct);
           }
         }
@@ -67,5 +67,27 @@ export class AdductTableComponent implements OnChanges {
 
     this.service.sortColumn = column;
     this.service.sortDirection = direction;
+  }
+
+  formatSourceName(source: string): string {
+    const displayNames: Record<string, string> = {
+      lipidlibrarian: 'Goslin | LipidLynxX',
+      swisslipids: 'SwissLipids',
+      lipidmaps: 'LIPID MAPS',
+      lipid_maps: 'LIPID MAPS',
+      'lipid maps': 'LIPID MAPS',
+      alex123: 'ALEX¹²³',
+      linex: 'LINEX',
+      lionweb: 'LION/web',
+      lion_web: 'LION/web',
+      'lion/web': 'LION/web',
+      lion: 'LION/web',
+      chebi: 'ChEBI',
+      metanetx: 'MetaNetX',
+      hmdb: 'HMDB',
+      pubchem: 'PubChem',
+      kegg: 'KEGG',
+    };
+    return displayNames[source.toLowerCase()] ?? source;
   }
 }
