@@ -282,11 +282,23 @@ export class LipidComponent implements OnInit {
     if (reaction.description?.trim()) {
       return reaction.description.replace('</smallsup>', '');
     }
-    const phospholipase = reaction.database_identifiers.find(
+    const phospholipase_pc = reaction.database_identifiers.find(
       dbid => dbid.identifier === 'RHEA:32907'
     );
-    if (phospholipase) {
+    const phospholipase_pe = reaction.database_identifiers.find(
+      dbid => dbid.identifier === 'RHEA:32971'
+    );
+    const pi_to_pa = reaction.database_identifiers.find(
+      dbid => dbid.identifier === 'RHEA:10832'
+    );
+    if (phospholipase_pc) {
       return 'PC = HG(PC) + FA + FA';
+    }
+    if (phospholipase_pe) {
+      return 'PE = HG(PE) + FA + FA';
+    }
+    if (pi_to_pa) {
+      return 'PI = PA';
     }
     return 'Unknown reaction';
   }
