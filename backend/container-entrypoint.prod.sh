@@ -42,7 +42,7 @@ case "$ROLE" in
 	worker)
 		# wait until the ALEX123 database is ready
 		echo "Waiting for ALEX123 database to accept queries..."
-		until mysql -h "${ALEX123_DB_HOST:=localhost}" -P "${ALEX123_DB_PORT:=3306}" \
+		until mariadb -h "${ALEX123_DB_HOST:=localhost}" -P "${ALEX123_DB_PORT:=3306}" \
 			-u "${ALEX123_DB_USER:=alex123}" -p"${ALEX123_DB_PASSWORD:=alex123}" \
 			-e "SELECT 1;" "${ALEX123_DB_NAME:=alex123}" &>/dev/null; do
 			sleep 0.5
