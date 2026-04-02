@@ -56,11 +56,13 @@ function sort(adducts: Adduct[], column: SortColumn, direction: string): Adduct[
 function matches(adduct: Adduct, term: string, pipe: PipeTransform) {
   return (
     adduct.mass?.toString().toLowerCase().includes(term.toLowerCase()) ||
+    adduct.adduct_mass?.toString().toLowerCase().includes(term.toLowerCase()) ||
     adduct.name?.toLowerCase().includes(term.toLowerCase()) ||
+    ((adduct.charge ?? 0) > 0 ? 'positive' : 'negative').includes(term.toLowerCase()) ||
     adduct.swisslipids_abbrev?.toLowerCase().includes(term.toLowerCase()) ||
     adduct.swisslipids_name?.toLowerCase().includes(term.toLowerCase()) ||
     adduct.lipidmaps_name?.toLowerCase().includes(term.toLowerCase()) ||
-    adduct.source?.toLowerCase().includes(term.toLowerCase())
+    adduct.sources?.some(s => s.source?.toLowerCase().includes(term.toLowerCase()))
   );
 }
 
