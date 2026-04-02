@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { NgbHighlight, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -13,6 +13,7 @@ import { AdductSortableHeaderDirective, SortEvent } from 'src/app/directives/add
 
 @Component({
     selector: 'app-adduct-table',
+    providers: [AdductTableService, DecimalPipe],
     imports: [
         NgIf,
         NgFor,
@@ -29,6 +30,7 @@ export class AdductTableComponent implements OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;
   adducts$!: Observable<Adduct[]>;
   total$: Observable<number>;
+  private lipidSubscription?: Subscription;
 
   @ViewChildren(AdductSortableHeaderDirective) headers!: QueryList<AdductSortableHeaderDirective>;
 
@@ -38,7 +40,8 @@ export class AdductTableComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.lipid$!.subscribe(lipid => {
+    this.lipidSubscription?.unsubscribe();
+    this.lipidSubscription = this.lipid$!.subscribe(lipid => {
       if (lipid) {
         let display_adducts: Array<Adduct> = [];
         for (let adduct of lipid.adducts) {

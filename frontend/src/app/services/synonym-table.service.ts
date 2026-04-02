@@ -54,7 +54,7 @@ function matches(synonym: Synonym, term: string, pipe: PipeTransform) {
   );
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class SynonymTableService {
   public synonyms?: Synonym[];
   private _loading$ = new BehaviorSubject<boolean>(true);

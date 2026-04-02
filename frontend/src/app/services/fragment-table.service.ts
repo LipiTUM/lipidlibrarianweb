@@ -62,7 +62,7 @@ function matches(fragment: Fragment, term: string, pipe: PipeTransform) {
   );
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class FragmentTableService {
   public fragments?: Fragment[];
   private _loading$ = new BehaviorSubject<boolean>(true);

@@ -55,7 +55,7 @@ function matches(structureIdentifier: StructureIdentifier, term: string, pipe: P
   );
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class StructureIdentifierTableService {
   public structureIdentifiers?: StructureIdentifier[];
   private _loading$ = new BehaviorSubject<boolean>(true);

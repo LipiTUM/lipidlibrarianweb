@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { NgbHighlight, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -13,6 +13,7 @@ import { StructureIdentifierSortableHeaderDirective, SortEvent } from 'src/app/d
 
 @Component({
     selector: 'app-structure-identifier-table',
+    providers: [StructureIdentifierTableService, DecimalPipe],
     imports: [
         NgIf,
         NgFor,
@@ -29,6 +30,7 @@ export class StructureIdentifierTableComponent implements OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;
   structureIdentifiers$!: Observable<StructureIdentifier[]>;
   total$: Observable<number>;
+  private lipidSubscription?: Subscription;
 
   @ViewChildren(StructureIdentifierSortableHeaderDirective) headers!: QueryList<StructureIdentifierSortableHeaderDirective>;
 
@@ -38,7 +40,8 @@ export class StructureIdentifierTableComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.lipid$!.subscribe(lipid => {
+    this.lipidSubscription?.unsubscribe();
+    this.lipidSubscription = this.lipid$!.subscribe(lipid => {
       if (lipid) {
         this.service.structureIdentifiers = lipid.nomenclature.structure_identifiers;
       } else {

@@ -64,7 +64,7 @@ function matches(adduct: Adduct, term: string, pipe: PipeTransform) {
   );
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class AdductTableService {
   public adducts?: Adduct[];
   private _loading$ = new BehaviorSubject<boolean>(true);
