@@ -32,7 +32,6 @@ export class QueryComponent implements OnInit {
   queries$!: Observable<Query[]> | undefined;
   errorObject?: any;
 
-  /** Populated once the initial query/bulk-query response arrives. */
   queryIds: string[] = [];
 
   isDownloading = false;

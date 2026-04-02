@@ -1,153 +1,162 @@
-<div *ngIf="query$ | async as query; else error">
- <div class="card shadow-sm mb-4">
+<div *ngIf="isInitialLoad" class="card shadow-sm mb-4" aria-busy="true" aria-label="Loading query…">
 
-  <!-- Header -->
-  <div class="card-header d-flex align-items-center justify-content-between">
-    <h5 class="mb-0 text-truncate">
-      Query:
-      <span class="fw-normal text-muted">
-        {{ query.query_string }}
-      </span>
+  <div class="card-header d-flex align-items-center justify-content-between placeholder-glow">
+    <h5 class="mb-0 w-75">
+      <span class="placeholder col-8"></span>
     </h5>
-
-    <!-- Delete button -->
-    <button
-      type="button"
-      class="btn btn-sm btn-outline-danger"
-      aria-label="Delete query"
-      (click)="deleteQuery(query.id, query.query_string)">
-      <i class="bi bi-trash"></i>
-    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary disabled placeholder" style="width:2.2rem;" aria-hidden="true"></button>
   </div>
 
-  <!-- Body -->
-  <div class="card-body">
-
-    <!-- Progress -->
+  <div class="card-body placeholder-glow">
     <div class="mb-3">
-      <ngb-progressbar
-        [type]="query.status === 'done' ? 'success' : 'primary'"
-        [value]="100"
-        [striped]="query.status !== 'done'"
-        [animated]="query.status !== 'done'"
-        height="6px">
-      </ngb-progressbar>
+      <span class="placeholder d-block w-100 rounded" style="height:6px;"></span>
     </div>
 
-    <!-- Meta -->
-    <div class="row mb-3 small text-muted">
+    <div class="row mb-3 small">
       <div class="col-md-4">
-        <strong>Status:</strong>
-        <span
-          class="badge ms-1"
-          [ngClass]="query.status === 'done' ? 'bg-success' : 'bg-primary'">
-          {{ query.status }}
-        </span>
+        <span class="placeholder col-6 d-block mb-1"></span>
+        <span class="placeholder col-4"></span>
       </div>
-
       <div class="col-md-4">
-        <strong>Options:</strong>
-        <span class="d-block text-break">
-          {{ query.query_filters }}
-        </span>
+        <span class="placeholder col-5 d-block mb-1"></span>
+        <span class="placeholder col-8"></span>
       </div>
-
       <div class="col-md-4">
-        <strong>Submitted:</strong>
-        <span class="d-block">
-          {{ query.timestamp }}
-        </span>
+        <span class="placeholder col-5 d-block mb-1"></span>
+        <span class="placeholder col-7"></span>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- Results -->
-    <div *ngIf="query.status === 'done'" class="border-top pt-3">
-      <h6 class="mb-3">Results</h6>
 
-      <table *ngIf="query.results?.length; else noResults"
-       class="table table-hover align-right">
+<div *ngIf="!isInitialLoad && errorObject" class="card border-danger shadow-sm mb-4">
+  <div class="card-header bg-danger-subtle d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+    <span class="fw-semibold text-danger">
+      {{ errorObject?.status === 404 ? 'Query Not Found' : 'Connection Error' }}
+    </span>
+  </div>
 
-  <thead class="table">
-    <tr>
-      <th>Name</th>
-      <th class="text-end">Type</th>
-      <th class="text-end">Sources</th>
-    </tr>
-  </thead>
+  <div class="card-body">
+    <p class="mb-3">
+      <ng-container *ngIf="errorObject?.status === 404; else connectionErr">
+        This query could not be found. It may have been deleted after a period of inactivity.
+        You are welcome to run it again.
+      </ng-container>
+      <ng-template #connectionErr>
+        Could not reach the backend server. Please try again later.
+      </ng-template>
+    </p>
+    <button type="button" class="btn btn-sm btn-primary" routerLink="/">Home</button>
+  </div>
+</div>
 
-  <tbody>
-    <tr *ngFor="let query_result of query.results">
 
-      <!-- Name -->
-      <td>
-        <a
-          class="fw-medium text-decoration-none"
-          [routerLink]="['/lipid', query_result.id]">
-          {{ query_result.name }}
-        </a>
-      </td>
+<ng-container *ngIf="!isInitialLoad && !errorObject">
+  <div *ngIf="query$ | async as query" class="card shadow-sm mb-4">
 
-      <!-- Enum display -->
-      <td class="text-end">
-        <span class="badge bg-secondary">
-          {{ getLevelLabel(query_result.level) }}
-        </span>
-      </td>
+    <div class="card-header d-flex align-items-center justify-content-between">
+      <h5 class="mb-0 text-truncate">
+        Query:
+        <span class="fw-normal text-muted">{{ query.query_string }}</span>
+      </h5>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-danger"
+        aria-label="Delete query"
+        (click)="deleteQuery(query.id, query.query_string)">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
 
-      <!-- Sources -->
-      <td class="text-end">
-        <div class="d-inline-flex gap-1">
+    <div class="card-body">
+      <div class="mb-3">
+        <ngb-progressbar
+          [type]="query.status === 'done' ? 'success' : query.status === 'error' ? 'danger' : 'primary'"
+          [value]="100"
+          [striped]="query.status !== 'done' && query.status !== 'error'"
+          [animated]="query.status !== 'done' && query.status !== 'error'"
+          height="6px">
+        </ngb-progressbar>
+      </div>
+
+      <div class="row mb-3 small text-muted">
+        <div class="col-md-4">
+          <strong>Status:</strong>
           <span
-            *ngFor="let source of query_result.sources"
-            class="source-dot"
-            [style.backgroundColor]="getBackgroundColor(source)"
-            [style.color]="getTextColor(source)"
-            [class.opacity-25]="!source.active"
-            title="{{ source.displayName }}">
-            {{ source.abbreviation }}
+            class="badge ms-1"
+            [ngClass]="{
+              'bg-success':   query.status === 'done',
+              'bg-danger':    query.status === 'error',
+              'bg-secondary': query.status === 'created',
+              'bg-primary':   query.status === 'running'
+            }">
+            {{ query.status }}
           </span>
         </div>
-      </td>
 
-    </tr>
-  </tbody>
-</table>
+        <div class="col-md-4">
+          <strong>Options:</strong>
+          <span class="d-block text-break">{{ query.query_filters }}</span>
+        </div>
 
-
-
-      <ng-template #noResults>
-        <p class="text-muted mb-0 fst-italic">
-          No results found.
-        </p>
-      </ng-template>
-    </div>
-
-  </div>
-</div>
-
-
-</div>
-
-<ng-template #error>
-  <div class="container px-4 py-5">
-    <div class="mb-5">
-      <h1>404 Query Not Found</h1>
-    </div>
-    <div class="grid" style="--bs-columns: 1">
-      <div class="g-col-1">
-        <p><ngb-progressbar type="danger" [value]="100" [striped]="false" [animated]="false"></ngb-progressbar></p>
-      </div>
-      <div class="g-col-1">
-        <div class="d-flex justify-content-center">
-          <div class="d-grid gap-2">
-            <p>
-              <i class="bi bi-exclamation-triangle"></i>
-              <span> &nbsp; Query not found. It may have been deleted after not being accessed for a month. You are welcome to execute the query again.</span>
-            </p>
-            <button type="button" class="btn btn-primary btn-sm" routerLink="/">Home</button>
-          </div>
+        <div class="col-md-4">
+          <strong>Submitted:</strong>
+          <span class="d-block">{{ query.timestamp }}</span>
         </div>
       </div>
+
+      <div *ngIf="query.status === 'done'" class="border-top pt-3">
+        <h6 class="mb-3">Results</h6>
+
+        <table *ngIf="query.results?.length; else noResults"
+               class="table table-hover align-right">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th class="text-end">Type</th>
+              <th class="text-end">Sources</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let query_result of query.results">
+
+              <td>
+                <a
+                  class="fw-medium text-decoration-none"
+                  [routerLink]="['/lipid', query_result.id]">
+                  {{ query_result.name }}
+                </a>
+              </td>
+
+              <td class="text-end">
+                <span class="badge bg-secondary">{{ getLevelLabel(query_result.level) }}</span>
+              </td>
+
+              <td class="text-end">
+                <div class="d-inline-flex gap-1">
+                  <span
+                    *ngFor="let source of query_result.sources"
+                    class="source-dot"
+                    [style.backgroundColor]="getBackgroundColor(source)"
+                    [style.color]="getTextColor(source)"
+                    [class.opacity-25]="!source.active"
+                    title="{{ source.displayName }}">
+                    {{ source.abbreviation }}
+                  </span>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #noResults>
+          <p class="text-muted mb-0 fst-italic">No results found.</p>
+        </ng-template>
+      </div>
+
     </div>
   </div>
-</ng-template>
+</ng-container>
