@@ -81,6 +81,7 @@ export class SynonymTableComponent implements OnChanges {
       hmdb: 'HMDB',
       pubchem: 'PubChem',
       kegg: 'KEGG',
+      goslin: 'Goslin',
     };
     return displayNames[source.toLowerCase()] ?? source;
   }

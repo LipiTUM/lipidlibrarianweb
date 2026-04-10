@@ -81,6 +81,7 @@ export class StructureIdentifierTableComponent implements OnChanges {
       hmdb: 'HMDB',
       pubchem: 'PubChem',
       kegg: 'KEGG',
+      goslin: 'Goslin',
     };
     return displayNames[source.toLowerCase()] ?? source;
   }
