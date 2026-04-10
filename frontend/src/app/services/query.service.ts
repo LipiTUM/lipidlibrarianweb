@@ -24,7 +24,7 @@ export class QueryService {
   }
 
   /**
-   * Executes a query with lipid librarian.
+   * Executes a query with LipidLibrarian.
    * @param query_type - either search_term or m/z search
    * @param query_string - The query string for which lipids to search for.
    * @param query_filters - Filters to adjust the query like selected sources, result cutoff and amount of requeries

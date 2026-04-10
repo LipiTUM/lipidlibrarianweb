@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { NgbHighlight, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -14,6 +14,7 @@ import { FragmentSortableHeaderDirective, SortEvent } from 'src/app/directives/f
 
 @Component({
     selector: 'app-fragment-table',
+    providers: [FragmentTableService, DecimalPipe],
     imports: [
         NgIf,
         NgFor,
@@ -30,6 +31,7 @@ export class FragmentTableComponent implements OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;
   fragments$!: Observable<Fragment[]>;
   total$: Observable<number>;
+  private lipidSubscription?: Subscription;
 
   @ViewChildren(FragmentSortableHeaderDirective) headers!: QueryList<FragmentSortableHeaderDirective>;
 
@@ -39,7 +41,8 @@ export class FragmentTableComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.lipid$!.subscribe(lipid => {
+    this.lipidSubscription?.unsubscribe();
+    this.lipidSubscription = this.lipid$!.subscribe(lipid => {
       if (lipid) {
         let display_fragments: Array<Fragment> = [];
         for (let adduct of lipid.adducts) {
@@ -91,6 +94,7 @@ export class FragmentTableComponent implements OnChanges {
       hmdb: 'HMDB',
       pubchem: 'PubChem',
       kegg: 'KEGG',
+      goslin: 'Goslin',
     };
     return displayNames[source.toLowerCase()] ?? source;
   }

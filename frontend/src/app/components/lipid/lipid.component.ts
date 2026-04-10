@@ -135,6 +135,7 @@ export class LipidComponent implements OnInit {
       hmdb: 'HMDB',
       pubchem: 'PubChem',
       kegg: 'KEGG',
+      goslin: 'Goslin',
     };
 
     return displayNames[source.toLowerCase()] ?? source;

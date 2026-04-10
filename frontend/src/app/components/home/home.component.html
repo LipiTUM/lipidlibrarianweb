@@ -1,11 +1,8 @@
 <div class="container px-4 py-5 text-center">
   <div class="grid py-5" style="--bs-columns: 1; --bs-gap: 1rem">
-    <div class="g-col">
-      <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" alt="" class="d-block mx-auto" height="57" src="assets/logo_horizontal.png">
-      <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" alt="" class="d-block mx-auto" height="57" src="assets/logo_horizontal_dark.png">
-    </div>
     <div class="g-col-1">
-      <h1 class="display-5 fw-bold">Lipid Librarian</h1>
+      <h1 class="display-5 fw-bold"><span style="font-weight: 400;">&#123;&nbsp;</span><i class="bi bi-book" style="vertical-align: -5px;"></i><span style="font-weight: 400;">&nbsp;&#125;</span></h1>
+      <h1 class="display-5 h1"><span style="font-weight: 700;">Lipid</span><span style="font-weight: 500;">Librarian</span></h1>
     </div>
     <div class="g-col-1">
       <p class="fs-4">
@@ -15,6 +12,9 @@
         and <a href="http://www.swisslipids.org/">SwissLipids</a>, as well as enriching the results
         with data from the <a href="http://lipidontology.com/">LION/web</a> and
         <a href="https://exbio.wzw.tum.de/linex/">LINEX</a> projects.
+      </p>
+      <p class="fs-4">
+        LipidLibrarian is powered by <a href="https://apps.lifs-tools.org/goslin/">Goslin</a> and <a href="https://lipidmaps.org/lipidlynxx/">LipidLynxX</a>.
       </p>
     </div>
     <div class="g-col-1">
@@ -39,7 +39,7 @@
   <div class="grid" style="--bs-columns: 1;">
     <div class="g-col-1 text-center">
       <h1 class="display-5 fw-bold"><i class="bi bi-search"></i></h1>
-      <h1 class="display-5 fw-bold">Query Lipid Librarian</h1>
+      <h1 class="display-5 fw-bold">Query <span style="font-weight: 700;">Lipid</span><span style="font-weight: 500;">Librarian</span></h1>
     </div>
     <div class="g-col-1 text-center fs-4">
       Perform a search using a search term, either the <strong>shorthand notation</strong>, <strong>lipid name</strong>, or <strong>database identifier</strong>, or search for lipids in an <strong>m/z value</strong> range:

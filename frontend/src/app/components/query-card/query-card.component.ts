@@ -1,7 +1,7 @@
-import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { NgIf, NgFor, AsyncPipe, CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Observable, Subject, takeUntil, shareReplay, switchMap, takeWhile, timer, catchError, tap, map } from 'rxjs';
+import { Observable, Subject, EMPTY, takeUntil, shareReplay, switchMap, takeWhile, timer, catchError, tap, map } from 'rxjs';
 
 import { NgbProgressbarModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -30,7 +30,8 @@ export class QueryCardComponent {
   @Input() queryId!: string;
   @Output() singleResultReady = new EventEmitter<string>();
 
-  query$!: Observable<Query | undefined>;
+  query$!: Observable<Query>;
+  isInitialLoad = true;
   errorObject?: any;
   emittedSingleResultReady: boolean = false;
   private destroy$ = new Subject<void>();
@@ -38,26 +39,34 @@ export class QueryCardComponent {
   constructor(
     private queryService: QueryService,
     private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.query$ = timer(0, 5000).pipe(
       switchMap(() => this.queryService.getQuery(this.queryId)),
-      tap(q => console.debug('Query response:', q)),
-      takeWhile(q => q.status === 'pending' || q.status === 'running', true),
-      takeUntil(this.destroy$),
-      shareReplay({ bufferSize: 1, refCount: true }),
+      takeWhile(
+        q => q.status === 'created' || q.status === 'pending' || q.status === 'running',
+        true,
+      ),
       map(apiResponse => new Query(apiResponse)),
       tap(q => {
-        console.debug('Query:', q);
+        if (this.isInitialLoad) {
+          this.isInitialLoad = false;
+          this.cdr.markForCheck();
+        }
         this.emitSingleResultReady(q);
       }),
-      catchError(err => {
-        console.error(err);
+      catchError((err): Observable<Query> => {
         this.errorObject = err;
-        return new Observable<undefined>;
-      })
+        this.isInitialLoad = false;
+        this.cdr.markForCheck();
+        return EMPTY;
+      }),
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
+
+    this.query$.pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   ngOnDestroy() {

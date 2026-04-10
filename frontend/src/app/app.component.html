@@ -6,10 +6,12 @@
           <img src="assets/CIOBio_logo.png" alt="CIOBio Logo" height="24" class="d-inline-block">
         </a>
         <div style="width: 2px; height: 30px; background-color: var(--bs-border-color);"></div>
-        <a class="navbar-brand mb-0" routerLink="/">
-          <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" src="assets/logo_horizontal.png" alt="Logo" height="24" class="d-inline-block align-text-middle me-2">
-          <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" src="assets/logo_horizontal_dark.png" alt="Logo" height="24" class="d-inline-block align-text-middle me-2">
-          <span>LipidLibrarian</span>
+        <a class="navbar-brand" routerLink="/">
+          <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" src="assets/LipiTUM_logo.png" alt="Logo" height="32" class="d-inline-block">
+          <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" src="assets/LipiTUM_logo_dark.png" alt="Logo" height="32" class="d-inline-block">
+        </a>
+        <a class="navbar-brand gap-2" routerLink="/">
+          <span><span style="font-weight: 600; font-size: larger;">Lipid</span><span style="font-size: larger; font-weight: 400;">Librarian</span></span>
         </a>
       </div>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" (click)="openOffcanvas(mobileMenu, { position: 'end' })">
@@ -91,14 +93,14 @@
     <div class="g-col-1">
       <div class="grid gap-1" style="--bs-columns: 1;">
         <div class="g-col-1">
-          <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" class="me-1" src="assets/icon.png" width="35" height="35">
-          <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" class="me-1" src="assets/icon_dark.png" width="35" height="35">
-          <span>Developed at <a href="https://lipitum.de/">LipiTUM</a>&nbsp;<small class="text-muted">&copy; 2021 - 2025</small></span>
-        </div>
-        <div class="g-col-1">
           <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" class="me-1" src="assets/CIOBio_icon.png" width="35" height="35">
           <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" class="me-1" src="assets/CIOBio_icon.png" width="35" height="35">
-          <span>Find us now at <a href="https://www.uniklinikum-dresden.de/de/das-klinikum/kliniken-polikliniken-institute/klinische-chemie-und-laboratoriumsmedizin/ikl-forschung-research/groups/pauling-lab-computational-integrative-omics-in-biomedicine">CIOBio</a>&nbsp;<small class="text-muted">&copy; 2026</small></span>
+          <span>Find us at <a href="https://www.uniklinikum-dresden.de/de/das-klinikum/kliniken-polikliniken-institute/klinische-chemie-und-laboratoriumsmedizin/ikl-forschung-research/groups/pauling-lab-computational-integrative-omics-in-biomedicine">CIOBio</a></span>
+        </div>
+        <div class="g-col-1">
+          <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" class="me-1" src="assets/LipiTUM_icon.png" width="35" height="35">
+          <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" class="me-1" src="assets/LipiTUM_icon_dark.png" width="35" height="35">
+          <span>LipidLibrarian is a <a href="https://lipitum.de/">LipiTUM</a> project</span>
         </div>
       </div>
     </div>
@@ -153,10 +155,19 @@
 
 <ng-template #mobileMenu let-offcanvas>
   <div class="offcanvas-header">
-    <a class="navbar-brand" routerLink="/">
-      <img src="assets/logo_horizontal.png" alt="Logo" height="24" class="d-inline-block align-text-middle me-2">
-      <span>LipidLibrarian</span>
-    </a>
+    <div class="navbar-brand d-flex align-items-center gap-2">
+        <a href="https://www.uniklinikum-dresden.de/de/das-klinikum/kliniken-polikliniken-institute/klinische-chemie-und-laboratoriumsmedizin/ikl-forschung-research/groups/pauling-lab-computational-integrative-omics-in-biomedicine">
+          <img src="assets/CIOBio_logo.png" alt="CIOBio Logo" height="24" class="d-inline-block">
+        </a>
+        <div style="width: 2px; height: 30px; background-color: var(--bs-border-color);"></div>
+        <a class="navbar-brand" routerLink="/">
+          <img *ngIf="this.sessionService.getPreferredTheme() === 'light'" src="assets/LipiTUM_logo.png" alt="Logo" height="32" class="d-inline-block">
+          <img *ngIf="this.sessionService.getPreferredTheme() === 'dark'" src="assets/LipiTUM_logo_dark.png" alt="Logo" height="32" class="d-inline-block">
+        </a>
+        <a class="navbar-brand gap-2" routerLink="/">
+          <span><span style="font-weight: 600; font-size: larger;">Lipid</span><span style="font-size: larger; font-weight: 400;">Librarian</span></span>
+        </a>
+      </div>
     <button class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
   </div>
   <div class="offcanvas-body">

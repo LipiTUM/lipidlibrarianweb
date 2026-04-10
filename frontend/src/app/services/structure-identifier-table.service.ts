@@ -51,11 +51,11 @@ function matches(structureIdentifier: StructureIdentifier, term: string, pipe: P
   return (
     structureIdentifier.value?.toLowerCase().includes(term.toLowerCase()) ||
     structureIdentifier.structure_type?.toLowerCase().includes(term.toLowerCase()) ||
-    structureIdentifier.sources?.map(source => {source.source}).join(' ').includes(term.toLowerCase())
+    structureIdentifier.sources?.some(s => s.source?.toLowerCase().includes(term.toLowerCase()))
   );
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class StructureIdentifierTableService {
   public structureIdentifiers?: StructureIdentifier[];
   private _loading$ = new BehaviorSubject<boolean>(true);

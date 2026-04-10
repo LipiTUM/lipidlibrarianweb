@@ -50,11 +50,12 @@ function sort(synonyms: Synonym[], column: SortColumn, direction: string): Synon
 function matches(synonym: Synonym, term: string, pipe: PipeTransform) {
   return (
     synonym.value?.toLowerCase().includes(term.toLowerCase()) ||
-    synonym.synonym_type?.toLowerCase().includes(term.toLowerCase())
+    synonym.synonym_type?.toLowerCase().includes(term.toLowerCase()) ||
+    synonym.sources?.some(s => s.source?.toLowerCase().includes(term.toLowerCase()))
   );
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class SynonymTableService {
   public synonyms?: Synonym[];
   private _loading$ = new BehaviorSubject<boolean>(true);

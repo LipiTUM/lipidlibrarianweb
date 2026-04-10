@@ -56,13 +56,14 @@ function sort(fragments: Fragment[], column: SortColumn, direction: string): Fra
 function matches(fragment: Fragment, term: string, pipe: PipeTransform) {
   return (
     fragment.mass?.toString().toLowerCase().includes(term.toLowerCase()) ||
+    fragment.adduct_name?.toLowerCase().includes(term.toLowerCase()) ||
     fragment.name?.toLowerCase().includes(term.toLowerCase()) ||
     fragment.sum_formula?.toLowerCase().includes(term.toLowerCase()) ||
-    fragment.source?.toLowerCase().includes(term.toLowerCase())
+    fragment.sources?.some(s => s.source?.toLowerCase().includes(term.toLowerCase()))
   );
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class FragmentTableService {
   public fragments?: Fragment[];
   private _loading$ = new BehaviorSubject<boolean>(true);

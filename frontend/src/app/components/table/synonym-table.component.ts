@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { NgbHighlight, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -13,6 +13,7 @@ import { SynonymSortableHeaderDirective, SortEvent } from 'src/app/directives/sy
 
 @Component({
     selector: 'app-synonym-table',
+    providers: [SynonymTableService, DecimalPipe],
     imports: [
         NgIf,
         NgFor,
@@ -29,6 +30,7 @@ export class SynonymTableComponent implements OnChanges {
   @Input() lipid$?: Observable<Lipid | undefined>;
   synonyms$!: Observable<Synonym[]>;
   total$: Observable<number>;
+  private lipidSubscription?: Subscription;
 
   @ViewChildren(SynonymSortableHeaderDirective) headers!: QueryList<SynonymSortableHeaderDirective>;
 
@@ -38,7 +40,8 @@ export class SynonymTableComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.lipid$!.subscribe(lipid => {
+    this.lipidSubscription?.unsubscribe();
+    this.lipidSubscription = this.lipid$!.subscribe(lipid => {
       if (lipid) {
         this.service.synonyms = lipid.nomenclature.synonyms;
       } else {
@@ -78,6 +81,7 @@ export class SynonymTableComponent implements OnChanges {
       hmdb: 'HMDB',
       pubchem: 'PubChem',
       kegg: 'KEGG',
+      goslin: 'Goslin',
     };
     return displayNames[source.toLowerCase()] ?? source;
   }
